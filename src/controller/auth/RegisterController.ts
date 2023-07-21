@@ -17,6 +17,8 @@ const registerController = {
             photo:Joi.string(),
         });
 
+        console.log(req.body);
+
         const {error} = userRegisterSchema.validate(req.body);
 
         if(error){
@@ -30,7 +32,7 @@ const registerController = {
                 return next(CustomErrorHandler.alreadyExist("This email is already taken !"));
             }
         }catch(err){
-            next(error);
+            next(err);
         }
 
         //user not in database register new
@@ -58,7 +60,7 @@ const registerController = {
         }
 
         res.status(200).json({acc_token:acc_token});
-    }
+    },
 }
 
 export default registerController;

@@ -15,5 +15,8 @@ router.get("/skill/view",skillController.viewSkill);
 router.post("/user/register",registerController.userRegister);
 router.post("/user/login",loginController.userLogin);
 
+//company
+
+
 
 export default router;
