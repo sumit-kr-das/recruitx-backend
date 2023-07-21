@@ -31,6 +31,7 @@ const loginController= {
             }
 
             /* compare access token */
+            // console.log(user._id);
             const access_token = JwtService.sign({ 
                 _id: user._id, 
                 role: "user"
