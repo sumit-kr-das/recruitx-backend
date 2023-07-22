@@ -16,6 +16,8 @@ router.post("/user/register",registerController.userRegister);
 router.post("/user/login",loginController.userLogin);
 
 //company
+router.post("/company/register", registerController.companyRegister);
+//router.post("/company/login", loginController.companyLogin);
 
 
 

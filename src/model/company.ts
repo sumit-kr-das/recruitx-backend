@@ -22,3 +22,5 @@ const CompanySchema:Schema = new Schema({
     rating:{type:Number, default:null}
 
 })
+
+export default model<ICompany>("Company",CompanySchema);
