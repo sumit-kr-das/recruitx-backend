@@ -18,8 +18,6 @@ const registerController = {
             photo:Joi.string(),
         });
 
-        console.log(req.body);
-
         const {error} = userRegisterSchema.validate(req.body);
 
         if(error){

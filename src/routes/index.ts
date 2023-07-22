@@ -2,6 +2,8 @@ import express, {Response, Request} from "express"
 import skillController from "../controller/skill/SkillController";
 import registerController from "../controller/auth/RegisterController";
 import loginController from "../controller/auth/LoginController";
+import UserController from "../controller/user/UserController";
+import auth from "../middleware/auth";
 
 const router = express.Router();
 
@@ -19,6 +21,9 @@ router.post("/user/login",loginController.userLogin);
 router.post("/company/register", registerController.companyRegister);
 //router.post("/company/login", loginController.companyLogin);
 
+
+//user
+router.get("/user/view",auth, UserController.viewUser);
 
 
 export default router;
