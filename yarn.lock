@@ -1276,6 +1276,11 @@
     "sonic-boom" "^3.1.0"
     "thread-stream" "^2.0.0"
 
+"prettier@3.0.0":
+  "integrity" "sha512-zBf5eHpwHOGPC47h0zrPyNn+eAEIdEzfywMoYn2XPi0P44Zp0tSq64rq0xAREh4auw2cJZHo9QUob+NqCQky4g=="
+  "resolved" "https://registry.npmjs.org/prettier/-/prettier-3.0.0.tgz"
+  "version" "3.0.0"
+
 "process-warning@^2.0.0":
   "integrity" "sha512-/1WZ8+VQjR6avWOgHeEPd7SDQmFQ1B5mC1eRXsCm5TarlNmx/wCsa5GEaxGm05BORRtyG/Ex/3xq3TuRvq57qg=="
   "resolved" "https://registry.npmjs.org/process-warning/-/process-warning-2.2.0.tgz"
