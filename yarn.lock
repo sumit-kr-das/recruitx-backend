@@ -1340,10 +1340,10 @@
     "sonic-boom" "^3.1.0"
     "thread-stream" "^2.0.0"
 
-"process-nextick-args@~2.0.0":
-  "integrity" "sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag=="
-  "resolved" "https://registry.npmjs.org/process-nextick-args/-/process-nextick-args-2.0.1.tgz"
-  "version" "2.0.1"
+"prettier@3.0.0":
+  "integrity" "sha512-zBf5eHpwHOGPC47h0zrPyNn+eAEIdEzfywMoYn2XPi0P44Zp0tSq64rq0xAREh4auw2cJZHo9QUob+NqCQky4g=="
+  "resolved" "https://registry.npmjs.org/prettier/-/prettier-3.0.0.tgz"
+  "version" "3.0.0"
 
 "process-warning@^2.0.0":
   "integrity" "sha512-/1WZ8+VQjR6avWOgHeEPd7SDQmFQ1B5mC1eRXsCm5TarlNmx/wCsa5GEaxGm05BORRtyG/Ex/3xq3TuRvq57qg=="

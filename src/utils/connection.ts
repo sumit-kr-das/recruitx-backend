@@ -1,14 +1,21 @@
-import mongoose from "mongoose"
-import { config } from "../config";
+import mongoose from 'mongoose';
+import { config } from '../config';
+import logger from './logger';
 
-const connect= async() =>{
-    console.log(config.DB_URL);
+mongoose.connection.on('connected', () => {
+    logger.info(`DB Connected [${config.DB_URL}]`);
+});
+
+mongoose.connection.on('disconnected', () => {
+    logger.error('DB Disconnected ..x..x..x..');
+});
+
+const connect = async () => {
     try {
         await mongoose.connect(config.DB_URL);
-        console.log("DB connected");
     } catch (error) {
-        console.log(error);
+        logger.error(error);
     }
-}
+};
 
 export default connect;
