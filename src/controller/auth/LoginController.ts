@@ -37,7 +37,7 @@ const loginController= {
                 role: "user"
             });
 
-            res.json({ access_token });
+            res.status(200).json({ access_token });
         } catch (error) {
             next(error);
         }

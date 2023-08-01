@@ -6,6 +6,7 @@ export interface IJob extends Document{
     description:string,
     tags:[string],
     active:string,
+    companyId:string,
     info:{
         vacancies:string,
         education:string,
@@ -18,7 +19,8 @@ export interface IJob extends Document{
         maxExprience?:number,
         minSalary?:number,
         maxSalary?:number
-    }
+    },
+    appliers?:[string]
 }
 
 const JobSchema:Schema = new Schema({
@@ -27,6 +29,7 @@ const JobSchema:Schema = new Schema({
     description:{type:String, required:true},
     tags:{type:Array, required:true},
     active:{type:String, required:true},
+    companyId:{type:String, required:true},
     info:{
         vacancies:{type:String, required:true},
         education:{type:String, required:true},
@@ -39,7 +42,8 @@ const JobSchema:Schema = new Schema({
         maxExprience:{type:Number},
         minSalary:{type:Number},
         maxSalary:{type:Number}
-    }
+    },
+    appliers:{type:Array, required:true}
 });
 
 export default model<IJob>("Job",JobSchema);
