@@ -9,6 +9,9 @@ const router = express.Router();
 router.get('/view', auth, UserController.viewUser)
       .get("/view/all",auth,userController.viewAllUser)
       .put("/edit", auth, userController.editUser)
-      .post("/carrer/add", auth, userCarrerController.addUserCarrer);
+      .post("/carrer/add", auth, userCarrerController.addUserCarrer)
+      .get("/carrer/view", auth, userCarrerController.viewUserCarrer)
+      .put("/carrer/edit", auth, userCarrerController.editUserCarrer)
+      .delete("/carrer/delete", auth, userCarrerController.deleteUserCarrer);
 
 export default router;
