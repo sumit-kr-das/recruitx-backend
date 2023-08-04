@@ -37,7 +37,7 @@ const userCarrerController = {
         try {
             const addCarrer = await userCarrer.save();
             if(addCarrer){
-                res.status(200).json({msg:"Carrer Profile updated successfully"});
+               return res.status(200).json({msg:"Carrer Profile updated successfully"});
             }
         } catch (error) {
             next(error);
@@ -84,7 +84,7 @@ const userCarrerController = {
     
         try {
             const userCareer = await userCareerProfile.findOneAndUpdate(
-                { userId: req.user.id }, 
+                {_id:req.params.id}, 
                 {
                     industry,
                     role,
@@ -108,7 +108,7 @@ const userCarrerController = {
     async deleteUserCarrer(req:any, res:Response, next:NextFunction){
         try {
             const deletedCareer = await userCareerProfile.findOneAndDelete({
-                _id: req.body.id
+                _id: req.params.id
             });
     
             if (deletedCareer) {
