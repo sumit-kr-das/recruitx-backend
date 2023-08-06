@@ -22,6 +22,8 @@ router.get('/view', auth, UserController.viewUser)
       .put("/education/edit/:id", auth, userEducationController.editUserEducation)
       .delete("/education/delete/:id", auth, userEducationController.deleteUserEducation)
       .post("/exprience/add", auth, userExprienceController.addUserExprience)
-      .get("/exprience/view", auth, userExprienceController.viewUserExprience);
+      .get("/exprience/view", auth, userExprienceController.viewUserExprience)
+      .put("/exprience/edit/:id", auth, userExprienceController.updateUserExprience)
+      .delete("/exprience/delete/:id", auth, userExprienceController.deleteUserExperience);
 
 export default router;
