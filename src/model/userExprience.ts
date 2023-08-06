@@ -19,7 +19,7 @@ const UserExprienceSchema:Schema = new Schema({
         startDate:{type:Date, required:true},
         endDate:{type:Date}
     },
-    place:String
+    place:{type:String, require:true}
 },{
     timestamps:true
 })

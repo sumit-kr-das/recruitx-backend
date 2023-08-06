@@ -4,3 +4,5 @@ export {default as userController} from './user/UserController';
 export {default as skillController} from './skill/SkillController';
 export {default as userCarrerController} from './user/UserCareerController';
 export {default as userCertificationController} from './user/UserCertificationController';
+export {default as userEducationController} from './user/UserEducationController';
+export {default as userExprienceController} from './user/UserExprienceController';

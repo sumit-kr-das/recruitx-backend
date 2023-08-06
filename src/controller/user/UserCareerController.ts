@@ -47,7 +47,7 @@ const userCarrerController = {
     
     async viewUserCarrer(req:any, res:Response, next:NextFunction){
         try {
-            const userCarrer = await userCareerProfile.findOne({userId:req.user.id}).select('-__v');
+            const userCarrer = await userCareerProfile.findOne({userId:req.user.id}).select('-__v -userId');
             return res.status(200).json(userCarrer);
         } catch (error) {
            next(error);

@@ -42,7 +42,7 @@ const userCertificationController = {
     async viewCerficates(req:any, res:Response, next:NextFunction){
 
         try {
-            const certificates = await userCertification.find({userId:req.user.id}).select('-__v');
+            const certificates = await userCertification.find({userId:req.user.id}).select('-__v -userId');
             return res.status(200).json(certificates);
         } catch (error) {
             next(error);
