@@ -1,29 +1,30 @@
 import express from 'express';
 import UserController from '../controller/user/UserController';
 import auth from '../middleware/auth';
+import userAuth from '../middleware/userAuth';
 import userController from '../controller/user/UserController';
 import { userCarrerController, userCertificationController, userEducationController, userExprienceController } from '../controller';
 
 const router = express.Router();
 
-router.get('/view', auth, UserController.viewUser)
-      .get("/view/all",auth,userController.viewAllUser)
-      .put("/edit", auth, userController.editUser)
-      .post("/carrer/add", auth, userCarrerController.addUserCarrer)
-      .get("/carrer/view", auth, userCarrerController.viewUserCarrer)
-      .put("/carrer/edit/:id", auth, userCarrerController.editUserCarrer)
-      .delete("/carrer/delete/:id", auth, userCarrerController.deleteUserCarrer)
-      .post("/certificate/add", auth, userCertificationController.addUserCertificate)
-      .get("/certificate/view", auth, userCertificationController.viewCerficates)
-      .put("/certificate/edit/:id", auth, userCertificationController.editCertificate)
-      .delete("/certificate/delete/:id", auth, userCertificationController.deleteCertificate)
-      .post("/education/add", auth, userEducationController.addUserEducation)
-      .get("/education/view", auth, userEducationController.viewUserEducation)
-      .put("/education/edit/:id", auth, userEducationController.editUserEducation)
-      .delete("/education/delete/:id", auth, userEducationController.deleteUserEducation)
-      .post("/exprience/add", auth, userExprienceController.addUserExprience)
-      .get("/exprience/view", auth, userExprienceController.viewUserExprience)
-      .put("/exprience/edit/:id", auth, userExprienceController.updateUserExprience)
-      .delete("/exprience/delete/:id", auth, userExprienceController.deleteUserExperience);
+router.get('/view', userAuth, UserController.viewUser)
+      .get("/view/all",userAuth,userController.viewAllUser)
+      .put("/edit", userAuth, userController.editUser)
+      .post("/carrer/add", userAuth, userCarrerController.addUserCarrer)
+      .get("/carrer/view", userAuth, userCarrerController.viewUserCarrer)
+      .put("/carrer/edit/:id", userAuth, userCarrerController.editUserCarrer)
+      .delete("/carrer/delete/:id", userAuth, userCarrerController.deleteUserCarrer)
+      .post("/certificate/add", userAuth, userCertificationController.addUserCertificate)
+      .get("/certificate/view", userAuth, userCertificationController.viewCerficates)
+      .put("/certificate/edit/:id", userAuth, userCertificationController.editCertificate)
+      .delete("/certificate/delete/:id", userAuth, userCertificationController.deleteCertificate)
+      .post("/education/add", userAuth, userEducationController.addUserEducation)
+      .get("/education/view", userAuth, userEducationController.viewUserEducation)
+      .put("/education/edit/:id", userAuth, userEducationController.editUserEducation)
+      .delete("/education/delete/:id", userAuth, userEducationController.deleteUserEducation)
+      .post("/exprience/add", userAuth, userExprienceController.addUserExprience)
+      .get("/exprience/view", userAuth, userExprienceController.viewUserExprience)
+      .put("/exprience/edit/:id", userAuth, userExprienceController.updateUserExprience)
+      .delete("/exprience/delete/:id", userAuth, userExprienceController.deleteUserExperience);
 
 export default router;
