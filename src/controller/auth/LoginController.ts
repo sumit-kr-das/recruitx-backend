@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
 import User from "../../model/User";
+import company from '../../model/company';
 import CustomErrorHandler from '../../services/customErrorHandeler';
 import bcrypt from 'bcrypt';
 import JwtService from '../../services/jwtServices';
@@ -42,6 +43,40 @@ const loginController= {
             next(error);
         }
        
+    },
+
+    async companyLogin(req:any, res:Response, next:NextFunction){
+        const companyLoginSchema = Joi.object({
+            email:Joi.string().required(),
+            password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9!@#$%^&*()_+{}|:"<>?~-]{3,30}$')).required()
+        })
+
+        const {error} = companyLoginSchema.validate(req.body);
+
+        if(error){
+            next(error);
+        }
+
+        const { email, password}:{email: string, password:string} = req.body;
+
+        try {
+            const companyInfo = await company.findOne({email});
+            if(!companyInfo){
+                return next(CustomErrorHandler.wrongCredentials());
+            }
+            const matchPassword = await bcrypt.compare(password, companyInfo.password);
+            if(!matchPassword){
+                return next(CustomErrorHandler.wrongCredentials());
+            }
+            const access_token = JwtService.sign({ 
+                _id: companyInfo._id, 
+                role: "company"
+            });
+
+            return  res.status(200).json({ access_token });
+        } catch (error) {
+            next(error)
+        }
     }
 }
 

@@ -85,9 +85,9 @@ const registerController = {
 
 
     async companyRegister(req: Request , res: Response ,  next: NextFunction){
-      // MulterService(req,res, async(err)=>{
-      //   if(err){}
-      // })
+      MulterService(req,res, async(err)=>{
+        if(err){}
+      })
         const comapanyRegisterSchema = Joi.object({
           name: Joi.string().min(5).max(40).required(),
           description: Joi.string().min(10).required(),

@@ -4,8 +4,8 @@ import JwtService from '../services/jwtServices';
 
 const companyAuth = async (req: any, res: Response, next: NextFunction) => {
     let authHeader = req.headers.authorization;
-    console.log(authHeader);
     if (!authHeader) {
+        console.log("error")
         return next(CustomErrorHandler.unAuthorized());
     }
 
@@ -18,7 +18,7 @@ const companyAuth = async (req: any, res: Response, next: NextFunction) => {
                 id: decode._id,
                 role: decode.role,
             };
-            req.user = company;
+            req.company = company;
             next();
         }else{
             return next(CustomErrorHandler.unAuthorized());
