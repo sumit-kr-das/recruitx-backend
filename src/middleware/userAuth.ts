@@ -1,31 +1,59 @@
-import { Request, Response, NextFunction } from 'express';
-import CustomErrorHandler from '../services/customErrorHandeler';
-import JwtService from '../services/jwtServices';
+import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
+import { config } from "../config";
+import CustomErrorHandler from "../services/customErrorHandeler";
+import roles from "../services/roleService";
 
-const userAuth = async (req: any, res: Response, next: NextFunction) => {
-    let authHeader = req.headers.authorization;
-    console.log(authHeader);
-    if (!authHeader) {
-        return next(CustomErrorHandler.unAuthorized());
-    }
+export function verifyToken(req:any, res:Response, next:NextFunction) {
+	const authHeader = req?.headers?.authorization;
 
-    const token = authHeader.split(' ')[1];
-    try {
-        const decode: any = JwtService.verify(token);
+    const JWT_SECRET = config.JWT_SECRET;
 
-        if(decode.role==='user'){
-            const user = {
-                id: decode._id,
-                role: decode.role,
-            };
-            req.user = user;
-            next();
-        }else{
-            return next(CustomErrorHandler.unAuthorized());
-        }
-    } catch (error) {
-        return next(CustomErrorHandler.unAuthorized());
-    }
-};
+	if (!req.headers || !authHeader|| !authHeader.startsWith("Bearer ")) {
+		return next(CustomErrorHandler.unAuthorized());
+	}
 
-export default userAuth;
+	const token = authHeader.split(" ")[1];
+	
+	try{
+		jwt.verify(token, JWT_SECRET, (err:any, user:any) => {
+			if (err) {
+				return next(CustomErrorHandler.unAuthorized());
+			}
+			req.user = user;
+			next();
+		});
+	}catch(err){
+		return next(CustomErrorHandler.unAuthorized());
+	}
+}
+
+export function verifyUser(req:any, res:Response, next:NextFunction) {
+	verifyToken(req, res, () => {
+		if (req.user.id === req.params.id || req.user.isAdmin) {
+			next();
+		} else {
+			next(CustomErrorHandler.unAuthorized());
+		}
+	});
+}
+
+export function verifyCompany(req:any, res:Response, next:NextFunction) {
+	verifyToken(req, res, () => {
+		if (req.user.id===req.params.id || req.user.) {
+			next();
+		} else {
+			next(CustomErrorHandler.unAuthorized());
+		}
+	});
+}
+
+export function verifyAdmin(req:any, res:Response, next:NextFunction) {
+	verifyToken(req, res, () => {
+		if (req.user.isAdmin) {
+			next();
+		} else {
+			next(CustomErrorHandler.unAuthorized());
+		}
+	});
+}

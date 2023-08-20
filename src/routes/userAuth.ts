@@ -5,7 +5,7 @@ import loginController from '../controller/auth/LoginController';
 const router = express.Router();
 
 router
-    .post('/register', registerController.userRegister)
-    .post('/login', loginController.userLogin);
+    .post('/register', registerController.register)
+    .post('/login', loginController.login);
 
 export default router;

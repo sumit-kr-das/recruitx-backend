@@ -10,7 +10,6 @@ import testRoutes from './src/routes/healthCheck';
 import userAuthRoutes from './src/routes/userAuth';
 import skillRoutes from './src/routes/skill';
 import userRoutes from './src/routes/user';
-import companyAuthRoutes from './src/routes/companyAuth';
 import job from "./src/routes/job";
 import companyRoutes from "./src/routes/company"
 
@@ -24,7 +23,6 @@ app.use(cors());
 /* all routes */
 app.use('/', testRoutes);
 app.use('/api/user/auth', userAuthRoutes);
-app.use('/api/company/auth' ,companyAuthRoutes);
 app.use('/api/skill', skillRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/job', job);

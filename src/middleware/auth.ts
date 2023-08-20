@@ -17,6 +17,7 @@ const auth = async (req: any, res: Response, next: NextFunction) => {
             id: decode._id,
             role: decode.role,
         };
+        
         req.user = user;
         next();
     } catch (error) {
