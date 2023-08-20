@@ -8,7 +8,7 @@ export interface ICompany extends Document{
     logo:string,
     teamSize:number,
     type:string,
-    ratings?:number,
+    rating?:number,
 }
 
 const CompanySchema:Schema = new Schema({
@@ -19,7 +19,7 @@ const CompanySchema:Schema = new Schema({
     logo:{type:String, required:true},
     teamSize:{type:Number, required:true},
     type:{type:String, required:true},
-    rating:{type:Number, default:null}
+    rating:{type:Number, default:0}
 
 })
 

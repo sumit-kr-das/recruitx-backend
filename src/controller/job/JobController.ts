@@ -51,7 +51,7 @@ const jobController = {
                 maxExprience,
                 minSalary,
                 maxSalary
-            }
+            },
         });
 
         try {
@@ -64,10 +64,19 @@ const jobController = {
 
     async viewJobs(req:any, res:Response, next:NextFunction){
         try {
-            const jobs = await job.find({companyId:req.company.id}).sort({createdAt:-1}).select("-__v, -createdAt, -updatedAt");
+            const jobs = await job.find({companyId:req.company.id}).sort({createdAt:-1}).select("-__v -createdAt -updatedAt");
             return res.status(200).json(jobs);
         } catch (error) {
             next(error);
+        }
+    },
+
+    async viewJobsFeed(req:Request, res:Response, next:NextFunction){
+        try {
+            const jobs = await job.find().sort({createdAt:-1}).select("-__v -updatedAt");
+            return res.status(200).json(jobs);
+        } catch (error) {
+            next(error)
         }
     },
 

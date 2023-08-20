@@ -20,7 +20,6 @@ export interface IJob extends Document{
         minSalary?:number,
         maxSalary?:number
     },
-    appliers?:[string]
 }
 
 const JobSchema:Schema = new Schema({
@@ -43,7 +42,6 @@ const JobSchema:Schema = new Schema({
         minSalary:{type:Number},
         maxSalary:{type:Number}
     },
-    appliers:{type:Array, required:true}
 },{
     timestamps:true
 });
