@@ -6,3 +6,4 @@ export {default as userCarrerController} from './user/UserCareerController';
 export {default as userCertificationController} from './user/UserCertificationController';
 export {default as userEducationController} from './user/UserEducationController';
 export {default as userExprienceController} from './user/UserExprienceController';
+export {default as jobApplicationController} from './job/JobApplicationController';

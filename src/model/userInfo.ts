@@ -11,7 +11,10 @@ export interface IUserExprience extends Document{
     bio:string,
     objective:string,
     status:string,
-    language:[string]
+    language:[string],
+    gender:string,
+    skills:[string],
+    photo:string
 
 }
 
@@ -26,7 +29,10 @@ const UserExprienceSchema:Schema = new Schema({
     bio:{type:String, required:true,   min: [15, 'Bio is shorter'], max:[30, 'Bio is too long']},
     objective:{type:String, required:true},
     status:{type:String, required:true},
-    language:{type:Array, required:true}
+    language:{type:Array, required:true},
+    gender:{type:String, required:true},
+    skills:{type:Array, required:true},
+    photo:{type:String, required:true}
 })
 
 export default model<IUserExprience>("UserExprience", UserExprienceSchema);

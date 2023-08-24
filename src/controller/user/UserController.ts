@@ -32,60 +32,86 @@ const userController = {
         }
     },
 
+    // async editUser(req: any, res: Response, next: NextFunction) {
+    //     MulterService(req, res, async (err) => {
+    //         // const {name, email, gender, skills}:{name?:string, email?:string, skills?:[string], gender?:string}= req.body;
+    //         if (err) {
+    //             return next(CustomErrorHandler.serverError(err.message));
+    //         }
+    //         let filePath = '';
+    //         const data:any = User.findOne({_id:req.user.id});
+    //         if (req.file) {
+    //             filePath = req.file.path;
+    //             const fileExtension = path.extname(filePath);
+    //             if (
+    //                 fileExtension !== '.jpg' &&
+    //                 fileExtension !== '.png' &&
+    //                 fileExtension !== '.jpeg'
+    //             ) {
+    //                 return res
+    //                     .status(401)
+    //                     .json({ msg: 'File type is not valid' });
+    //             }
+
+    //             if(data.photo){
+    //                 fs.unlink(`http://localhost:3000/${data.photo}`,(error)=>{
+    //                     console.log("image deleted");
+    //                 });
+    //             }
+    //         }else{
+    //             filePath = data.photo;
+    //         }
+
+    //         try {
+    //             const update = await User.findByIdAndUpdate({_id:req.user.id},
+    //                 {
+    //                     name: req.body?.name,
+    //                     email: req.body?.emal,
+    //                     // password:data.password,
+    //                     gender:req.body?.password,
+    //                     skills:req.body?.skills,
+    //                     photo:filePath
+    //                 },
+    //                 {new:true}
+    //             );
+
+    //             if(update){
+    //                 res.status(200).json({msg:"User updated successfully"})
+    //             }else{
+    //                 res.status(500).json({msg:"There are something wrong"})
+    //             }
+
+    //         } catch (error) {
+    //             next(error);
+    //         }
+    //     });
+    // },
+
     async editUser(req: any, res: Response, next: NextFunction) {
-        MulterService(req, res, async (err) => {
-            // const {name, email, gender, skills}:{name?:string, email?:string, skills?:[string], gender?:string}= req.body;
-            if (err) {
-                return next(CustomErrorHandler.serverError(err.message));
-            }
-            let filePath = '';
-            const data:any = User.findOne({_id:req.user.id});
-            if (req.file) {
-                filePath = req.file.path;
-                const fileExtension = path.extname(filePath);
-                if (
-                    fileExtension !== '.jpg' &&
-                    fileExtension !== '.png' &&
-                    fileExtension !== '.jpeg'
-                ) {
-                    return res
-                        .status(401)
-                        .json({ msg: 'File type is not valid' });
-                }
+        const userSchema = Joi.object({
+            name: Joi.string(),
+            email: Joi.string(),
+        })
 
-                if(data.photo){
-                    fs.unlink(`http://localhost:3000/${data.photo}`,(error)=>{
-                        console.log("image deleted");
-                    });
-                }
-            }else{
-                filePath = data.photo;
-            }
+        const { error } = userSchema.validate(userSchema);
+        if (error) {
+            next(error);
+        }
 
-            try {
-                const update = await User.findByIdAndUpdate({_id:req.user.id},
-                    {
-                        name: req.body?.name,
-                        email: req.body?.emal,
-                        // password:data.password,
-                        gender:req.body?.password,
-                        skills:req.body?.skills,
-                        photo:filePath
-                    },
-                    {new:true}
-                );
-    
-                if(update){
-                    res.status(200).json({msg:"User updated successfully"})
-                }else{
-                    res.status(500).json({msg:"There are something wrong"})
-                }
-                
-            } catch (error) {
-                next(error);
-            }
+        const update = await User.findByIdAndUpdate({ _id: req.user.id }, {
+            name: req.body?.name,
+            email: req.body?.email
+        }, {
+            new: true
         });
-    },
+
+        if (update) {
+            res.status(200).json({ msg: "User updated successfully" })
+        } else {
+            res.status(402).json({ msg: "There are something wrong" })
+        }
+
+    }
 };
 
 export default userController;

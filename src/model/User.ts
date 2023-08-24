@@ -1,21 +1,17 @@
 import { Schema, model, Document } from "mongoose";
-
+import roles from "../services/roleService";
 export interface IUser extends Document{
     name:string,
     email:string,
-    gender:string,
     password:string,
-    skills:[string],
-    photo?:string,
+    role:string
 }
 
 const UserSchema:Schema = new Schema({
     name:{type:String, required:true},
-    email:{type:String, required:true},
-    gender:{type:String, required:true},
+    email:{type:String, required:true, unique:true},
     password:{type:String, required:true},
-    skills:{type:Array, required:true},
-    photo:{type:String, default:null}
+    role:{type:String, default:roles.USER}
 })
 
 export default model<IUser>("User",UserSchema);

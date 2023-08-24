@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
 import userCareerProfile from '../../model/userCareerProfile';
+import CustomErrorHandler from '../../services/customErrorHandeler';
 
 
 const userCarrerController = {
@@ -98,7 +99,9 @@ const userCarrerController = {
             );
     
             if (userCareer) {
-                res.status(200).json({ msg: "Career Profile updated successfully" });
+               return res.status(200).json({ msg: "Career Profile updated successfully" });
+            }else{
+                next(CustomErrorHandler.serverError());
             }
         } catch (error) {
             next(error);
