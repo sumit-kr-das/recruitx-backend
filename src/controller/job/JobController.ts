@@ -38,7 +38,7 @@ const jobController = {
             description,
             tags,
             active,
-            companyId:req.company.id,
+            companyId:req.user.id,
             info:{
                 vacancies,
                 education,
@@ -64,7 +64,7 @@ const jobController = {
 
     async viewJobs(req:any, res:Response, next:NextFunction){
         try {
-            const jobs = await job.find({companyId:req.company.id}).sort({createdAt:-1}).select("-__v -createdAt -updatedAt");
+            const jobs = await job.find({companyId:req.user.id}).sort({createdAt:-1}).select("-__v -createdAt -updatedAt");
             return res.status(200).json(jobs);
         } catch (error) {
             next(error);
@@ -140,7 +140,7 @@ const jobController = {
                     description,
                     tags,
                     active,
-                    companyId: req.company.id,
+                    companyId: req.user.id,
                     info: {
                         vacancies,
                         education,

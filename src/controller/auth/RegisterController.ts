@@ -184,7 +184,7 @@ const registerController = {
     try {
       const saveuser = await user.save();
       acc_token = JwtService.sign({
-        _id: saveuser._id,
+        id: saveuser.id,
         role: saveuser.role
       });
       res.status(200).json({acc_token: acc_token});
