@@ -1,20 +1,29 @@
-import { Schema, model, Document } from "mongoose";
-
-export interface ICompany extends Document{
-    description:string,
-    logo:string,
-    teamSize:number,
-    type:string,
-    rating?:number,
+import { Schema, model, Document } from 'mongoose';
+import roles from '../services/roleService';
+export interface ICompanySchema extends Document {
+    name: string;
+    email: string;
+    phone: string;
+    password: string;
+    companyName: string;
+    industry: string;
+    designation: string;
+    pin: string;
+    address: string;
+    role: string;
 }
 
-const CompanySchema:Schema = new Schema({
-    description:{type:String, required:true},
-    logo:{type:String, required:true},
-    teamSize:{type:Number, required:true},
-    type:{type:String, required:true},
-    rating:{type:Number, default:0}
+const CompanySchema: Schema = new Schema({
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    phone: { type: String, required: true },
+    password: { type: String, required: true },
+    companyName: { type: String, required: true },
+    industry: { type: String, required: true },
+    designation: { type: String, required: true },
+    pin: { type: String, required: true },
+    address: { type: String, required: true },
+    role: { type: String, default: roles.COMPANY },
+});
 
-})
-
-export default model<ICompany>("Company",CompanySchema);
+export default model<ICompanySchema>('Company', CompanySchema);
