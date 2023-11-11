@@ -17,7 +17,6 @@ const auth = async (req:any, res:Response, next:NextFunction) => {
 		jwt.verify(token, config.JWT_SECRET, (err:any, user:any) => {
 			if (err) {
 				return next(CustomErrorHandler.unAuthorized());
-
 			}
 			req.user = user;
 			next();

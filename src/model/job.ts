@@ -1,4 +1,5 @@
 import { Schema, model, Document } from "mongoose";
+import company from "./company";
 
 export interface IJob extends Document{
     title:string,
@@ -28,7 +29,7 @@ const JobSchema:Schema = new Schema({
     description:{type:String, required:true},
     tags:{type:Array, required:true},
     active:{type:Boolean, required:true},
-    companyId:{type:String, required:true},
+    companyId:{type:Schema.Types.ObjectId, ref:"Company", required:true},
     info:{
         vacancies:{type:Number, required:true},
         education:{type:String, required:true},

@@ -30,7 +30,7 @@ const jobController = {
             next(error);
         }
 
-        const {title, category, description, tags, active, companyId, info:{vacancies, education, type, startDate, endDate, roles,skills,minExprience,maxExprience,minSalary,maxSalary}}:{title:string, category:string, description:string, tags:[string], active:boolean, companyId:string, info:{vacancies:number, education:string, type:string, startDate:Date, endDate:Date, roles:string, skills:[string], minExprience:number, maxExprience:number, minSalary:number, maxSalary:number}} = req.body;
+        const {title, category, description, tags, active, info:{vacancies, education, type, startDate, endDate, roles,skills,minExprience,maxExprience,minSalary,maxSalary}}:{title:string, category:string, description:string, tags:[string], active:boolean,  info:{vacancies:number, education:string, type:string, startDate:Date, endDate:Date, roles:string, skills:[string], minExprience:number, maxExprience:number, minSalary:number, maxSalary:number}} = req.body;
         
         const jobs = new job({
             title,
@@ -58,6 +58,7 @@ const jobController = {
             const addJobs = await jobs.save();
             return res.status(200).json({msg:"Jobs Posted Successfullly"});
         } catch (error) {
+            // console.log(error);
             next(error);
         }
     },
