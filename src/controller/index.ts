@@ -7,3 +7,7 @@ export {default as userCertificationController} from './user/UserCertificationCo
 export {default as userEducationController} from './user/UserEducationController';
 export {default as userExprienceController} from './user/UserExprienceController';
 export {default as jobApplicationController} from './job/JobApplicationController';
+export {default as companyProfileController} from './company/CompanyProfileController';
+export {default as searchJobController} from "./job/SearchJobController";
+export {default as jobRecomandationController} from "./job/JobRecomandationController";
+export {default as userInfoController} from "./user/UserinfoController";

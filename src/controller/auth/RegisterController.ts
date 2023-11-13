@@ -12,15 +12,13 @@ const registerController = {
   //User Register Controller
 
   async userRegister(req:Request, res:Response, next:NextFunction){
-    MulterService(req, res, async(err:any)=>{
       const userRegisterSchema = Joi.object({
         name: Joi.string().min(5).max(30).required(),
         email: Joi.string().email().required(),
         password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9!@#$%^&*()_+{}|:"<>?~-]{3,30}$')).required(),
+        phone: Joi.string().min(10).required(),
+        workStatus: Joi.string().required(),
         repeat_password: Joi.ref('password'),
-        gender:Joi.string().min(4).required(),
-        skills:Joi.array().min(1).required(),
-        // photo:Joi.any()
     });
 
     const {error} = userRegisterSchema.validate(req.body);
@@ -29,19 +27,6 @@ const registerController = {
         next(error);
     }
 
-      if(err){
-        return next(CustomErrorHandler.serverError(err.message));
-      }
-      let filePath = '';
-      if(req.file){
-        filePath= req.file.path;
-        const fileExtension = path.extname(filePath);
-        if(fileExtension!=='.jpg' && fileExtension!=='.png' && fileExtension!=='.jpeg'){
-          return res.status(401).json({msg:"File type is not valid"});
-        }
-      }
-
-    //if user in already in database
     try{
         const exist = await User.exists({ email: req.body.email });
         if(exist){
@@ -53,15 +38,15 @@ const registerController = {
 
     // user not in database register new
 
-    const {name, email, password, repeat_password, gender, skills}:{name:string, email:string, password:string, repeat_password:string,skills:[string], gender:string}= req.body;
+    const {name, email, password, phone, workStatus}:{name:string, email:string, password:string, phone:string, workStatus:string}= req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({
         name,
         email,
         password:hashedPassword,
-        gender,
-        skills,
-        photo:filePath,
+        phoneNo:phone,
+        workStatus,
+        role:"user"
     });
     let acc_token:any;
     try {
@@ -76,7 +61,6 @@ const registerController = {
     }
 
     res.status(200).json({acc_token:acc_token});
-    })
   },
 
 
