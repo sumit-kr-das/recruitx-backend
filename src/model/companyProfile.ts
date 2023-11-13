@@ -6,7 +6,6 @@ export interface ICompanyProfile extends Document {
     logo: string;
     teamSize: number;
     type: string;
-    rating?: number;
 }
 
 const CompanyProfileSchema: Schema = new Schema({
@@ -15,7 +14,6 @@ const CompanyProfileSchema: Schema = new Schema({
     logo: { type: String, required: true },
     teamSize: { type: Number, required: true },
     type: { type: String, required: true },
-    rating: { type: Number, default: 0 },
 });
 
 export default model<ICompanyProfile>('CompanyProfile', CompanyProfileSchema);

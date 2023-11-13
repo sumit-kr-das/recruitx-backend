@@ -19,7 +19,8 @@ export interface IJob extends Document{
         minExprience:number,
         maxExprience?:number,
         minSalary?:number,
-        maxSalary?:number
+        maxSalary?:number,
+        location?:string
     },
 }
 
@@ -41,7 +42,8 @@ const JobSchema:Schema = new Schema({
         minExprience:{type:Number, required:true},
         maxExprience:{type:Number},
         minSalary:{type:Number},
-        maxSalary:{type:Number}
+        maxSalary:{type:Number},
+        location:{type:String}
     },
 },{
     timestamps:true

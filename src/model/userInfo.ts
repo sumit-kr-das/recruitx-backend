@@ -1,6 +1,6 @@
 import { Schema, model, Document } from "mongoose";
 
-export interface IUserExprience extends Document{
+export interface IUserinfo extends Document{
     userId:string,
     phone:string,
     github:string,
@@ -18,7 +18,7 @@ export interface IUserExprience extends Document{
 
 }
 
-const UserExprienceSchema:Schema = new Schema({
+const UserinfoSchema:Schema = new Schema({
     userId:{type:String, required:true},
     phone:{type:String, required:true},
     github:{type:String, required:true},
@@ -35,4 +35,4 @@ const UserExprienceSchema:Schema = new Schema({
     photo:{type:String, required:true}
 })
 
-export default model<IUserExprience>("UserExprience", UserExprienceSchema);
+export default model<IUserinfo>("Userinfo", UserinfoSchema);
