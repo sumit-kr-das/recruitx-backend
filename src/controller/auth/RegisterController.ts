@@ -130,7 +130,7 @@ const registerController = {
         next(error);
       }
 
-      res.status(200).json({acc_token: acc_token});
+      res.status(200).json({access_token: acc_token});
     },
 
   // async register(req: Request, res: Response, next: NextFunction) {
