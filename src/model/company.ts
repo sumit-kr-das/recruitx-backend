@@ -9,7 +9,7 @@ export interface ICompanySchema extends Document {
     industry: string;
     designation: string;
     pin: string;
-    address: string
+    address: string;
     role: string;
 }
 
