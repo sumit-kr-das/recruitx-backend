@@ -180,7 +180,7 @@ const registerController = {
 
         res.status(200).json({
             access_token: acc_token,
-            name,
+            user: name,
             role: roles.COMPANY,
         });
     },

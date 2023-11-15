@@ -90,7 +90,7 @@ const loginController = {
                 .status(200)
                 .json({
                     access_token,
-                    name: companyInfo.name,
+                    user: companyInfo.name,
                     role: companyInfo.role,
                 });
         } catch (error) {
