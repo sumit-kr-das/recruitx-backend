@@ -14,7 +14,8 @@ export interface IUserinfo extends Document{
     language:[string],
     gender:string,
     skills:[string],
-    photo:string
+    photo:string,
+    maxQualification: string
 
 }
 
@@ -32,7 +33,8 @@ const UserinfoSchema:Schema = new Schema({
     language:{type:Array, required:true},
     gender:{type:String, required:true},
     skills:{type:Array, required:true},
-    photo:{type:String, required:true}
+    photo:{type:String, required:true},
+    maxQualification:{type:String, required:true}
 })
 
 export default model<IUserinfo>("Userinfo", UserinfoSchema);

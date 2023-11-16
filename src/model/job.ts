@@ -10,7 +10,6 @@ export interface IJob extends Document{
     companyId:string,
     info:{
         vacancies:number,
-        education:string,
         type:string,
         startDate:Date,
         endDate:Date,
@@ -20,7 +19,9 @@ export interface IJob extends Document{
         maxExprience?:number,
         minSalary?:number,
         maxSalary?:number,
-        location?:string
+        location?:string,
+        maxQualification: string,
+        degree:[string]
     },
 }
 
@@ -33,7 +34,6 @@ const JobSchema:Schema = new Schema({
     companyId:{type:Schema.Types.ObjectId, ref:"Company", required:true},
     info:{
         vacancies:{type:Number, required:true},
-        education:{type:String, required:true},
         type:{type:String, required:true},
         startDate:{type:Date, required:true},
         endDate:{type:Date, required:true},
@@ -43,7 +43,9 @@ const JobSchema:Schema = new Schema({
         maxExprience:{type:Number},
         minSalary:{type:Number},
         maxSalary:{type:Number},
-        location:{type:String}
+        location:{type:String},
+        maxQualification: {type:String, required:true},
+        degree: {type:Array, required:true}
     },
 },{
     timestamps:true
