@@ -10,3 +10,9 @@
 -   localhost:8000/api/skill/view [View skill]
     <br /><br />
 -   localhost:8000/api/user/view [View skill]
+    <br/><br/>
+    localhost:8000/api/user/carrer/add [add career]
+    localhost:8000/api/user/carrer/view [view career]
+    localhost:8000/api/user/carrer/edit/:id [edit career]
+    localhost:8000/api/user/carrer/delete/:id [delete career]
+

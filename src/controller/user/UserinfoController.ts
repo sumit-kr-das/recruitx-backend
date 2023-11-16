@@ -22,6 +22,7 @@ const userInfoController = {
             language: Joi.array().required(),
             gender: Joi.string().required(),
             skills: Joi.array().required(),
+            maxQualification: Joi.string().required()
         });
 
         const {error} = userinfoSchema.validate(req.body);
@@ -36,7 +37,7 @@ const userInfoController = {
             return res.status(503).json({msg:"Please enter photo"});
         }
 
-        const {phone, github, linkedIn, dateOfBirth, age, address, bio, objective, status, language, gender, skills}:{phone:string, github:string, linkedIn:string, dateOfBirth:Date, age:number, address:string, bio:string, objective:string, status:string, language:[string], gender:string, skills:[string]} = req.body;
+        const {phone, github, linkedIn, dateOfBirth, age, address, bio, objective, status, language, gender, skills, maxQualification}:{phone:string, github:string, linkedIn:string, dateOfBirth:Date, age:number, address:string, bio:string, objective:string, status:string, language:[string], gender:string, skills:[string], maxQualification:string} = req.body;
 
         const newUserinfo = new userInfo({
             phone,
@@ -52,7 +53,8 @@ const userInfoController = {
             gender,
             skills,
             photo:photo?.path,
-            userId
+            userId,
+            maxQualification
         });
 
         try {
@@ -91,6 +93,7 @@ const userInfoController = {
             language: Joi.array().required(),
             gender: Joi.string().required(),
             skills: Joi.array().required(),
+            maxQualification: Joi.string().required(),
         });
     
         const { error } = userinfoSchema.validate(req.body);
@@ -114,6 +117,7 @@ const userInfoController = {
             language,
             gender,
             skills,
+            maxQualification
         }: {
             phone: string;
             github: string;
@@ -127,6 +131,7 @@ const userInfoController = {
             language: [string];
             gender: string;
             skills: [string];
+            maxQualification: string
         } = req.body;
     
         const updateFields: {
@@ -143,6 +148,7 @@ const userInfoController = {
             gender: string;
             skills: [string];
             photo?: string;
+            maxQualification: string
         } = {
             phone,
             github,
@@ -156,6 +162,7 @@ const userInfoController = {
             language,
             gender,
             skills,
+            maxQualification
         };
     
         if (photo) {

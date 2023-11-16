@@ -11,7 +11,6 @@ const jobController = {
             active:Joi.boolean().required(),
             info:Joi.object({
                 vacancies:Joi.number().required(),
-                education:Joi.string().required(),
                 type:Joi.string().required(),
                 startDate:Joi.date().required(),
                 endDate:Joi.date().required(),
@@ -21,6 +20,8 @@ const jobController = {
                 maxExprience:Joi.number().required(),
                 minSalary:Joi.number(),
                 maxSalary:Joi.number(),
+                maxQualification: Joi.string().required(),
+                degree: Joi.array().required()
             }),
         })
 
@@ -30,7 +31,7 @@ const jobController = {
             next(error);
         }
 
-        const {title, category, description, tags, active, info:{vacancies, education, type, startDate, endDate, roles,skills,minExprience,maxExprience,minSalary,maxSalary}}:{title:string, category:string, description:string, tags:[string], active:boolean,  info:{vacancies:number, education:string, type:string, startDate:Date, endDate:Date, roles:string, skills:[string], minExprience:number, maxExprience:number, minSalary:number, maxSalary:number}} = req.body;
+        const {title, category, description, tags, active, info:{vacancies, type, startDate, endDate, roles,skills,minExprience,maxExprience,minSalary,maxSalary, maxQualification, degree}}:{title:string, category:string, description:string, tags:[string], active:boolean,  info:{vacancies:number, education:string, type:string, startDate:Date, endDate:Date, roles:string, skills:[string], minExprience:number, maxExprience:number, minSalary:number, maxSalary:number, maxQualification: string, degree:[string]}} = req.body;
         
         const jobs = new job({
             title,
@@ -41,7 +42,6 @@ const jobController = {
             companyId:req.user.id,
             info:{
                 vacancies,
-                education,
                 type,
                 startDate,
                 endDate,
@@ -50,7 +50,9 @@ const jobController = {
                 minExprience,
                 maxExprience,
                 minSalary,
-                maxSalary
+                maxSalary,
+                maxQualification,
+                degree
             },
         });
 
@@ -102,6 +104,8 @@ const jobController = {
                 maxExprience: Joi.number().required(),
                 minSalary: Joi.number(),
                 maxSalary: Joi.number(),
+                maxQualification: Joi.string().required(),
+                degree: Joi.array().required()
             }),
         });
     
@@ -119,7 +123,6 @@ const jobController = {
             active,
             info: {
                 vacancies,
-                education,
                 type,
                 startDate,
                 endDate,
@@ -129,6 +132,8 @@ const jobController = {
                 maxExprience,
                 minSalary,
                 maxSalary,
+                maxQualification,
+                degree
             },
         } = req.body;
     
@@ -144,7 +149,6 @@ const jobController = {
                     companyId: req.user.id,
                     info: {
                         vacancies,
-                        education,
                         type,
                         startDate,
                         endDate,
@@ -154,6 +158,8 @@ const jobController = {
                         maxExprience,
                         minSalary,
                         maxSalary,
+                        maxQualification,
+                        degree
                     },
                 },
                 { new: true } 
