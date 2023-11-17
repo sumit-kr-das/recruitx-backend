@@ -66,9 +66,16 @@ const jobController = {
     },
 
     async viewJobs(req:any, res:Response, next:NextFunction){
+        const limit = req.query.limit;
         try {
-            const jobs = await job.find({companyId:req.user.id}).sort({createdAt:-1}).select("-__v -createdAt -updatedAt");
-            return res.status(200).json(jobs);
+            if(limit){
+                const jobs = await job.find({companyId:req.user.id}).limit(limit).sort({createdAt:-1}).select("-__v -createdAt -updatedAt");
+                return res.status(200).json(jobs);
+            }else{
+                const jobs = await job.find({companyId:req.user.id}).sort({createdAt:-1}).select("-__v -createdAt -updatedAt");
+                return res.status(200).json(jobs);
+            }
+          
         } catch (error) {
             next(error);
         }
