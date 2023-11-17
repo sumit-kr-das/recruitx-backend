@@ -5,6 +5,8 @@ import userAuth from '../middleware/userAuth';
 import userController from '../controller/user/UserController';
 import { userCarrerController, userCertificationController, userEducationController, userExprienceController, userInfoController } from '../controller';
 import { MulterService } from '../services/multerService';
+import companyAuth from '../middleware/companyAuth';
+import userRecomandation from '../controller/user/UserRecomandation';
 
 const router = express.Router();
 
@@ -29,7 +31,8 @@ router.get('/view', [auth, userAuth], UserController.viewUser)
       .delete("/exprience/delete/:id", [auth, userAuth], userExprienceController.deleteUserExperience)
       .post("/info/add", MulterService, [auth, userAuth], userInfoController.addUseInfo)
       .get("/info/view", [auth, userAuth], userInfoController.viewUserinfo)
-      .put("/info/update", MulterService, [auth, userAuth], userInfoController.updateUserinfo);
+      .put("/info/update", MulterService, [auth, userAuth], userInfoController.updateUserinfo)
+      .get("/search", [auth, companyAuth], userRecomandation.userRecomand);
 
 
 export default router;

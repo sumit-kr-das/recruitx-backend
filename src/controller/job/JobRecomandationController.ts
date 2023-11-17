@@ -10,23 +10,29 @@ const jobRecomandationController = {
 
         const userSkills: any = await userInfo.find({ userId });
         const skill = userSkills[0]?.skills;
+        const currentDate = new Date();
+        console.log(currentDate);
+
 
         try {
             const jobs = await job.find({
+                                                                                                            
                 'info.skills': {
                     $elemMatch: {
-                      $in: skill,
+                        $in: skill,
                     },
-                  },
-            });    
+                },
+                active: true,
+                'info.startDate': { $lte: currentDate },
+                'info.endDate': { $gte: currentDate },
+            });
             return res.status(200).json(jobs);
         } catch (error) {
             console.log(error);
             next(error);
         }
-       
 
-    }
+    },
 }
 
 export default jobRecomandationController;

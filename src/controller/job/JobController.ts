@@ -74,14 +74,14 @@ const jobController = {
         }
     },
 
-    async viewJobsFeed(req:Request, res:Response, next:NextFunction){
-        try {
-            const jobs = await job.find().sort({createdAt:-1}).select("-__v -updatedAt");
-            return res.status(200).json(jobs);
-        } catch (error) {
-            next(error)
-        }
-    },
+    // async viewJobsFeed(req:Request, res:Response, next:NextFunction){
+    //     try {
+    //         const jobs = await job.find().sort({createdAt:-1}).select("-__v -updatedAt");
+    //         return res.status(200).json(jobs);
+    //     } catch (error) {
+    //         next(error)
+    //     }
+    // },
 
     async editJob(req: any, res: Response, next: NextFunction) {
         const jobId = req.params.id;
@@ -174,6 +174,7 @@ const jobController = {
             next(error);
         }
     },
+
     async deleteJob(req: any, res: Response, next: NextFunction) {
         const jobId = req.params.id;
     
@@ -185,6 +186,21 @@ const jobController = {
             }
     
             return res.status(200).json({ msg: "Job deleted successfully" });
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    async deactivateJob(req:any, res:Response, next:NextFunction){
+        try {
+            const jobId = req.params.jobId;
+            const updatedJob = await job.findByIdAndUpdate(jobId, { $set: { active: false } }, { new: true });
+
+            if (!updatedJob) {
+              return res.status(404).json({ error: 'Job not found' });
+            }
+        
+            res.status(200).json({ message: 'Job deactivated successfully' });
         } catch (error) {
             next(error);
         }

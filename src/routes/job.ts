@@ -9,7 +9,7 @@ const router = express.Router();
 router 
 .post("/add",[auth,companyAuth], jobController.postJob)
 .get("/view",[auth,companyAuth], jobController.viewJobs)
-.get("/view/feed",[auth, userAuth], jobController.viewJobsFeed)
+// .get("/view/feed",[auth, userAuth], jobController.viewJobsFeed)
 .put("/edit/:id", [auth,companyAuth], jobController.editJob)
 .delete("/delete/:id", [auth,companyAuth], jobController.deleteJob)
 .post("/apply/:id", [auth, userAuth], jobApplicationController.jobApply)
@@ -18,6 +18,7 @@ router
 .get("/search", searchJobController.searchJob)
 .get("/search/tag", searchJobController.searchByTags)
 .get("/search/skill", searchJobController.searchBySkill)
+.put("/deactive/:jobId", [auth, companyAuth], jobController.deactivateJob)
 .get("/recommandtions", [auth, userAuth], jobRecomandationController.recommendJobs);
 
 export default router;

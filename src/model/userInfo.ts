@@ -20,7 +20,7 @@ export interface IUserinfo extends Document{
 }
 
 const UserinfoSchema:Schema = new Schema({
-    userId:{type:String, required:true},
+    userId:{type:Schema.Types.ObjectId, ref:"User", required:true},
     phone:{type:String, required:true},
     github:{type:String, required:true},
     linkedIn:{type:String},
