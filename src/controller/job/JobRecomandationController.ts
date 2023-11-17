@@ -32,7 +32,7 @@ const jobRecomandationController = {
             next(error);
         }
 
-    }
+    },
 }
 
 export default jobRecomandationController;

@@ -1,16 +1,26 @@
 import { Response, Request, NextFunction } from "express";
 import company from "../../model/company";
 import { MulterService } from "../../services/multerService";
-import Joi from "joi";
+import Joi, { object } from "joi";
 import CustomErrorHandler from "../../services/customErrorHandeler";
 import path from "path";
 import fs from "fs";
 
 const companyController = {
     async viewCompanies(req:Request, res:Response, next:NextFunction){
+        const {limit, ...others }:{ limit?: number; [key: string]: any } = req.query;
+        console.log(req.query);
         try {
-            const companies = await company.find().sort({rating:1}).select("-__v -createdAt -updatedAt");
-            return res.status(200).json(companies);
+            if(limit){
+                const companies = await company.find({...others}).limit(limit).sort({rating:1}).select("-__v -createdAt -updatedAt");
+                return res.status(200).json(companies);
+
+            }else{
+               const companies = await company.find({...others}).sort({rating:1}).select("-__v -createdAt -updatedAt");
+               return res.status(200).json(companies);
+
+            }
+           
         } catch (error) {
             next(error)
         }
@@ -25,13 +35,6 @@ const companyController = {
             next(error)
         }
     },
-
-    // async addComapnyRating(req:any, res:Response, next:NextFunction){
-    //     const companyId = req.params.id;
-    //     const userId = req.user.id;
-
-
-    // }
 
     // async editCompany(req: any, res: Response, next: NextFunction) {
     //     const companyId = req.company.id;
