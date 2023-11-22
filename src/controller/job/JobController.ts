@@ -66,9 +66,16 @@ const jobController = {
     },
 
     async viewJobs(req:any, res:Response, next:NextFunction){
+        const limit = req.query.limit;
         try {
-            const jobs = await job.find({companyId:req.user.id}).sort({createdAt:-1}).select("-__v -createdAt -updatedAt");
-            return res.status(200).json(jobs);
+            if(limit){
+                const jobs = await job.find({companyId:req.user.id}).limit(limit).sort({createdAt:-1}).select("-__v -createdAt -updatedAt");
+                return res.status(200).json(jobs);
+            }else{
+                const jobs = await job.find({companyId:req.user.id}).sort({createdAt:-1}).select("-__v -createdAt -updatedAt");
+                return res.status(200).json(jobs);
+            }
+          
         } catch (error) {
             next(error);
         }
@@ -201,6 +208,31 @@ const jobController = {
             }
         
             res.status(200).json({ message: 'Job deactivated successfully' });
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    async getJobStatics(req:any, res:Response, next:NextFunction){
+        const companyId = req.user.id;
+
+        try {
+            const all = await job.countDocuments({companyId});
+            const active = await job.countDocuments({  
+                companyId,
+                active: true,
+                'info.endDate': { $gt: new Date() }});
+            const expired = await job.countDocuments({
+                companyId,
+                active: true,
+                'info.endDate': { $lt: new Date() }});
+
+            return res.status(200).json({
+                all,
+                active,
+                expired
+            });
+
         } catch (error) {
             next(error);
         }
