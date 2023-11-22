@@ -19,6 +19,7 @@ router
 .get("/search/tag", searchJobController.searchByTags)
 .get("/search/skill", searchJobController.searchBySkill)
 .put("/deactive/:jobId", [auth, companyAuth], jobController.deactivateJob)
-.get("/recommandtions", [auth, userAuth], jobRecomandationController.recommendJobs);
+.get("/recommandtions", [auth, userAuth], jobRecomandationController.recommendJobs)
+.get("/roles/totalapplication/:jobId", jobApplicationController.allManageApplicants);
 
 export default router;
