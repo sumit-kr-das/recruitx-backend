@@ -49,6 +49,10 @@
 -   localhost:8000/api/job/search/skill [search by skill jobs]
 -   localhost:8000/api/job/deactivate/:id [deactivate job]
 -   localhost:8000/api/job/recommandtions [recomanded job]
+-   localhost:8000/api/job/roles/totalapplication/654f401a11dbf46457792d89 [manage total applicants]
+-   localhost:8000/api/job/applications/manage/654f401a11dbf46457792d89 [manage applications]
+-   localhost:8000/api/job/statics [get job statics]
+
     <br/><br/>
 -   localhost:8000/api/company/auth/register [register company]
 -   localhost:8000/api/company/auth/login [login company]

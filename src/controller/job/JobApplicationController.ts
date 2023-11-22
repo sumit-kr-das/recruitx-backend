@@ -55,7 +55,7 @@ const jobApplicationController = {
         }
     },
 
-    async allManageApplicants(req:any, res:Response, next:NextFunction){
+    async allPostApplicants(req:any, res:Response, next:NextFunction){
         const jobId = req.params.jobId;
         try {
             const jobs = await job.findById(jobId).select("info.roles");
@@ -64,6 +64,22 @@ const jobApplicationController = {
             return res.status(200).json({
                 post:jobs?.info.roles,
                 totalApplicants: totalApplication
+            })
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    async allManageApplicants(req:any, res:Response, next:NextFunction){
+        const jobId = req.params.jobId;
+        try {
+            const all = await applier.countDocuments({jobId});
+            const approved  = await applier.countDocuments({jobId, selected:true});
+            const rejected = await applier.countDocuments({jobId, selected:false});
+            return res.status(200).json({
+                all,
+                approved,
+                rejected
             })
         } catch (error) {
             next(error);

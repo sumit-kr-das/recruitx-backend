@@ -211,6 +211,31 @@ const jobController = {
         } catch (error) {
             next(error);
         }
+    },
+
+    async getJobStatics(req:any, res:Response, next:NextFunction){
+        const companyId = req.user.id;
+
+        try {
+            const all = await job.countDocuments({companyId});
+            const active = await job.countDocuments({  
+                companyId,
+                active: true,
+                'info.endDate': { $gt: new Date() }});
+            const expired = await job.countDocuments({
+                companyId,
+                active: true,
+                'info.endDate': { $lt: new Date() }});
+
+            return res.status(200).json({
+                all,
+                active,
+                expired
+            });
+
+        } catch (error) {
+            next(error);
+        }
     }
     
     
