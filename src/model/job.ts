@@ -6,7 +6,7 @@ export interface IJob extends Document {
     category: string;
     description: string;
     tags: [string];
-    active: boolean;
+    active?: boolean;
     companyId: string;
     info: {
         vacancies: number;
@@ -32,7 +32,7 @@ const JobSchema: Schema = new Schema(
         category: { type: String, required: true },
         description: { type: String, required: true },
         tags: { type: Array, required: true },
-        active: { type: Boolean, required: true },
+        active: { type: Boolean, default: true },
         companyId: {
             type: Schema.Types.ObjectId,
             ref: 'Company',

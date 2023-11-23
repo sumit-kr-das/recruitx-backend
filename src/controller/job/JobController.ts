@@ -8,7 +8,7 @@ const jobController = {
             category: Joi.string().required(),
             description: Joi.string().min(100).required(),
             tags: Joi.array().required(),
-            active: Joi.boolean().required(),
+            active: Joi.boolean(),
             info: Joi.object({
                 vacancies: Joi.number().required(),
                 jobType: Joi.string().required(),
@@ -60,7 +60,7 @@ const jobController = {
             category: string;
             description: string;
             tags: [string];
-            active: boolean;
+            active?: boolean;
             info: {
                 vacancies: number;
                 education: string;
@@ -153,7 +153,7 @@ const jobController = {
             category: Joi.string().required(),
             description: Joi.string().min(100).required(),
             tags: Joi.array().required(),
-            active: Joi.boolean().required(),
+            active: Joi.boolean(),
             info: Joi.object({
                 vacancies: Joi.number().required(),
                 education: Joi.string().required(),
