@@ -7,6 +7,7 @@ export interface IUserProject extends Document{
     skills:[string],
     startDate:Date,
     endDate?:Date,
+    associate:string
 }
 
 const UserProjectSchema:Schema = new Schema({
@@ -15,6 +16,7 @@ const UserProjectSchema:Schema = new Schema({
     description:{type:String, required:true},
     skills:{type:Array, required:true},
     startDate:{type:Date, required:true},
+    associate:{type:String, required:true},
     endDate:{type:Date}
 });
 
