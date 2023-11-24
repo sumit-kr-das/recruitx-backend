@@ -67,9 +67,10 @@ const userInfoController = {
 
     async viewUserinfo(req:any, res:Response, next:NextFunction){
         const userId = req.user.id;
-
+        console.log(userId);
         try {
-          const info = await userInfo.find({userId});
+          const info = await userInfo.find({userId:userId});
+          console.log(info);
           return res.status(200).json(info);
         } catch (error) {
           next(error);
