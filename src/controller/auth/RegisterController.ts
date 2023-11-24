@@ -81,7 +81,7 @@ const registerController = {
             next(error);
         }
 
-        res.status(200).json({ acc_token: acc_token });
+        res.status(200).json({ access_token: acc_token, user: user.name, role: user.role });
     },
 
     // //Company Register Controller
