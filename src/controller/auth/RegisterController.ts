@@ -21,7 +21,7 @@ const registerController = {
                     new RegExp('^[a-zA-Z0-9!@#$%^&*()_+{}|:"<>?~-]{3,30}$'),
                 )
                 .required(),
-            phone: Joi.string().min(10).required(),
+            phoneNo: Joi.string().min(10).required(),
             workStatus: Joi.string().required(),
             repeat_password: Joi.ref('password'),
         });
@@ -51,13 +51,13 @@ const registerController = {
             name,
             email,
             password,
-            phone,
+            phoneNo,
             workStatus,
         }: {
             name: string;
             email: string;
             password: string;
-            phone: string;
+            phoneNo: string;
             workStatus: string;
         } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -65,7 +65,7 @@ const registerController = {
             name,
             email,
             password: hashedPassword,
-            phoneNo: phone,
+            phoneNo,
             workStatus,
             role: 'user',
         });
