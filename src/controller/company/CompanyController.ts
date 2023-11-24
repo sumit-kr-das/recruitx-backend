@@ -9,14 +9,14 @@ import fs from "fs";
 const companyController = {
     async viewCompanies(req:Request, res:Response, next:NextFunction){
         const {limit, ...others }:{ limit?: number; [key: string]: any } = req.query;
-        console.log(req.query);
+
         try {
             if(limit){
-                const companies = await company.find({...others}).limit(limit).sort({rating:1}).select("-__v -createdAt -updatedAt");
+                const companies = await company.find({...others}).limit(limit).sort({rating:1}).select("-__v -password -createdAt -updatedAt");
                 return res.status(200).json(companies);
 
             }else{
-               const companies = await company.find({...others}).sort({rating:1}).select("-__v -createdAt -updatedAt");
+               const companies = await company.find({...others}).sort({rating:1}).select("-__v -password -createdAt -updatedAt");
                return res.status(200).json(companies);
 
             }
