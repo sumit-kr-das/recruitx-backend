@@ -4,6 +4,7 @@ import companyProfile from "../../model/companyProfile";
 
 const companyProfileController = {
     async addProfile(req: any, res: Response, next: NextFunction) {
+        console.log(req.body);
         const companyId = req.user.id;
 
         const verifyProfile = Joi.object({
@@ -15,8 +16,11 @@ const companyProfileController = {
         const { error } = verifyProfile.validate(req.body);
 
         if (error) {
+            console.log(error);
             next(error);
         }
+
+        console.log(req.file);
 
         if (!req.file) {
             return res.status(503).json({ message: "please enter logo" });
@@ -38,6 +42,7 @@ const companyProfileController = {
             const saveProfile = await profile.save();
             return res.status(200).json({ msg: "profile added" });
         } catch (error) {
+            console.log(error);
             next(error);
         }
     },
@@ -101,10 +106,11 @@ const companyProfileController = {
 
     async viewProfile(req: any, res: Response, next: NextFunction) {
         const companyId = req.user.id;
-        const profileId = req.params.id;
+        console.log(companyId);
+        // const profileId = req.params.id;
       
         try {
-          const profile = await companyProfile.findOne({ companyId, _id: profileId });
+          const profile = await companyProfile.findOne({ companyId });
           if (!profile) {
             return res.status(404).json({ message: "Profile not found" });
           }
