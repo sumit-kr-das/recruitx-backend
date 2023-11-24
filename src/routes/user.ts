@@ -3,7 +3,7 @@ import UserController from '../controller/user/UserController';
 import auth from '../middleware/auth';
 import userAuth from '../middleware/userAuth';
 import userController from '../controller/user/UserController';
-import { userCarrerController, userCertificationController, userEducationController, userExprienceController, userInfoController } from '../controller';
+import { projectController, userCarrerController, userCertificationController, userEducationController, userExprienceController, userInfoController } from '../controller';
 import { MulterService } from '../services/multerService';
 import companyAuth from '../middleware/companyAuth';
 import userRecomandation from '../controller/user/UserRecomandation';
@@ -32,7 +32,12 @@ router.get('/view', [auth, userAuth], UserController.viewUser)
       .post("/info/add", MulterService, [auth, userAuth], userInfoController.addUseInfo)
       .get("/info/view", [auth, userAuth], userInfoController.viewUserinfo)
       .put("/info/update", MulterService, [auth, userAuth], userInfoController.updateUserinfo)
-      .get("/search", [auth, companyAuth], userRecomandation.userRecomand);
+      .get("/search", [auth, companyAuth], userRecomandation.userRecomand)
+
+      .post("/addProject", [auth, userAuth], projectController.createProject )
+      .get("/viewProject", [auth, userAuth], projectController.viewProject)
+      .put("/updateProject/:id", [auth, userAuth], projectController.updateProject)
+      .delete("/deleteProject/:id", [auth, userAuth], projectController.deleteProject)
 
 
 export default router;
