@@ -34,10 +34,10 @@ router.get('/view', [auth, userAuth], UserController.viewUser)
       .put("/info/update", MulterService, [auth, userAuth], userInfoController.updateUserinfo)
       .get("/search", [auth, companyAuth], userRecomandation.userRecomand)
 
-      .post("/addProject", [auth, userAuth], projectController.createProject )
-      .get("/viewProject", [auth, userAuth], projectController.viewProject)
-      .put("/updateProject/:id", [auth, userAuth], projectController.updateProject)
-      .delete("/deleteProject/:id", [auth, userAuth], projectController.deleteProject)
+      .post("/project/add", [auth, userAuth], projectController.createProject )
+      .get("/project/view", [auth, userAuth], projectController.viewProject)
+      .put("/project/update/:id", [auth, userAuth], projectController.updateProject)
+      .delete("/project/delete/:id", [auth, userAuth], projectController.deleteProject)
 
 
 export default router;
