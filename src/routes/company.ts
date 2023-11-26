@@ -12,13 +12,13 @@ const router = express.Router();
 router 
 .post("/auth/register", registerController.companyRegister)
 .post("/auth/login", loginController.companyLogin)
-.get("/view",[auth, userAuth], companyController.viewCompanies)
+.get("/view",[auth], companyController.viewCompanies)
 .get("/details/:id", [auth, userAuth], companyController.viewCompanyDetails)
 .post("/rating/add", [auth, userAuth], ratingController.addRating)
 .get("/rating/view/:companyId", [auth], ratingController.viewRatings)
 .put("/rating/edit/:id", [auth, userAuth], ratingController.editRating)
 .get("/profile/view", [auth], companyProfileController.viewProfile)
-.post("/profile/add", [auth, companyAuth], companyProfileController.addProfile)
+.post("/profile/add", MulterService, [auth, companyAuth], companyProfileController.addProfile)
 .put("/profile/edit/:id", [auth, companyAuth], companyProfileController.editProfile);
 
 export default router;

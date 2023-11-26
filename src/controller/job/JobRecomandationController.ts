@@ -4,6 +4,7 @@ import User from "../../model/User";
 import job from "../../model/job";
 import userInfo from "../../model/userInfo";
 
+
 const jobRecomandationController = {
     async recommendJobs(req: any, res: Response, next: NextFunction) {
         const userId = req.user.id;

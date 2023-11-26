@@ -8,7 +8,7 @@ export interface IApplier extends Document{
 
 const ApplierSchema:Schema = new Schema({
     jobId:{type:String, required:true},
-    userId:{type:String, required:true},
+    userId:{type:String, required:true}, 
     selected:{type:Boolean, required:true}
 },{
     timestamps:true

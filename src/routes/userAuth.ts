@@ -6,7 +6,7 @@ import { MulterService } from '../services/multerService';
 const router = express.Router();
 
 router
-    .post('/user/register', registerController.userRegister)
+    .post('/register', registerController.userRegister)
     .post('/login', loginController.userLogin);
 
 export default router;

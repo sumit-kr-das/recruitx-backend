@@ -15,7 +15,7 @@ router
 .post("/apply/:id", [auth, userAuth], jobApplicationController.jobApply)
 .delete("/apply/cancel/:id", [auth, userAuth], jobApplicationController.cancelApply)
 .get("/application/view/:id", [auth,companyAuth], jobApplicationController.viewAppliers)
-.get("/search", searchJobController.searchJob)
+.post("/search", searchJobController.searchJob)
 .get("/search/tag", searchJobController.searchByTags)
 .get("/search/skill", searchJobController.searchBySkill)
 .put("/deactive/:jobId", [auth, companyAuth], jobController.deactivateJob)

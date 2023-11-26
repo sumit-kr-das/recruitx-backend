@@ -6,7 +6,7 @@ const searchJobController = {
     async searchJob(req: Request, res: Response, next: NextFunction) {
         const searchSchema = Joi.object({
             title: Joi.string().required(),
-            location: Joi.string(),
+            location: Joi.string().allow(null,""),
             exprience: Joi.number()
         });
 
@@ -16,7 +16,7 @@ const searchJobController = {
             next(error);
         }
 
-        const { title, location, exprience }: { title: string, location: string, exprience: string } = req.body;
+        const { title, location, exprience }: { title: string, location: string, exprience: number } = req.body;
 
         let query = {};
 
