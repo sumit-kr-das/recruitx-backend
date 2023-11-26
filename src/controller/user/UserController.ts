@@ -62,6 +62,7 @@ const userController = {
             next(err);
         }
     },
+
 };
 
 export default userController;
