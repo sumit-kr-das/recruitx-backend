@@ -11,6 +11,7 @@ export interface ICompanySchema extends Document {
     pin: string;
     address: string;
     role: string;
+    approve:boolean;
 }
 
 const CompanySchema: Schema = new Schema({
@@ -24,6 +25,7 @@ const CompanySchema: Schema = new Schema({
     pin: { type: String, required: true },
     address: { type: String, required: true },
     role: { type: String, default: roles.COMPANY },
+    approve:{type:Boolean, default: false}
 });
 
 export default model<ICompanySchema>('Company', CompanySchema);

@@ -8,6 +8,7 @@ export interface IUser extends Document {
     workStatus: string;
     password: string;
     role: string;
+    approve:boolean;
 }
 
 const UserSchema: Schema = new Schema(
@@ -18,6 +19,7 @@ const UserSchema: Schema = new Schema(
         workStatus: { type: String, required: true },
         password: { type: String, required: true },
         role: { type: String, default: roles.USER },
+    approve: {type: Boolean, default: false}
     },
     {
         timestamps: true,
