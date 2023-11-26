@@ -65,6 +65,14 @@
 -   localhost:8000/api/company/profile/view [view profile]
 -   localhost:8000/api/company/profile/add [add profile]
 -   localhost:8000/api/company/profile/edit/:id [edit profile]
+  <br/> <br/>
+
+-   localhost:8000/api/admin/login [admin login]
+-   localhost:8000/api/admin/register [admin register]
+-   localhost:8000/api/admin/company/view?approve=true [view company with status]
+-   localhost:8000/api/admin/statics/view [view statics]
+-   localhost:8000/api/admin/company/approve/:id [approve company]
+
 
 
 
