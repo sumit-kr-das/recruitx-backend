@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import Joi from "joi";
 import companyProfile from "../../model/companyProfile";
+import company from "../../model/company";
+import { json } from "body-parser";
 
 const companyProfileController = {
     async addProfile(req: any, res: Response, next: NextFunction) {
@@ -121,7 +123,37 @@ const companyProfileController = {
         } catch (error) {
           next(error);
         }
-      }
+    },
+
+    async viewComapnyAllInfo(req:any, res:Response, next:NextFunction){
+        let companyId;
+        if(req.query.id){
+            companyId = req.query.id;
+        }else{
+            companyId = req.user.id;
+        }
+
+        try {
+            const companyData = await company.findById(companyId).select("-__v -_id -password");
+            const profile = await companyProfile.find({companyId}).select("-__v -_id");
+            console.log(companyData);
+            const data = {
+                name:companyData?.name,
+                email: companyData?.email,
+                phone: companyData?.phone,
+                companyName: companyData?.name,
+                designation: companyData?.designation,
+                industry: companyData?.industry,
+                pin: companyData?.pin,
+                address: companyData?.address,
+                profile
+            };
+
+            return res.status(200).json(data);
+        } catch (error) {
+            next(error)
+        }
+    }
 }
 
 export default companyProfileController;

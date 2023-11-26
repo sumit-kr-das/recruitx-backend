@@ -9,7 +9,12 @@ import userProjects from "../../model/userProjects";
 
 const userAllInfoController = {
     async viewUserAllInfo(req:any, res:Response, next:NextFunction){
-        const userId = req.user.id;
+        let userId;
+        if(req.query.id){
+            userId = req.query.id;
+        }else{
+            userId = req.user.id;
+        }
 
         try {
             const user = await User.findById(userId).select("-__v -password -role -approve");
