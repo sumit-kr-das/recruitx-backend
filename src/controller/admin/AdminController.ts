@@ -24,6 +24,7 @@ const adminController = {
         }
         comp.approve = true;
         await comp.save()
+        return res.status(200).json({msg:"Company approved"});
 
        } catch (error) {
         next(error);
@@ -34,12 +35,12 @@ const adminController = {
     // },
     async viewAdminStatics(req:Request, res:Response, next:NextFunction){
         try {
-            const totalCompany = await company.find().countDocuments();
-            const totalUser = await User.find().countDocuments();
-            const totalJobs = await job.find().countDocuments();
-            const totalApplications = await applier.find().countDocuments();
+            const totalCompany = await company.countDocuments();
+            const totalUser = await User.countDocuments();
+            const totalJobs = await job.countDocuments();
+            const totalApplications = await applier.countDocuments();
 
-            return response.status(200).json({
+            return res.status(200).json({
                 totalCompany,
                 totalUser,
                 totalJobs,

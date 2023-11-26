@@ -12,7 +12,7 @@ const companyController = {
 
         try {
             if(limit){
-                const companies = await company.find({...others}).limit(limit).sort({rating:1}).select("-__v -password -createdAt -updatedAt");
+                const companies = await company.find({...others, approve:true}).limit(limit).sort({rating:1}).select("-__v -password -createdAt -updatedAt");
                 return res.status(200).json(companies);
 
             }else{

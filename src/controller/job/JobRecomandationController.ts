@@ -8,28 +8,38 @@ import userInfo from "../../model/userInfo";
 const jobRecomandationController = {
     async recommendJobs(req: any, res: Response, next: NextFunction) {
         const userId = req.user.id;
+        const hasinfo = req.query.hasinfo;
+        const limit = req.query.limit;
 
-        const userSkills: any = await userInfo.find({ userId });
-        const skill = userSkills[0]?.skills;
+
         const currentDate = new Date();
-        console.log(currentDate);
-
 
         try {
-            const jobs = await job.find({
-                                                                                                            
-                'info.skills': {
-                    $elemMatch: {
-                        $in: skill,
+            if (hasinfo) {
+                const userSkills: any = await userInfo.find({ userId });
+                const skill = userSkills[0]?.skills;
+                const jobs = await job.find({
+
+                    'info.skills': {
+                        $elemMatch: {
+                            $in: skill,
+                        },
                     },
-                },
-                active: true,
-                'info.startDate': { $lte: currentDate },
-                'info.endDate': { $gte: currentDate },
-            });
-            return res.status(200).json(jobs);
+                    active: true,
+                    'info.startDate': { $lte: currentDate },
+                    'info.endDate': { $gte: currentDate },
+                }).limit(limit);
+                return res.status(200).json(jobs);
+            } else {
+                const jobs = await job.find({
+                    active: true,
+                    'info.startDate': { $lte: currentDate },
+                    'info.endDate': { $gte: currentDate },
+                }).limit(limit);
+                return res.status(200).json(jobs);
+            }
+
         } catch (error) {
-            console.log(error);
             next(error);
         }
 

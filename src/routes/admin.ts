@@ -5,7 +5,7 @@ import adminAuth from '../middleware/adminAuth';
 import auth from '../middleware/auth';
 
 router.get("/company/view", [auth, adminAuth], adminController.viewCompaniesWithStatus)
-.put("/company/approve", [auth, adminAuth], adminController.approveCompany)
+.put("/company/approve/:companyId", [auth, adminAuth], adminController.approveCompany)
 .get("/statics/view", adminController.viewAdminStatics);
 
 export default router;
