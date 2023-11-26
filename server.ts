@@ -12,6 +12,7 @@ import skillRoutes from './src/routes/skill';
 import userRoutes from './src/routes/user';
 import job from './src/routes/job';
 import companyRoutes from './src/routes/company';
+import adminRoutes from "./src/routes/admin";
 
 const app: Application = express();
 
@@ -27,6 +28,7 @@ app.use('/api/skill', skillRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/job', job);
 app.use('/api/company', companyRoutes);
+app.use("/api/admin", adminRoutes);
 /* custom error handler */
 app.use(errorHandler);
 app.use(express.static(__dirname));

@@ -11,3 +11,4 @@ export {default as companyProfileController} from './company/CompanyProfileContr
 export {default as searchJobController} from "./job/SearchJobController";
 export {default as jobRecomandationController} from "./job/JobRecomandationController";
 export {default as userInfoController} from "./user/UserinfoController";
+export {default as adminController} from "./admin/AdminController";

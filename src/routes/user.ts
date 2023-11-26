@@ -7,11 +7,12 @@ import { userCarrerController, userCertificationController, userEducationControl
 import { MulterService } from '../services/multerService';
 import companyAuth from '../middleware/companyAuth';
 import userRecomandation from '../controller/user/UserRecomandation';
+import adminAuth from '../middleware/adminAuth';
 
 const router = express.Router();
 
 router.get('/view', [auth, userAuth], UserController.viewUser)
-      .get("/view/all",[auth, userAuth],userController.viewAllUser)
+      .get("/view/all",[auth, adminAuth],userController.viewAllUser)
       .put("/edit", [auth, userAuth], userController.editUser)
       .post("/carrer/add", [auth, userAuth], userCarrerController.addUserCarrer)
       .get("/carrer/view", [auth, userAuth], userCarrerController.viewUserCarrer)
