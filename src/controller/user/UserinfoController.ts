@@ -20,7 +20,7 @@ const userInfoController = {
         const userinfoSchema = Joi.object({
             github: Joi.string(),
             linkedIn: Joi.string(),
-            dateOfBirth: Joi.date().required(),
+            dateOfBirth: Joi.string().required(),
             age: Joi.number().required(),
             address: Joi.string().required(),
             bio: Joi.string().required(),
@@ -115,7 +115,7 @@ const userInfoController = {
         const userinfoSchema = Joi.object({
             github: Joi.string(),
             linkedIn: Joi.string(),
-            dateOfBirth: Joi.date(),
+            dateOfBirth: Joi.string(),
             age: Joi.number(),
             address: Joi.string(),
             bio: Joi.string(),

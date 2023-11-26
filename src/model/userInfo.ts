@@ -21,7 +21,7 @@ const UserinfoSchema: Schema = new Schema({
     userId: { type: String, ref: 'user', required: true },
     github: { type: String},
     linkedIn: { type: String },
-    dateOfBirth: { type: Date, required: true },
+    dateOfBirth: { type: String, required: true },
     age: { type: Number, required: true },
     address: { type: String, required: true },
     bio: {
