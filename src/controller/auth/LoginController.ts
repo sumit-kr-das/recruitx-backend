@@ -6,6 +6,7 @@ import CustomErrorHandler from '../../services/customErrorHandeler';
 import bcrypt from 'bcrypt';
 import JwtService from '../../services/jwtServices';
 import roles from '../../services/roleService';
+import admin from '../../model/admin';
 
 const loginController = {
     async userLogin(req: Request, res: Response, next: NextFunction) {
@@ -99,6 +100,51 @@ const loginController = {
             next(error);
         }
     },
+
+    async adminLogin(req:Request, res:Response, next:NextFunction){
+        const adminLoginSchema = Joi.object({
+            email: Joi.string().email().required(),
+            password: Joi.string()
+                .pattern(
+                    new RegExp('^[a-zA-Z0-9!@#$%^&*()_+{}|:"<>?~-]{3,30}$'),
+                )
+                .required(),
+        });
+
+        const { error } = adminLoginSchema.validate(req.body);
+
+        if (error) {
+            next(error);
+        }
+
+        const { email, password }: { email: string; password: string } =
+            req.body;
+
+        try {
+            const admins = await admin.findOne({ email });
+            if (!admins) {
+                return next(CustomErrorHandler.wrongCredentials());
+            }
+
+            const matchPassword = await bcrypt.compare(password, admins.password);
+            if (!matchPassword) {
+                return next(CustomErrorHandler.wrongCredentials());
+            }
+
+            /* compare access token */
+            // console.log(user._id);
+            const access_token = JwtService.sign({
+                id: admins._id,
+                role: 'admin',
+            });
+
+            res.status(200).json({access_token,
+                user: admins.name,
+                role: admins.role,});
+        } catch (error) {
+            next(error);
+        }
+    }
 
 };
 

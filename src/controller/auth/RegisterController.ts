@@ -8,6 +8,7 @@ import bcrypt from 'bcrypt';
 import JwtService from '../../services/jwtServices';
 import { MulterService } from '../../services/multerService';
 import roles from '../../services/roleService';
+import admin from '../../model/admin';
 
 const registerController = {
     //User Register Controller
@@ -182,6 +183,55 @@ const registerController = {
             role: roles.COMPANY,
         });
     },
+
+    async adminRegister(req: Request, res: Response, next: NextFunction) {
+        const adminRegisterSchema = Joi.object({
+            name: Joi.string().min(5).max(30).required(),
+            email: Joi.string().email().required(),
+            password: Joi.string()
+                .pattern(
+                    new RegExp('^[a-zA-Z0-9!@#$%^&*()_+{}|:"<>?~-]{3,30}$'),
+                )
+                .required(),
+        });
+
+        const { error } = adminRegisterSchema.validate(req.body);
+
+        if (error) {
+            next(error);
+        }
+
+
+        const {
+            name,
+            email,
+            password,
+        }: {
+            name: string;
+            email: string;
+            password: string;
+        } = req.body;
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const admins = new admin({
+            name,
+            email,
+            password: hashedPassword,
+            role: 'admin',
+        });
+        let acc_token: any;
+        try {
+            const saveAdmin = await admins.save();
+            //generate access token
+            acc_token = JwtService.sign({
+                id: saveAdmin._id,
+                role: 'admin',
+            });
+        } catch (error) {
+            next(error);
+        }
+
+        res.status(200).json({ access_token: acc_token, user: admins.name, role: admins.role });
+    }
 
 };
 
