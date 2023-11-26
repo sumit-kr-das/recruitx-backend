@@ -2,14 +2,14 @@ import { Schema, model, Document } from 'mongoose';
 
 export interface IUserinfo extends Document {
     userId: string;
-    github: string;
+    github?: string;
     linkedIn?: string;
     dateOfBirth: Date;
     age: number;
     address: string;
     bio: string;
     objective: string;
-    status: string;
+    // status: string;
     language: [string];
     gender: string;
     skills: [string];
@@ -19,7 +19,7 @@ export interface IUserinfo extends Document {
 
 const UserinfoSchema: Schema = new Schema({
     userId: { type: String, ref: 'user', required: true },
-    github: { type: String, required: true },
+    github: { type: String},
     linkedIn: { type: String },
     dateOfBirth: { type: Date, required: true },
     age: { type: Number, required: true },
@@ -31,7 +31,7 @@ const UserinfoSchema: Schema = new Schema({
         max: [30, 'Bio is too long'],
     },
     objective: { type: String, required: true },
-    status: { type: String, required: true },
+    // status: { type: String, required: true },
     language: { type: Array, required: true },
     gender: { type: String, required: true },
     skills: { type: Array, required: true },

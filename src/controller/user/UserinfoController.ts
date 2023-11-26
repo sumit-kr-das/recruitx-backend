@@ -5,22 +5,26 @@ import userInfo from '../../model/userInfo';
 const userInfoController = {
     async addUseInfo(req: any, res: Response, next: NextFunction) {
         const userId = req.user.id;
-        const data = await userInfo.find({ userId });
-        if (data) {
-            return res
-                .status(503)
-                .json({ msg: 'User information already exists' });
+        try {
+            const data = await userInfo.find({ userId });
+            if (data.length>0) {
+                return res
+                    .status(503)
+                    .json({ msg: 'User information already exists' });
+            }
+        } catch (error) {
+            next(error);
         }
-        console.log(req.file)
+       
+
         const userinfoSchema = Joi.object({
-            github: Joi.string().required(),
+            github: Joi.string(),
             linkedIn: Joi.string(),
             dateOfBirth: Joi.date().required(),
             age: Joi.number().required(),
             address: Joi.string().required(),
             bio: Joi.string().required(),
             objective: Joi.string().required(),
-            status: Joi.string().required(),
             language: Joi.array().required(),
             gender: Joi.string().required(),
             skills: Joi.array().required(),
@@ -33,10 +37,12 @@ const userInfoController = {
             next(error);
         }
 
-        const photo = req.file;
+        let photo:string;
 
-        if (!photo) {
-            return res.status(503).json({ msg: 'Please enter photo' });
+        if (!req.file) {
+           photo = "";
+        }else{
+            photo = req.file?.path;
         }
 
         const {
@@ -47,7 +53,6 @@ const userInfoController = {
             address,
             bio,
             objective,
-            status,
             language,
             gender,
             skills,
@@ -60,7 +65,6 @@ const userInfoController = {
             address: string;
             bio: string;
             objective: string;
-            status: string;
             language: [string];
             gender: string;
             skills: [string];
@@ -75,11 +79,10 @@ const userInfoController = {
             address,
             bio,
             objective,
-            status,
             language,
             gender,
             skills,
-            photo: photo?.path,
+            photo: photo,
             userId,
             maxQualification,
         });
@@ -110,19 +113,17 @@ const userInfoController = {
         const userId = req.user.id;
 
         const userinfoSchema = Joi.object({
-            phone: Joi.string().min(10).required(),
-            github: Joi.string().required(),
+            github: Joi.string(),
             linkedIn: Joi.string(),
-            dateOfBirth: Joi.date().required(),
-            age: Joi.number().required(),
-            address: Joi.string().required(),
-            bio: Joi.string().required(),
-            objective: Joi.string().required(),
-            status: Joi.string().required(),
-            language: Joi.array().required(),
-            gender: Joi.string().required(),
-            skills: Joi.array().required(),
-            maxQualification: Joi.string().required(),
+            dateOfBirth: Joi.date(),
+            age: Joi.number(),
+            address: Joi.string(),
+            bio: Joi.string(),
+            objective: Joi.string(),
+            language: Joi.array(),
+            gender: Joi.string(),
+            skills: Joi.array(),
+            maxQualification: Joi.string(),
         });
 
         const { error } = userinfoSchema.validate(req.body);
@@ -130,11 +131,15 @@ const userInfoController = {
         if (error) {
             next(error);
         }
+        let photo:string;
 
-        const photo = req.file;
+        if (!req.file) {
+           photo = "";
+        }else{
+            photo = req.file?.path;
+        }
 
         const {
-            phone,
             github,
             linkedIn,
             dateOfBirth,
@@ -142,13 +147,11 @@ const userInfoController = {
             address,
             bio,
             objective,
-            status,
             language,
             gender,
             skills,
             maxQualification,
         }: {
-            phone: string;
             github: string;
             linkedIn: string;
             dateOfBirth: Date;
@@ -156,7 +159,6 @@ const userInfoController = {
             address: string;
             bio: string;
             objective: string;
-            status: string;
             language: [string];
             gender: string;
             skills: [string];
@@ -164,7 +166,6 @@ const userInfoController = {
         } = req.body;
 
         const updateFields: {
-            phone: string;
             github: string;
             linkedIn: string;
             dateOfBirth: Date;
@@ -172,14 +173,12 @@ const userInfoController = {
             address: string;
             bio: string;
             objective: string;
-            status: string;
             language: [string];
             gender: string;
             skills: [string];
             photo?: string;
             maxQualification: string;
         } = {
-            phone,
             github,
             linkedIn,
             dateOfBirth,
@@ -187,16 +186,14 @@ const userInfoController = {
             address,
             bio,
             objective,
-            status,
             language,
             gender,
             skills,
             maxQualification,
         };
 
-        if (photo) {
-            updateFields.photo = photo.path;
-        }
+
+       updateFields.photo = photo;
 
         try {
             const updatedInfo = await userInfo.findOneAndUpdate(
