@@ -14,3 +14,4 @@ export {default as userInfoController} from "./user/UserinfoController";
 
 export { default as projectController } from './user/UserProjectController';
 export {default as adminController} from "./admin/AdminController";
+export {default as userAllInfoController} from "./user/UserAllInfoController";
