@@ -3,10 +3,10 @@ import { Schema, model, Document } from 'mongoose';
 export interface ICompanyProfile extends Document {
     companyId:string,
     description: string;
-    logo: string;
+    logo?: string;
     teamSize: number;
     type: string; // private
-    tags: string;
+    tags: [string];
     founded: string;
 }
 

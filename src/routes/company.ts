@@ -19,6 +19,6 @@ router
 .put("/rating/edit/:id", [auth, userAuth], ratingController.editRating)
 .get("/profile/view", [auth], companyProfileController.viewProfile)
 .post("/profile/add", MulterService, [auth, companyAuth], companyProfileController.addProfile)
-.put("/profile/edit/:id", [auth, companyAuth], companyProfileController.editProfile);
+.put("/profile/edit", MulterService, [auth, companyAuth], companyProfileController.editProfile);
 
 export default router;

@@ -4,38 +4,43 @@ import companyProfile from "../../model/companyProfile";
 
 const companyProfileController = {
     async addProfile(req: any, res: Response, next: NextFunction) {
-        console.log(req.body);
         const companyId = req.user.id;
+
 
         const verifyProfile = Joi.object({
             description: Joi.string().min(15).required(),
             teamSize: Joi.number().required(),
             type: Joi.string().required(),
+            tags:Joi.array().required(),
+            founded:Joi.string().required()
         });
 
         const { error } = verifyProfile.validate(req.body);
 
         if (error) {
-            console.log(error);
             next(error);
         }
 
-        console.log(req.file);
+        let logo;
+
 
         if (!req.file) {
-            return res.status(503).json({ message: "please enter logo" });
+           logo="";
+        }else{
+            logo = req.file.path;
         }
 
-        const logo = req.file;
 
-        const { description, teamSize, type }: { description: string, teamSize: number, type: string } = req.body;
+        const { description, teamSize, type, tags, founded }: { description: string, teamSize: number, type: string, tags:[string], founded:string } = req.body;
 
         const profile = new companyProfile({
             companyId,
             description,
-            logo: logo?.path,
+            logo,
             teamSize,
-            type
+            type,
+            tags,
+            founded
         });
 
         try {
@@ -49,12 +54,13 @@ const companyProfileController = {
 
     async editProfile(req: any, res: Response, next: NextFunction) {
         const companyId = req.user.id;
-        const profileId = req.params.id;
 
         const verifyProfile = Joi.object({
-            description: Joi.string().min(15).required(),
-            teamSize: Joi.number().required(),
-            type: Joi.string().required(),
+            description: Joi.string().min(15),
+            teamSize: Joi.number(),
+            type: Joi.string(),
+            tags: Joi.array(),
+            founded: Joi.string()
         });
 
         const { error } = verifyProfile.validate(req.body);
@@ -63,43 +69,39 @@ const companyProfileController = {
             next(error);
         }
 
-        const logo = req.file;
 
-        let { description, teamSize, type }: { description: string; teamSize: number; type: string } = req.body;
+        const { description, teamSize, type, tags, founded }: { description?: string; teamSize?: number; type?: string, tags?:[string], founded?:string  } = req.body;
 
-        const oldProfile = await companyProfile.findOne({ companyId, _id: profileId });
+        const oldProfile = await companyProfile.findOne({ companyId });
 
         if (!oldProfile) {
             return res.status(404).json({ message: "Profile not found" });
         }
 
-        let profile ={};
+        let logo;
 
-        if (logo) {
-            description = description || oldProfile.description;
-            teamSize = teamSize || oldProfile.teamSize;
-            type = type || oldProfile.type;
+        if(req.file){
+            logo = req.file.path;
+        }else{
+            logo = oldProfile?.logo;
+        }
 
-             profile = {
-                companyId,
-                description,
-                logo: logo?.path,
-                teamSize,
-                type,
-            };
-        } else {
-             profile = {
-                companyId,
-                description,
-                teamSize,
-                type,
-            };
+
+        const profile = {
+            companyId,
+            description: description || oldProfile.description,
+            teamSize: teamSize || oldProfile.teamSize,
+            type: type || oldProfile.type,
+            tags: tags || oldProfile.tags,
+            founded: founded || oldProfile.founded,
+            logo: logo 
         }
 
         try {
-            const updatedProfile = await companyProfile.findByIdAndUpdate(profileId, profile, { returnOriginal: false });
+            const updatedProfile = await companyProfile.findOneAndUpdate({companyId}, profile, { returnOriginal: false });
             return res.status(200).json({ message: "Profile updated" });
         } catch (error) {
+            console.log(error);
             next(error);
         }
     },
@@ -110,12 +112,12 @@ const companyProfileController = {
         // const profileId = req.params.id;
       
         try {
-          const profile = await companyProfile.findOne({ companyId });
+          const profile = await companyProfile.findOne({ companyId }).select("-_id -companyId");
           if (!profile) {
             return res.status(404).json({ message: "Profile not found" });
           }
       
-          return res.status(200).json({ profile });
+          return res.status(200).json(profile);
         } catch (error) {
           next(error);
         }
