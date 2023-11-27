@@ -23,5 +23,8 @@ router
 .post("/profile/add", MulterService, [auth, companyAuth], companyProfileController.addProfile)
 .put("/profile/edit", MulterService, [auth, companyAuth], companyProfileController.editProfile)
 .get("/info/all/view", [auth], companyProfileController.viewComapnyAllInfo)
+// .put("/edit", [auth, companyAuth], companyController.editCompany)
+.put("/password/change",[auth, companyAuth], companyController.changePassword)
+.delete("/delete", [auth, companyAuth], companyController.deleteCompany);
 
 export default router;
