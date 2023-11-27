@@ -82,7 +82,11 @@ const registerController = {
             next(error);
         }
 
-        res.status(200).json({ access_token: acc_token, user: user.name, role: user.role });
+        res.status(200).json({
+            access_token: acc_token,
+            user: user.name,
+            role: user.role,
+        });
     },
 
     // //Company Register Controller
@@ -165,23 +169,22 @@ const registerController = {
             designation,
             role: roles.COMPANY,
         });
-        let acc_token: any;
         try {
             const saveCompany = await company.save();
 
-            acc_token = JwtService.sign({
+            const acc_token = JwtService.sign({
                 id: saveCompany._id,
                 role: roles.COMPANY,
             });
-        } catch (error) {
-            next(error);
-        }
 
-        res.status(200).json({
-            access_token: acc_token,
-            user: name,
-            role: roles.COMPANY,
-        });
+            res.status(200).json({
+                access_token: acc_token,
+                user: name,
+                role: roles.COMPANY,
+            });
+        } catch (error) {
+            return next(error);
+        }
     },
 
     async adminRegister(req: Request, res: Response, next: NextFunction) {
@@ -200,7 +203,6 @@ const registerController = {
         if (error) {
             next(error);
         }
-
 
         const {
             name,
@@ -230,9 +232,12 @@ const registerController = {
             next(error);
         }
 
-        res.status(200).json({ access_token: acc_token, user: admins.name, role: admins.role });
-    }
-
+        res.status(200).json({
+            access_token: acc_token,
+            user: admins.name,
+            role: admins.role,
+        });
+    },
 };
 
 export default registerController;

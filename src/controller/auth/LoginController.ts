@@ -74,6 +74,7 @@ const loginController = {
 
         try {
             const companyInfo = await company.findOne({ email });
+            console.log(companyInfo);
             if (!companyInfo) {
                 return next(CustomErrorHandler.wrongCredentials());
             }

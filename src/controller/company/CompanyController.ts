@@ -1,38 +1,58 @@
-import { Response, Request, NextFunction } from "express";
-import company from "../../model/company";
-import { MulterService } from "../../services/multerService";
-import Joi, { object } from "joi";
-import CustomErrorHandler from "../../services/customErrorHandeler";
-import path from "path";
-import fs from "fs";
+import { Response, Request, NextFunction } from 'express';
+import company from '../../model/company';
+import { MulterService } from '../../services/multerService';
+import Joi, { object } from 'joi';
+import CustomErrorHandler from '../../services/customErrorHandeler';
+import path from 'path';
+import fs from 'fs';
 
 const companyController = {
-    async viewCompanies(req:Request, res:Response, next:NextFunction){
-        const {limit, ...others }:{ limit?: number; [key: string]: any } = req.query;
+    async viewCompanies(req: Request, res: Response, next: NextFunction) {
+        const { limit, ...others }: { limit?: number; [key: string]: any } =
+            req.query;
 
         try {
-            if(limit){
-                const companies = await company.find({...others, approve:true}).limit(limit).sort({rating:1}).select("-__v -password -createdAt -updatedAt");
+            if (limit) {
+                const companies = await company
+                    .find({ ...others, approve: true })
+                    .limit(limit)
+                    .sort({ rating: 1 })
+                    .select('-__v -password -createdAt -updatedAt');
                 return res.status(200).json(companies);
-
-            }else{
-               const companies = await company.find({...others}).sort({rating:1}).select("-__v -password -createdAt -updatedAt");
-               return res.status(200).json(companies);
-
+            } else {
+                const companies = await company
+                    .find({ ...others })
+                    .sort({ rating: 1 })
+                    .select('-__v -password -createdAt -updatedAt');
+                return res.status(200).json(companies);
             }
-           
         } catch (error) {
-            next(error)
+            next(error);
         }
     },
 
-    async viewCompanyDetails(req:Request, res:Response, next:NextFunction){
-        const companyId = req.params.id;
+    async viewCompany(req: any, res: Response, next: NextFunction) {
+        const companyId = req.user.id;
+
         try {
-            const companyDetail = await company.findOne({_id:companyId}).select("-__v -updatedAt");
+            const companyDetail = await company
+                .findOne({ _id: companyId })
+                .select('-__v');
             return res.status(200).json(companyDetail);
         } catch (error) {
-            next(error)
+            next(error);
+        }
+    },
+
+    async viewCompanyDetails(req: Request, res: Response, next: NextFunction) {
+        const companyId = req.params.id;
+        try {
+            const companyDetail = await company
+                .findOne({ _id: companyId })
+                .select('-__v -updatedAt');
+            return res.status(200).json(companyDetail);
+        } catch (error) {
+            next(error);
         }
     },
 
@@ -46,19 +66,19 @@ const companyController = {
     //             type: Joi.string(),
     //             rating: Joi.number(),
     //         });
-    
+
     //         const { error } = companyEditSchema.validate(req.body);
-    
+
     //         if (error) {
     //             next(error);
     //         }
-    
+
     //         if (err) {
     //             return next(CustomErrorHandler.serverError(err.message));
     //         }
 
     //         const companyToUpdate = await company.findById(companyId);
-    
+
     //         if (!companyToUpdate) {
     //             return res.status(404).json({ error: "Company not found" });
     //         }
@@ -92,21 +112,17 @@ const companyController = {
     //         companyToUpdate.type = req.body.type || companyToUpdate.type;
     //         companyToUpdate.rating = req.body.rating || companyToUpdate.rating;
     //         companyToUpdate.logo = filePath;
-            
-        
+
     //         try{
-    
+
     //             const updatedCompany = await companyToUpdate.save();
-    
+
     //             res.status(200).json({ msg: "Company information updated successfully" });
     //         } catch (error) {
     //             next(error);
     //         }
     //     });
     // }
-    
-
-
-}
+};
 
 export default companyController;
