@@ -9,7 +9,7 @@ import bcrypt from 'bcrypt';
 
 const companyController = {
     async viewCompanies(req: Request, res: Response, next: NextFunction) {
-        const { limit, ...others }: { limit?: number; [key: string]: any } =
+        const { limit, ...others }: { limit?: number;[key: string]: any } =
             req.query;
 
         try {
@@ -57,13 +57,13 @@ const companyController = {
         }
     },
 
-    async editCompany(req:any, res:Response, next:NextFunction){
+    async editCompany(req: any, res: Response, next: NextFunction) {
         const companyId = req.user.id;
 
         const companySchema = Joi.object({
             name: Joi.string(),
             email: Joi.string(),
-            phone:Joi.string().min(10),
+            phone: Joi.string().min(10),
             companyName: Joi.string(),
             industry: Joi.string(),
             designation: Joi.string(),
@@ -71,18 +71,18 @@ const companyController = {
             address: Joi.string(),
         });
 
-        const {error} = companySchema.validate(req.body);
+        const { error } = companySchema.validate(req.body);
 
-        if(error){
+        if (error) {
             next(error);
         }
 
-        const {name, email, phone, companyName, industry, designation, pin, address}:{name?:string, email?:string, phone?:string, companyName?:string, industry?:string, designation?: string, pin?:string, address?:string} = req.body;
+        const { name, email, phone, companyName, industry, designation, pin, address }: { name?: string, email?: string, phone?: string, companyName?: string, industry?: string, designation?: string, pin?: string, address?: string } = req.body;
 
         const oldCompany = await company.findById(companyId);
 
-        if(!oldCompany){
-            return res.status(404).json({msg:"No company found"});
+        if (!oldCompany) {
+            return res.status(404).json({ msg: "No company found" });
         }
 
         const updateData = {
@@ -96,50 +96,92 @@ const companyController = {
         };
 
         try {
-            const updateCompany = await company.findOneAndUpdate({_id: companyId}, updateData, { returnOriginal: false });
-            return res.status(200).json({msg:"Company updated successfully"});
+            const updateCompany = await company.findOneAndUpdate({ _id: companyId }, updateData, { returnOriginal: false });
+            return res.status(200).json({ msg: "Company updated successfully" });
         } catch (error) {
             next(error)
         }
     },
 
-    async changePassword(req:any, res:Response, next:NextFunction){
+    async changePassword(req: any, res: Response, next: NextFunction) {
         const companyId = req.user.id;
         const passwordSchema = Joi.object({
             oldPassword: Joi.string().required(),
             newPassword: Joi.string().required()
         });
 
-        const {error} = passwordSchema.validate(req.body);
+        const { error } = passwordSchema.validate(req.body);
 
-        if(error){
+        if (error) {
             next(error);
         }
 
-        const {oldPassword, newPassword}:{oldPassword: string, newPassword: string} = req.body;
+        const { oldPassword, newPassword }: { oldPassword: string, newPassword: string } = req.body;
 
         try {
             const companyData = await company.findById(companyId).select("password");
 
-            if(!companyData){
-                return res.status(404).json({msg:"company not found"});
+            if (!companyData) {
+                return res.status(404).json({ msg: "company not found" });
             }
 
             const matchPassword = await bcrypt.compare(oldPassword, companyData.password);
-            if(!matchPassword){
-                return res.status(404).json({msg:"Your credentials are invalid"});
-            }else{
+            if (!matchPassword) {
+                return res.status(404).json({ msg: "Your credentials are invalid" });
+            } else {
                 try {
                     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-                    const updateCompany = await company.findOneAndUpdate({_id: companyId}, {password: hashedPassword}, { returnOriginal: false });
-                    return res.status(200).json({msg:"Password updated"});
+                    const updateCompany = await company.findOneAndUpdate({ _id: companyId }, { password: hashedPassword }, { returnOriginal: false });
+                    return res.status(200).json({ msg: "Password updated" });
                 } catch (error) {
                     next(error)
                 }
             }
         } catch (error) {
             next(error)
+        }
+    },
+
+    async deleteCompany(req: any, res: Response, next: NextFunction) {
+        const companyId = req.user.id;
+        const deleteSchema = Joi.object({
+            password: Joi.string().required()
+        });
+
+        const { error } = deleteSchema.validate(req.body);
+        if (error) {
+            next(error);
+        }
+
+        const { password }: { password: string } = req.body;
+
+        try {
+            const companyData = await company.findById(companyId).select("password");
+
+            if (!companyData) {
+                return res.status(404).json({ msg: "company not found" });
+            }
+
+            const matchPassword = await bcrypt.compare(password, companyData.password);
+
+            if(matchPassword){
+                const deleteCompany = await company.findOneAndDelete({
+                    _id:companyId,
+                });
+    
+                if(!deleteCompany){
+                    return res.status(404).json({msg:"Company not found"})
+                }
+    
+                return res.status(200).json({msg:"Company Deleted Successfully"});
+            }else{
+                return res.status(404).json({msg:"Invalid credentials"});
+
+            }
+
+        } catch (error) {
+            next(error);
         }
     }
 };
