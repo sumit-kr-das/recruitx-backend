@@ -1,7 +1,7 @@
 import { Response, Request, NextFunction } from 'express';
 import company from '../../model/company';
 import { MulterService } from '../../services/multerService';
-import Joi, { object } from 'joi';
+import Joi, { object, string } from 'joi';
 import CustomErrorHandler from '../../services/customErrorHandeler';
 import path from 'path';
 import fs from 'fs';
@@ -44,8 +44,8 @@ const companyController = {
         }
     },
 
-    async viewCompanyDetails(req: Request, res: Response, next: NextFunction) {
-        const companyId = req.params.id;
+    async viewCompanyDetails(req: any, res: Response, next: NextFunction) {
+        const companyId = req.user.id;
         try {
             const companyDetail = await company
                 .findOne({ _id: companyId })
@@ -56,73 +56,51 @@ const companyController = {
         }
     },
 
-    // async editCompany(req: any, res: Response, next: NextFunction) {
-    //     const companyId = req.company.id;
-    //     MulterService(req, res, async (err) => {
-    //         const companyEditSchema = Joi.object({
-    //             name: Joi.string().min(5).max(40),
-    //             description: Joi.string().min(10),
-    //             teamSize: Joi.number().min(1),
-    //             type: Joi.string(),
-    //             rating: Joi.number(),
-    //         });
+    async editCompany(req:any, res:Response, next:NextFunction){
+        const companyId = req.user.id;
 
-    //         const { error } = companyEditSchema.validate(req.body);
+        const companySchema = Joi.object({
+            name: Joi.string(),
+            email: Joi.string(),
+            phone:Joi.string().min(10),
+            companyName: Joi.string(),
+            industry: Joi.string(),
+            designation: Joi.string(),
+            pin: Joi.string(),
+            address: Joi.string(),
+        });
 
-    //         if (error) {
-    //             next(error);
-    //         }
+        const {error} = companySchema.validate(req.body);
 
-    //         if (err) {
-    //             return next(CustomErrorHandler.serverError(err.message));
-    //         }
+        if(error){
+            next(error);
+        }
 
-    //         const companyToUpdate = await company.findById(companyId);
+        const {name, email, phone, companyName, industry, designation, pin, address}:{name?:string, email?:string, phone?:string, companyName?:string, industry?:string, designation?: string, pin?:string, address?:string} = req.body;
 
-    //         if (!companyToUpdate) {
-    //             return res.status(404).json({ error: "Company not found" });
-    //         }
+        const oldCompany = await company.findById(companyId);
 
-    //         let filePath = '';
-    //         if (req.file) {
-    //             filePath = req.file.path;
-    //             const fileExtension = path.extname(filePath);
-    //             if (
-    //                 fileExtension !== '.jpg' &&
-    //                 fileExtension !== '.png' &&
-    //                 fileExtension !== '.jpeg'
-    //             ) {
-    //                 return res
-    //                     .status(401)
-    //                     .json({ msg: 'File type is not valid' });
-    //             }
+        if(!oldCompany){
+            return res.status(404).json({msg:"No company found"});
+        }
 
-    //             if(companyToUpdate.logo){
-    //                 fs.unlink(`http://localhost:3000/${companyToUpdate.logo}`,(error)=>{
-    //                     console.log("image deleted");
-    //                 });
-    //             }
-    //         }else{
-    //             filePath = companyToUpdate.logo;
-    //         }
+        const updateData = {
+            name: name || oldCompany.name,
+            email: email || oldCompany.email,
+            phone: phone || oldCompany.phone,
+            companyName: companyName || oldCompany.companyName,
+            designation: designation || oldCompany.designation,
+            pin: pin || oldCompany.pin,
+            address: address || oldCompany.address
+        };
 
-    //         companyToUpdate.name = req.body.name || companyToUpdate.name;
-    //         companyToUpdate.description = req.body.description || companyToUpdate.description;
-    //         companyToUpdate.teamSize = req.body.teamSize || companyToUpdate.teamSize;
-    //         companyToUpdate.type = req.body.type || companyToUpdate.type;
-    //         companyToUpdate.rating = req.body.rating || companyToUpdate.rating;
-    //         companyToUpdate.logo = filePath;
-
-    //         try{
-
-    //             const updatedCompany = await companyToUpdate.save();
-
-    //             res.status(200).json({ msg: "Company information updated successfully" });
-    //         } catch (error) {
-    //             next(error);
-    //         }
-    //     });
-    // }
+        try {
+            const updateCompany = await company.findOneAndUpdate({_id: companyId}, updateData, { returnOriginal: false });
+            return res.status(200).json({msg:"Company updated successfully"});
+        } catch (error) {
+            next(error)
+        }
+    },
 };
 
 export default companyController;
