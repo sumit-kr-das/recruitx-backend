@@ -5,6 +5,7 @@ import Joi, { object, string } from 'joi';
 import CustomErrorHandler from '../../services/customErrorHandeler';
 import path from 'path';
 import fs from 'fs';
+import bcrypt from 'bcrypt';
 
 const companyController = {
     async viewCompanies(req: Request, res: Response, next: NextFunction) {
@@ -101,6 +102,46 @@ const companyController = {
             next(error)
         }
     },
+
+    async changePassword(req:any, res:Response, next:NextFunction){
+        const companyId = req.user.id;
+        const passwordSchema = Joi.object({
+            oldPassword: Joi.string().required(),
+            newPassword: Joi.string().required()
+        });
+
+        const {error} = passwordSchema.validate(req.body);
+
+        if(error){
+            next(error);
+        }
+
+        const {oldPassword, newPassword}:{oldPassword: string, newPassword: string} = req.body;
+
+        try {
+            const companyData = await company.findById(companyId).select("password");
+
+            if(!companyData){
+                return res.status(404).json({msg:"company not found"});
+            }
+
+            const matchPassword = await bcrypt.compare(oldPassword, companyData.password);
+            if(!matchPassword){
+                return res.status(404).json({msg:"Your credentials are invalid"});
+            }else{
+                try {
+                    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+                    const updateCompany = await company.findOneAndUpdate({_id: companyId}, {password: hashedPassword}, { returnOriginal: false });
+                    return res.status(200).json({msg:"Password updated"});
+                } catch (error) {
+                    next(error)
+                }
+            }
+        } catch (error) {
+            next(error)
+        }
+    }
 };
 
 export default companyController;
