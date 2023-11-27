@@ -14,13 +14,14 @@ router
 .post("/auth/login", loginController.companyLogin)
 .get("/views",[auth], companyController.viewCompanies)
 .get("/view", [auth, companyAuth], companyController.viewCompany)
-.get("/details/:id", [auth, userAuth], companyController.viewCompanyDetails)
+.get("/details", [auth, companyAuth], companyController.viewCompanyDetails)
 .post("/rating/add", [auth, userAuth], ratingController.addRating)
 .get("/rating/view/:companyId", [auth], ratingController.viewRatings)
 .put("/rating/edit/:id", [auth, userAuth], ratingController.editRating)
 .get("/profile/view", [auth], companyProfileController.viewProfile)
 .post("/profile/add", MulterService, [auth, companyAuth], companyProfileController.addProfile)
 .put("/profile/edit", MulterService, [auth, companyAuth], companyProfileController.editProfile)
-.get("/info/all/view", [auth], companyProfileController.viewComapnyAllInfo);
+.get("/info/all/view", [auth], companyProfileController.viewComapnyAllInfo)
+.put("/edit", [auth, companyAuth], companyController.editCompany);
 
 export default router;
