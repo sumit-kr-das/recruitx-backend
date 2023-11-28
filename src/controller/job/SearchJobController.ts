@@ -5,9 +5,9 @@ import Joi from "joi";
 const searchJobController = {
     async searchJob(req: Request, res: Response, next: NextFunction) {
         const searchSchema = Joi.object({
-            title: Joi.string().required(),
+            title: Joi.string().allow(null, ""),
             location: Joi.string().allow(null, ""),
-            exprience: Joi.number()
+            exprience: Joi.number().allow(null, "")
         });
 
         const { error } = searchSchema.validate(req.body);
@@ -41,7 +41,8 @@ const searchJobController = {
                 title: { $regex: title, $options: 'i' },
             }
         } else {
-            return res.status(503).json({ msg: "Invalid input" })
+            const jobs = await job.find().sort({ createdAt: -1 });
+            return res.status(200).json(jobs);
         }
 
         try {

@@ -138,14 +138,15 @@ const jobController = {
         }
     },
 
-    // async viewJobsFeed(req:Request, res:Response, next:NextFunction){
-    //     try {
-    //         const jobs = await job.find().sort({createdAt:-1}).select("-__v -updatedAt");
-    //         return res.status(200).json(jobs);
-    //     } catch (error) {
-    //         next(error)
-    //     }
-    // },
+    async viewJobsFeed(req: Request, res: Response, next: NextFunction) {
+        const limit = Number(req.query.limit);
+        try {
+            const jobs = await job.find().sort({ createdAt: -1 }).limit(limit).select("-__v -updatedAt");
+            return res.status(200).json(jobs);
+        } catch (error) {
+            next(error)
+        }
+    },
 
     async editJob(req: any, res: Response, next: NextFunction) {
         const jobId = req.params.id;
