@@ -3,16 +3,18 @@ import company from '../../model/company';
 import User from '../../model/User';
 import job from '../../model/job';
 import applier from '../../model/applier';
+import admin from '../../model/admin';
 
 const adminController = {
-    async viewCompany(req: any, res: Response, next: NextFunction) {
+    async viewAdmin(req: any, res: Response, next: NextFunction) {
         const id = req.user.id;
         try {
-            const companies = await company
+            const admins = await admin
                 .findById({ _id: id })
                 .select('-__v -password');
-            return res.status(200).json(companies);
+            return res.status(200).json(admins);
         } catch (error) {
+            console.log(error);
             next(error);
         }
     },

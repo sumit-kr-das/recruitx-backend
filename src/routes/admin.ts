@@ -16,8 +16,8 @@ router
         [auth, adminAuth],
         adminController.approveCompany,
     )
-    .get('/view', adminController.viewCompany)
-    .get('/statics/view', adminController.viewAdminStatics)
+    .get('/view', [auth, adminAuth], adminController.viewAdmin)
+    .get('/statics/view', [auth, adminAuth], adminController.viewAdminStatics)
     .post('/login', loginController.adminLogin)
     .post('/register', registerController.adminRegister);
 
