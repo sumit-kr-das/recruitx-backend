@@ -1,12 +1,12 @@
-import { Request, Response, NextFunction } from 'express';
+import bcrypt from 'bcrypt';
+import { NextFunction, Request, Response } from 'express';
 import Joi from 'joi';
 import User from '../../model/User';
+import admin from '../../model/admin';
 import company from '../../model/company';
 import CustomErrorHandler from '../../services/customErrorHandeler';
-import bcrypt from 'bcrypt';
 import JwtService from '../../services/jwtServices';
 import roles from '../../services/roleService';
-import admin from '../../model/admin';
 
 const loginController = {
     async userLogin(req: Request, res: Response, next: NextFunction) {
@@ -39,15 +39,16 @@ const loginController = {
             }
 
             /* compare access token */
-            // console.log(user._id);
             const access_token = JwtService.sign({
                 id: user._id,
-                role: 'user',
+                role: roles.USER,
             });
 
-            res.status(200).json({access_token,
+            res.status(200).json({
+                access_token,
                 user: user.name,
-                role: user.role,});
+                role: user.role,
+            });
         } catch (error) {
             next(error);
         }
@@ -90,19 +91,17 @@ const loginController = {
                 role: roles.COMPANY,
             });
 
-            return res
-                .status(200)
-                .json({
-                    access_token,
-                    user: companyInfo.name,
-                    role: companyInfo.role,
-                });
+            return res.status(200).json({
+                access_token,
+                user: companyInfo.name,
+                role: companyInfo.role,
+            });
         } catch (error) {
             next(error);
         }
     },
 
-    async adminLogin(req:Request, res:Response, next:NextFunction){
+    async adminLogin(req: Request, res: Response, next: NextFunction) {
         const adminLoginSchema = Joi.object({
             email: Joi.string().email().required(),
             password: Joi.string()
@@ -127,26 +126,29 @@ const loginController = {
                 return next(CustomErrorHandler.wrongCredentials());
             }
 
-            const matchPassword = await bcrypt.compare(password, admins.password);
+            const matchPassword = await bcrypt.compare(
+                password,
+                admins.password,
+            );
             if (!matchPassword) {
                 return next(CustomErrorHandler.wrongCredentials());
             }
 
             /* compare access token */
-            // console.log(user._id);
             const access_token = JwtService.sign({
                 id: admins._id,
-                role: 'admin',
+                role: roles.ADMIN,
             });
 
-            res.status(200).json({access_token,
+            res.status(200).json({
+                access_token,
                 user: admins.name,
-                role: admins.role,});
+                role: admins.role,
+            });
         } catch (error) {
             next(error);
         }
-    }
-
+    },
 };
 
 export default loginController;

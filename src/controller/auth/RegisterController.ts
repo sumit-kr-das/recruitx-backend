@@ -1,18 +1,15 @@
-import { Request, Response, NextFunction } from 'express';
+import bcrypt from 'bcrypt';
+import { NextFunction, Request, Response } from 'express';
 import Joi from 'joi';
-import path from 'path';
 import User from '../../model/User';
+import admin from '../../model/admin';
 import Company from '../../model/company';
 import CustomErrorHandler from '../../services/customErrorHandeler';
-import bcrypt from 'bcrypt';
 import JwtService from '../../services/jwtServices';
-import { MulterService } from '../../services/multerService';
 import roles from '../../services/roleService';
-import admin from '../../model/admin';
 
 const registerController = {
     //User Register Controller
-
     async userRegister(req: Request, res: Response, next: NextFunction) {
         const userRegisterSchema = Joi.object({
             name: Joi.string().min(5).max(30).required(),
@@ -76,7 +73,7 @@ const registerController = {
             //generate access token
             acc_token = JwtService.sign({
                 id: saveUser._id,
-                role: 'user',
+                role: roles.USER,
             });
         } catch (error) {
             next(error);
@@ -89,12 +86,11 @@ const registerController = {
         });
     },
 
-    // //Company Register Controller
-
+    //Company Register Controller
     async companyRegister(req: Request, res: Response, next: NextFunction) {
         const comapanyRegisterSchema = Joi.object({
             name: Joi.string().min(5).max(40).required(),
-            designation: Joi.string().min(10).required(),
+            designation: Joi.string().min(3).required(),
             email: Joi.string().email().required(),
             password: Joi.string()
                 .pattern(
@@ -226,7 +222,7 @@ const registerController = {
             //generate access token
             acc_token = JwtService.sign({
                 id: saveAdmin._id,
-                role: 'admin',
+                role: roles.ADMIN,
             });
         } catch (error) {
             next(error);
