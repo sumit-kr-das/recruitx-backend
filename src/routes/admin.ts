@@ -5,11 +5,20 @@ import adminAuth from '../middleware/adminAuth';
 import auth from '../middleware/auth';
 import { loginController, registerController } from '../controller';
 
-router.get("/company/view", [auth, adminAuth], adminController.viewCompaniesWithStatus)
-.put("/company/approve/:companyId", [auth, adminAuth], adminController.approveCompany)
-.get("/statics/view", adminController.viewAdminStatics)
-.post("/login", loginController.adminLogin)
-.post("/register", registerController.adminRegister);
+router
+    .get(
+        '/company/view',
+        [auth, adminAuth],
+        adminController.viewCompaniesWithStatus,
+    )
+    .put(
+        '/company/approve/:companyId',
+        [auth, adminAuth],
+        adminController.approveCompany,
+    )
+    .get('/view', adminController.viewCompany)
+    .get('/statics/view', adminController.viewAdminStatics)
+    .post('/login', loginController.adminLogin)
+    .post('/register', registerController.adminRegister);
 
 export default router;
-
