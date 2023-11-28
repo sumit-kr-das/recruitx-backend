@@ -30,7 +30,7 @@ const jobController = {
         const { error } = jobSchema.validate(req.body);
 
         if (error) {
-            next(error);
+            return next(error);
         }
 
         const {
@@ -110,13 +110,13 @@ const jobController = {
             return res.status(200).json({ msg: 'Jobs Posted Successfullly' });
         } catch (error) {
             // console.log(error);
-            next(error);
+            return next(error);
         }
     },
 
     async viewJobs(req: any, res: Response, next: NextFunction) {
         // const limit = req.query.limit;
-        const {limit, ...others }:{ limit?: number; [key: string]: any } = req.query;
+        const { limit, ...others }: { limit?: number;[key: string]: any } = req.query;
 
         try {
             if (limit) {
@@ -134,7 +134,7 @@ const jobController = {
                 return res.status(200).json(jobs);
             }
         } catch (error) {
-            next(error);
+            return next(error);
         }
     },
 
@@ -176,7 +176,7 @@ const jobController = {
         const { error } = jobSchema.validate(req.body);
 
         if (error) {
-            next(error);
+            return next(error);
         }
 
         const {
@@ -235,7 +235,7 @@ const jobController = {
 
             return res.status(200).json({ msg: 'Job updated successfully' });
         } catch (error) {
-            next(error);
+            return next(error);
         }
     },
 
@@ -251,7 +251,7 @@ const jobController = {
 
             return res.status(200).json({ msg: 'Job deleted successfully' });
         } catch (error) {
-            next(error);
+            return next(error);
         }
     },
 
@@ -270,7 +270,7 @@ const jobController = {
 
             res.status(200).json({ message: 'Job deactivated successfully' });
         } catch (error) {
-            next(error);
+            return next(error);
         }
     },
 
@@ -296,7 +296,7 @@ const jobController = {
                 expired,
             });
         } catch (error) {
-            next(error);
+            return next(error);
         }
     },
 };

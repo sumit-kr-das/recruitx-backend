@@ -3,118 +3,129 @@ import Joi from 'joi';
 import userExprience from '../../model/userExprience';
 
 const userExprienceController = {
-    async addUserExprience(req:any, res:Response, next:NextFunction){
+    async addUserExprience(req: any, res: Response, next: NextFunction) {
         const userExprienceSchema = Joi.object({
-            skills:Joi.array().required(),
-            companyName:Joi.string().required(),
-            duration:Joi.object({
-                startDate:Joi.date().required(),
-                endDate:Joi.date()
-            }).required(),
-            place:Joi.string().required()
-        })
+            skills: Joi.array().required(),
+            companyName: Joi.string().required(),
+            designation: Joi.string().required(),
+            experience: Joi.string().required(),
+            anualSalary: Joi.string(),
+            type: Joi.string(),
+            startDate: Joi.date().required(),
+            endDate: Joi.date(),
+            jobProfile: Joi.string().required()
+        });
 
-        const {error} = userExprienceSchema.validate(req.body);
+        const { error } = userExprienceSchema.validate(req.body);
 
-        if(error){
-            next(error);
+        if (error) {
+            return next(error);
         }
 
-        const {skills, companyName, duration:{startDate, endDate}, place}:{skills:string, companyName:string, duration:{startDate:Date, endDate:Date}, place:string} = req.body;
+        const { skills, companyName, designation, experience, anualSalary, type, startDate, endDate, jobProfile }: { skills: string, companyName: string, designation: string, experience: string, anualSalary?: string, type: string, startDate: Date, endDate?: Date, jobProfile: string } = req.body;
+
+
 
         const userExpriences = new userExprience({
-            userId:req.user.id,
+            userId: req.user.id,
             skills,
             companyName,
-            duration:{
-                startDate,
-                endDate
-            },
-            place
+            designation,
+            experience,
+            anualSalary,
+            type,
+            startDate,
+            endDate,
+            jobProfile
         });
 
         try {
             const addUserExp = await userExpriences.save();
-            if(addUserExp){
-                return res.status(200).json({msg:"User Exprience Added Successfully"})
+            if (addUserExp) {
+                return res.status(200).json({ msg: "User Exprience Added Successfully" })
             }
         } catch (error) {
-            next(error);
+            console.log(error);
+            return next(error);
         }
     },
 
-    async viewUserExprience(req:any, res:Response, next:NextFunction){
+    async viewUserExprience(req: any, res: Response, next: NextFunction) {
         try {
-            const userExpriences = await userExprience.find({userId:req.user.id}).select("-__v -userId -createdAt -updatedAt");
+            const userExpriences = await userExprience.find({ userId: req.user.id }).select("-__v -userId -createdAt -updatedAt");
             return res.status(200).json(userExpriences);
         } catch (error) {
-            next(error)
+            return next(error)
         }
     },
 
-    async updateUserExprience(req:any, res:Response, next:NextFunction){
+    async updateUserExprience(req: any, res: Response, next: NextFunction) {
         const userExprienceSchema = Joi.object({
-            skills:Joi.array().required(),
-            companyName:Joi.string().required(),
-            duration:Joi.object({
-                startDate:Joi.date().required(),
-                endDate:Joi.date()
-            }).required(),
-            place:Joi.string().required()
+            skills: Joi.array(),
+            companyName: Joi.string(),
+            designation: Joi.string(),
+            experience: Joi.string(),
+            anualSalary: Joi.string(),
+            type: Joi.string(),
+            startDate: Joi.date(),
+            endDate: Joi.date(),
+            jobProfile: Joi.string()
         })
 
-        const {error} = userExprienceSchema.validate(req.body);
+        const { error } = userExprienceSchema.validate(req.body);
 
-        if(error){
-            next(error);
+        if (error) {
+            return next(error);
         }
 
-        const {skills, companyName, duration:{startDate, endDate}, place}:{skills:string, companyName:string, duration:{startDate:Date, endDate:Date}, place:string} = req.body;
+        const { skills, companyName, designation, experience, anualSalary, type, startDate, endDate, jobProfile }: { skills?: string, companyName?: string, designation?: string, experience?: string, anualSalary?: string, type?: string, startDate?: Date, endDate?: Date, jobProfile?: string } = req.body;
 
         const expId = req.params.id;
 
         try {
             const editUserExp = await userExprience.findOneAndUpdate({
-                _id:expId,
-                userId:req.user.id,
-            },{
+                _id: expId,
+                userId: req.user.id,
+            }, {
                 skills,
-                companyName, 
-                duration:{
-                    startDate,
-                    endDate
-                },
-                place
-            },{
-                new:true
+                companyName,
+                designation,
+                experience,
+                anualSalary,
+                type,
+                startDate,
+                endDate,
+                jobProfile
+            }, {
+                new: true
             });
 
-            if(editUserExp){
-                return res.status(200).json({msg:"user updated Successfully"})
-            }else{
-                return res.status(500).json({msg:"Something went wrong"})
+            if (editUserExp) {
+                return res.status(200).json({ msg: "user updated Successfully" })
+            } else {
+                return res.status(500).json({ msg: "Something went wrong" })
             }
         } catch (error) {
-            next(error);
+            return next(error);
         }
     },
 
-    async deleteUserExperience(req:any, res:Response, next:NextFunction){
+    async deleteUserExperience(req: any, res: Response, next: NextFunction) {
         const expId = req.params.id;
 
         try {
             const deleteUserExp = await userExprience.findOneAndDelete({
-                _id:expId,
-                userId:req.user.id
+                _id: expId,
+                userId: req.user.id
             });
 
-            if(!deleteUserExp){
-                return res.status(404).json({msg:"Exprience not found"})
+            if (!deleteUserExp) {
+                return res.status(404).json({ msg: "Exprience not found" })
             }
 
-            return res.status(200).json({msg:"User Exprience Deleted Successfully"});
+            return res.status(200).json({ msg: "User Exprience Deleted Successfully" });
         } catch (error) {
-            next(error);
+            return next(error);
         }
     }
 

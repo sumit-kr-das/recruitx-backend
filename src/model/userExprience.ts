@@ -6,7 +6,7 @@ export interface IUserExprience extends Document {
     companyName: string;
     designation: string,
     experience: string,
-    annualSalary: string,
+    annualSalary?: string,
     type: string,
     startDate: Date;
     endDate?: Date;
@@ -20,7 +20,7 @@ const UserExprienceSchema: Schema = new Schema(
         companyName: { type: String, required: true },
         designation: { type: String, required: true },
         experience: { type: Number, required: true },
-        annualSalary: { type: Number, required: true },
+        annualSalary: { type: Number },
         type: { type: String, required: true },
         startDate: { type: Date, required: true },
         endDate: { type: Date },
