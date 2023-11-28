@@ -100,15 +100,15 @@ const registerController = {
             repeatPassword: Joi.ref('password'),
             phone: Joi.string().min(10).required(),
             industry: Joi.string().required(),
-            companyName: Joi.string().required(),
-            pin: Joi.string().required(),
+            companyName: Joi.string().min(3).required(),
+            pin: Joi.string().min(6).required(),
             address: Joi.string().required(),
         });
 
         const { error } = comapanyRegisterSchema.validate(req.body);
 
         if (error) {
-            next(error);
+            return next(error);
         }
 
         //if company name present in the DataBase
