@@ -28,7 +28,7 @@ const companyController = {
                 return res.status(200).json(companies);
             }
         } catch (error) {
-            next(error);
+            return next(error);
         }
     },
 
@@ -41,7 +41,7 @@ const companyController = {
                 .select('-__v');
             return res.status(200).json(companyDetail);
         } catch (error) {
-            next(error);
+            return next(error);
         }
     },
 
@@ -53,7 +53,7 @@ const companyController = {
                 .select('-__v -updatedAt');
             return res.status(200).json(companyDetail);
         } catch (error) {
-            next(error);
+            return next(error);
         }
     },
 
@@ -74,7 +74,7 @@ const companyController = {
         const { error } = companySchema.validate(req.body);
 
         if (error) {
-            next(error);
+            return next(error);
         }
 
         const { name, email, phone, companyName, industry, designation, pin, address }: { name?: string, email?: string, phone?: string, companyName?: string, industry?: string, designation?: string, pin?: string, address?: string } = req.body;
@@ -99,7 +99,7 @@ const companyController = {
             const updateCompany = await company.findOneAndUpdate({ _id: companyId }, updateData, { returnOriginal: false });
             return res.status(200).json({ msg: "Company updated successfully" });
         } catch (error) {
-            next(error)
+            return next(error)
         }
     },
 
@@ -113,7 +113,7 @@ const companyController = {
         const { error } = passwordSchema.validate(req.body);
 
         if (error) {
-            next(error);
+            return next(error);
         }
 
         const { oldPassword, newPassword }: { oldPassword: string, newPassword: string } = req.body;
@@ -139,7 +139,7 @@ const companyController = {
                 }
             }
         } catch (error) {
-            next(error)
+            return next(error)
         }
     },
 
@@ -151,7 +151,7 @@ const companyController = {
 
         const { error } = deleteSchema.validate(req.body);
         if (error) {
-            next(error);
+            return next(error);
         }
 
         const { password }: { password: string } = req.body;
@@ -165,23 +165,23 @@ const companyController = {
 
             const matchPassword = await bcrypt.compare(password, companyData.password);
 
-            if(matchPassword){
+            if (matchPassword) {
                 const deleteCompany = await company.findOneAndDelete({
-                    _id:companyId,
+                    _id: companyId,
                 });
-    
-                if(!deleteCompany){
-                    return res.status(404).json({msg:"Company not found"})
+
+                if (!deleteCompany) {
+                    return res.status(404).json({ msg: "Company not found" })
                 }
-    
-                return res.status(200).json({msg:"Company Deleted Successfully"});
-            }else{
-                return res.status(404).json({msg:"Invalid credentials"});
+
+                return res.status(200).json({ msg: "Company Deleted Successfully" });
+            } else {
+                return res.status(404).json({ msg: "Invalid credentials" });
 
             }
 
         } catch (error) {
-            next(error);
+            return next(error);
         }
     }
 };

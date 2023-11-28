@@ -7,15 +7,15 @@ const userInfoController = {
         const userId = req.user.id;
         try {
             const data = await userInfo.find({ userId });
-            if (data.length>0) {
+            if (data.length > 0) {
                 return res
                     .status(503)
                     .json({ msg: 'User information already exists' });
             }
         } catch (error) {
-            next(error);
+            return next(error);
         }
-       
+
 
         const userinfoSchema = Joi.object({
             github: Joi.string(),
@@ -34,14 +34,14 @@ const userInfoController = {
         const { error } = userinfoSchema.validate(req.body);
 
         if (error) {
-            next(error);
+            return next(error);
         }
 
-        let photo:string;
+        let photo: string;
 
         if (!req.file) {
-           photo = "";
-        }else{
+            photo = "";
+        } else {
             photo = req.file?.path;
         }
 
@@ -93,7 +93,7 @@ const userInfoController = {
                 .status(200)
                 .json({ msg: 'Your informations saved successfully' });
         } catch (error) {
-            next(error);
+            return next(error);
         }
     },
 
@@ -105,7 +105,7 @@ const userInfoController = {
             console.log(info);
             return res.status(200).json(info);
         } catch (error) {
-            next(error);
+            return next(error);
         }
     },
 
@@ -129,13 +129,13 @@ const userInfoController = {
         const { error } = userinfoSchema.validate(req.body);
 
         if (error) {
-            next(error);
+            return next(error);
         }
-        let photo:string;
+        let photo: string;
 
         if (!req.file) {
-           photo = "";
-        }else{
+            photo = "";
+        } else {
             photo = req.file?.path;
         }
 
@@ -193,7 +193,7 @@ const userInfoController = {
         };
 
 
-       updateFields.photo = photo;
+        updateFields.photo = photo;
 
         try {
             const updatedInfo = await userInfo.findOneAndUpdate(
@@ -213,7 +213,7 @@ const userInfoController = {
                 data: updatedInfo,
             });
         } catch (error) {
-            next(error);
+            return next(error);
         }
     },
 };

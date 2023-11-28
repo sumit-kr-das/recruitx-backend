@@ -13,27 +13,27 @@ const companyProfileController = {
             description: Joi.string().min(15).required(),
             teamSize: Joi.number().required(),
             type: Joi.string().required(),
-            tags:Joi.array().required(),
-            founded:Joi.string().required()
+            tags: Joi.array().required(),
+            founded: Joi.string().required()
         });
 
         const { error } = verifyProfile.validate(req.body);
 
         if (error) {
-            next(error);
+            return next(error);
         }
 
         let logo;
 
 
         if (!req.file) {
-           logo="";
-        }else{
+            logo = "";
+        } else {
             logo = req.file.path;
         }
 
 
-        const { description, teamSize, type, tags, founded }: { description: string, teamSize: number, type: string, tags:[string], founded:string } = req.body;
+        const { description, teamSize, type, tags, founded }: { description: string, teamSize: number, type: string, tags: [string], founded: string } = req.body;
 
         const profile = new companyProfile({
             companyId,
@@ -50,7 +50,7 @@ const companyProfileController = {
             return res.status(200).json({ msg: "profile added" });
         } catch (error) {
             console.log(error);
-            next(error);
+            return next(error);
         }
     },
 
@@ -68,11 +68,11 @@ const companyProfileController = {
         const { error } = verifyProfile.validate(req.body);
 
         if (error) {
-            next(error);
+            return next(error);
         }
 
 
-        const { description, teamSize, type, tags, founded }: { description?: string; teamSize?: number; type?: string, tags?:[string], founded?:string  } = req.body;
+        const { description, teamSize, type, tags, founded }: { description?: string; teamSize?: number; type?: string, tags?: [string], founded?: string } = req.body;
 
         const oldProfile = await companyProfile.findOne({ companyId });
 
@@ -82,9 +82,9 @@ const companyProfileController = {
 
         let logo;
 
-        if(req.file){
+        if (req.file) {
             logo = req.file.path;
-        }else{
+        } else {
             logo = oldProfile?.logo;
         }
 
@@ -96,15 +96,15 @@ const companyProfileController = {
             type: type || oldProfile.type,
             tags: tags || oldProfile.tags,
             founded: founded || oldProfile.founded,
-            logo: logo 
+            logo: logo
         }
 
         try {
-            const updatedProfile = await companyProfile.findOneAndUpdate({companyId}, profile, { returnOriginal: false });
+            const updatedProfile = await companyProfile.findOneAndUpdate({ companyId }, profile, { returnOriginal: false });
             return res.status(200).json({ message: "Profile updated" });
         } catch (error) {
             console.log(error);
-            next(error);
+            return next(error);
         }
     },
 
@@ -112,33 +112,33 @@ const companyProfileController = {
         const companyId = req.user.id;
         console.log(companyId);
         // const profileId = req.params.id;
-      
+
         try {
-          const profile = await companyProfile.findOne({ companyId }).select("-_id -companyId");
-          if (!profile) {
-            return res.status(404).json({ message: "Profile not found" });
-          }
-      
-          return res.status(200).json(profile);
+            const profile = await companyProfile.findOne({ companyId }).select("-_id -companyId");
+            if (!profile) {
+                return res.status(404).json({ message: "Profile not found" });
+            }
+
+            return res.status(200).json(profile);
         } catch (error) {
-          next(error);
+            return next(error);
         }
     },
 
-    async viewComapnyAllInfo(req:any, res:Response, next:NextFunction){
+    async viewComapnyAllInfo(req: any, res: Response, next: NextFunction) {
         let companyId;
-        if(req.query.id){
+        if (req.query.id) {
             companyId = req.query.id;
-        }else{
+        } else {
             companyId = req.user.id;
         }
 
         try {
             const companyData = await company.findById(companyId).select("-__v -_id -password");
-            const profile = await companyProfile.find({companyId}).select("-__v -_id");
+            const profile = await companyProfile.find({ companyId }).select("-__v -_id");
             console.log(companyData);
             const data = {
-                name:companyData?.name,
+                name: companyData?.name,
                 email: companyData?.email,
                 phone: companyData?.phone,
                 companyName: companyData?.name,
@@ -151,7 +151,7 @@ const companyProfileController = {
 
             return res.status(200).json(data);
         } catch (error) {
-            next(error)
+            return next(error)
         }
     }
 }

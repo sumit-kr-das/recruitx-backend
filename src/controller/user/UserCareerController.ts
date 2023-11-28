@@ -5,27 +5,27 @@ import CustomErrorHandler from '../../services/customErrorHandeler';
 
 
 const userCarrerController = {
-    async addUserCarrer(req:any, res:Response, next:NextFunction){
+    async addUserCarrer(req: any, res: Response, next: NextFunction) {
         const userCarrerSchema = Joi.object({
-            industry:Joi.string().required(),
-            role:Joi.string().required(),
-            jobRole:Joi.string().required(),
-            jobType:Joi.string().required(),
-            employmentType:Joi.string().required(),
-            location:Joi.array().required(),
-            expectedSalary:Joi.number().required()
+            industry: Joi.string().required(),
+            role: Joi.string().required(),
+            jobRole: Joi.string().required(),
+            jobType: Joi.string().required(),
+            employmentType: Joi.string().required(),
+            location: Joi.array().required(),
+            expectedSalary: Joi.number().required()
         });
 
-        const {error} = userCarrerSchema.validate(req.body);
+        const { error } = userCarrerSchema.validate(req.body);
 
-        if(error){
-            next(error);
+        if (error) {
+            return next(error);
         }
 
-        const {industry, role, jobRole, jobType, employmentType, location, expectedSalary}:{industry:string, role:string, jobRole:string, jobType:string, employmentType:string, location:[string], expectedSalary:number} = req.body;
+        const { industry, role, jobRole, jobType, employmentType, location, expectedSalary }: { industry: string, role: string, jobRole: string, jobType: string, employmentType: string, location: [string], expectedSalary: number } = req.body;
 
         const userCarrer = new userCareerProfile({
-            userId:req.user.id,
+            userId: req.user.id,
             industry,
             role,
             jobRole,
@@ -37,25 +37,25 @@ const userCarrerController = {
 
         try {
             const addCarrer = await userCarrer.save();
-            if(addCarrer){
-               return res.status(200).json({msg:"Carrer Profile updated successfully"});
+            if (addCarrer) {
+                return res.status(200).json({ msg: "Carrer Profile updated successfully" });
             }
         } catch (error) {
-            next(error);
+            return next(error);
         }
     },
 
-    
-    async viewUserCarrer(req:any, res:Response, next:NextFunction){
+
+    async viewUserCarrer(req: any, res: Response, next: NextFunction) {
         try {
-            const userCarrer = await userCareerProfile.findOne({userId:req.user.id}).select('-__v -userId');
+            const userCarrer = await userCareerProfile.findOne({ userId: req.user.id }).select('-__v -userId');
             return res.status(200).json(userCarrer);
         } catch (error) {
-           next(error);
+            return next(error);
         }
     },
 
-    async editUserCarrer(req:any, res:Response, next:NextFunction){
+    async editUserCarrer(req: any, res: Response, next: NextFunction) {
         const userCareerSchema = Joi.object({
             industry: Joi.string().required(),
             role: Joi.string().required(),
@@ -65,14 +65,13 @@ const userCarrerController = {
             location: Joi.array().required(),
             expectedSalary: Joi.number().required(),
         });
-    
+
         const { error } = userCareerSchema.validate(req.body);
-    
+
         if (error) {
-            next(error);
-            return;
+            return next(error);
         }
-    
+
         const { industry, role, jobRole, jobType, employmentType, location, expectedSalary }: {
             industry: string,
             role: string,
@@ -82,10 +81,10 @@ const userCarrerController = {
             location: string[],
             expectedSalary: number
         } = req.body;
-    
+
         try {
             const userCareer = await userCareerProfile.findOneAndUpdate(
-                {_id:req.params.id}, 
+                { _id: req.params.id },
                 {
                     industry,
                     role,
@@ -95,35 +94,35 @@ const userCarrerController = {
                     location,
                     expectedSalary
                 },
-                { new: true}
+                { new: true }
             );
-    
+
             if (userCareer) {
-               return res.status(200).json({ msg: "Career Profile updated successfully" });
-            }else{
+                return res.status(200).json({ msg: "Career Profile updated successfully" });
+            } else {
                 next(CustomErrorHandler.serverError());
             }
         } catch (error) {
-            next(error);
+            return next(error);
         }
     },
 
-    async deleteUserCarrer(req:any, res:Response, next:NextFunction){
+    async deleteUserCarrer(req: any, res: Response, next: NextFunction) {
         try {
             const deletedCareer = await userCareerProfile.findOneAndDelete({
                 _id: req.params.id
             });
-    
+
             if (deletedCareer) {
                 res.status(200).json({ msg: "Career Profile deleted successfully" });
             } else {
                 res.status(404).json({ msg: "Career Profile not found" });
             }
         } catch (error) {
-            next(error);
+            return next(error);
         }
     }
-    
+
 }
 
 

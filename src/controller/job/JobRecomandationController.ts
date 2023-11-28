@@ -10,10 +10,7 @@ const jobRecomandationController = {
         const userId = req.user.id;
         const hasinfo = req.query.hasinfo;
         const limit = req.query.limit;
-
-
         const currentDate = new Date();
-
         try {
             if (hasinfo) {
                 const userSkills: any = await userInfo.find({ userId });
@@ -40,7 +37,7 @@ const jobRecomandationController = {
             }
 
         } catch (error) {
-            next(error);
+            return next(error);
         }
 
     },

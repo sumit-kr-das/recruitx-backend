@@ -27,7 +27,7 @@ const registerController = {
         const { error } = userRegisterSchema.validate(req.body);
 
         if (error) {
-            next(error);
+           return next(error);
         }
 
         try {
@@ -40,7 +40,7 @@ const registerController = {
                 );
             }
         } catch (err) {
-            next(err);
+           return next(err);
         }
 
         // user not in database register new
@@ -76,13 +76,14 @@ const registerController = {
                 role: roles.USER,
             });
         } catch (error) {
-            next(error);
+           return next(error);
         }
 
         res.status(200).json({
             access_token: acc_token,
             user: user.name,
             role: user.role,
+            approve: user.approve
         });
     },
 
@@ -122,7 +123,7 @@ const registerController = {
                 );
             }
         } catch (err) {
-            next(err);
+           return next(err);
         }
 
         //when company name is not present in the database
@@ -177,6 +178,7 @@ const registerController = {
                 access_token: acc_token,
                 user: name,
                 role: roles.COMPANY,
+                approve: saveCompany.approve
             });
         } catch (error) {
             return next(error);
@@ -197,7 +199,7 @@ const registerController = {
         const { error } = adminRegisterSchema.validate(req.body);
 
         if (error) {
-            next(error);
+           return next(error);
         }
 
         const {
@@ -225,7 +227,7 @@ const registerController = {
                 role: roles.ADMIN,
             });
         } catch (error) {
-            next(error);
+           return next(error);
         }
 
         res.status(200).json({

@@ -1,9 +1,9 @@
-import { Response , NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import Joi from "joi";
 import userProjects from "../../model/userProjects";
 
 const userProjectController = {
-    async createProject(req:any, res: Response, next: NextFunction){
+    async createProject(req: any, res: Response, next: NextFunction) {
         const addProjectSchema = Joi.object({
             name: Joi.string().required(),
             description: Joi.string().required(),
@@ -15,9 +15,9 @@ const userProjectController = {
 
         const { error } = addProjectSchema.validate(req.body);
 
-        if(error){
+        if (error) {
             console.log(error)
-            next(error);
+            return next(error);
         }
 
         const { name, description, skills, startDate, endDate, associate } = req.body;
@@ -32,13 +32,13 @@ const userProjectController = {
             associate,
         });
 
-        try{
+        try {
             const saveProjectDeatils = await projectCreate.save();
-            if(saveProjectDeatils){
-                return res.status(200).json({msg: "New Project has been added successfully"});
+            if (saveProjectDeatils) {
+                return res.status(200).json({ msg: "New Project has been added successfully" });
             }
-        } catch(error){
-            next(error);
+        } catch (error) {
+            return next(error);
         }
 
     },
@@ -46,12 +46,12 @@ const userProjectController = {
 
 
 
-    async viewProject(req:any, res: Response, next: NextFunction){
-        try{
+    async viewProject(req: any, res: Response, next: NextFunction) {
+        try {
             const userProject = await userProjects.find({ userId: req.user.id }).select('-userId -__v  -createdAt -updatedAt');
             return res.status(200).json(userProject);
-        } catch(error){
-            next(error)
+        } catch (error) {
+            return next(error)
         }
     },
 
@@ -59,7 +59,7 @@ const userProjectController = {
 
 
 
-    async updateProject(req:any, res: Response, next: NextFunction){
+    async updateProject(req: any, res: Response, next: NextFunction) {
         const updateProject = Joi.object({
             name: Joi.string().required(),
             description: Joi.string().required(),
@@ -71,14 +71,14 @@ const userProjectController = {
 
         const { error } = updateProject.validate(req.body);
 
-        if(error){
-            next(error)
+        if (error) {
+            return next(error)
         }
 
         const { name, description, skills, startDate, endDate, associate } = req.body;
         const p_id = req.params.id;
 
-        try{
+        try {
             const updateUserProject = await userProjects.findByIdAndUpdate(
                 {
                     _id: p_id,
@@ -94,32 +94,32 @@ const userProjectController = {
                 { new: true }
             );
 
-            if(!updateUserProject){
+            if (!updateUserProject) {
                 return res.status(404).json({ msg: "Project datails not updated" })
             }
 
             return res.status(200).json({ msg: "User project datails updated successfully" })
-        } catch(error){
-            next (error);
+        } catch (error) {
+            return next(error);
         }
-     },
+    },
 
-    async deleteProject(req:any, res: Response, next: NextFunction){
+    async deleteProject(req: any, res: Response, next: NextFunction) {
         const p_id = req.params.id;
-        
-        try{
+
+        try {
             const deleteProject = await userProjects.findByIdAndDelete({
                 _id: p_id
             });
 
-            if(!deleteProject){
+            if (!deleteProject) {
                 return res.status(404).json({ msg: "Project deletion not completed" })
             }
 
             return res.status(200).json({ msg: "Project Deleted Successfully" })
 
-        } catch(error){
-            next(error);
+        } catch (error) {
+            return next(error);
         }
     }
 }

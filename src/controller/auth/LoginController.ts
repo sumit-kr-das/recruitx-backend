@@ -22,7 +22,7 @@ const loginController = {
         const { error } = userLoginSchema.validate(req.body);
 
         if (error) {
-            next(error);
+            return next(error);
         }
 
         const { email, password }: { email: string; password: string } =
@@ -48,9 +48,10 @@ const loginController = {
                 access_token,
                 user: user.name,
                 role: user.role,
+                approve: user.approve
             });
         } catch (error) {
-            next(error);
+            return next(error);
         }
     },
 
@@ -67,7 +68,7 @@ const loginController = {
         const { error } = companyLoginSchema.validate(req.body);
 
         if (error) {
-            next(error);
+            return next(error);
         }
 
         const { email, password }: { email: string; password: string } =
@@ -95,9 +96,10 @@ const loginController = {
                 access_token,
                 user: companyInfo.name,
                 role: companyInfo.role,
+                approve: companyInfo.approve
             });
         } catch (error) {
-            next(error);
+            return next(error);
         }
     },
 
@@ -114,7 +116,7 @@ const loginController = {
         const { error } = adminLoginSchema.validate(req.body);
 
         if (error) {
-            next(error);
+            return next(error);
         }
 
         const { email, password }: { email: string; password: string } =

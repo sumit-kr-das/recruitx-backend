@@ -59,7 +59,7 @@ const userController = {
 
             res.status(200).json({ msg: 'User updated successfully' });
         } catch (err) {
-            next(err);
+            return next(err);
         }
     },
 

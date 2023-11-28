@@ -6,14 +6,14 @@ const searchJobController = {
     async searchJob(req: Request, res: Response, next: NextFunction) {
         const searchSchema = Joi.object({
             title: Joi.string().required(),
-            location: Joi.string().allow(null,""),
+            location: Joi.string().allow(null, ""),
             exprience: Joi.number()
         });
 
         const { error } = searchSchema.validate(req.body);
 
         if (error) {
-            next(error);
+            return next(error);
         }
 
         const { title, location, exprience }: { title: string, location: string, exprience: number } = req.body;
@@ -48,7 +48,7 @@ const searchJobController = {
             const jobs = await job.find(query);
             return res.status(200).json(jobs);
         } catch (error) {
-            next(error);
+            return next(error);
         }
 
     },
@@ -57,23 +57,23 @@ const searchJobController = {
         const tag = req.query.tag
         try {
             const jobs = await job.find({ tags: tag })
-            return  res.status(200).json({ jobs })
+            return res.status(200).json({ jobs })
         } catch (error) {
-            next(error);
+            return next(error);
         }
-     
+
     },
 
-    async searchBySkill(req:Request, res:Response, next:NextFunction){
+    async searchBySkill(req: Request, res: Response, next: NextFunction) {
         const skill = req.query.skill
 
         try {
             const jobs = await job.find({ 'info.skills': skill })
             return res.status(200).json({ jobs });
         } catch (error) {
-            next(error);
+            return next(error);
         }
-      
+
     }
 
 }

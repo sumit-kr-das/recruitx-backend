@@ -17,10 +17,10 @@ const userEducationController = {
         const { error } = userEducationSchema.validate(req.body);
 
         if (error) {
-           return next(error);
+            return next(error);
         }
 
-        const { degree, college, course, admissionYear, passYear, marks, courseType }: { degree: string, college: string, course:string, admissionYear: string, passYear: number, marks: number, courseType:string } = req.body;
+        const { degree, college, course, admissionYear, passYear, marks, courseType }: { degree: string, college: string, course: string, admissionYear: string, passYear: number, marks: number, courseType: string } = req.body;
 
         const userEducation = new userEducationDetail({
             userId: req.user.id,
@@ -40,7 +40,7 @@ const userEducationController = {
             }
         } catch (error) {
             console.log(error);
-          return next(error);
+            return next(error);
         }
     },
 
@@ -49,7 +49,7 @@ const userEducationController = {
             const userEducation = await userEducationDetail.find({ userId: req.user.id }).select('-userId -__v  -createdAt -updatedAt');
             return res.status(200).json(userEducation);
         } catch (error) {
-            next(error);
+            return next(error);
         }
     },
 
@@ -70,7 +70,7 @@ const userEducationController = {
             return res.status(400).json({ error: error.details[0].message });
         }
 
-        const { degree, college, course, admissionYear, passYear, marks, courseType }: { degree: string, college: string, course:string, admissionYear: string, passYear: number, marks: number, courseType:string } = req.body;
+        const { degree, college, course, admissionYear, passYear, marks, courseType }: { degree: string, college: string, course: string, admissionYear: string, passYear: number, marks: number, courseType: string } = req.body;
         const edId = req.params.id;
 
         try {
@@ -97,17 +97,17 @@ const userEducationController = {
 
             return res.status(200).json({ msg: "User Education Updated Successfully" });
         } catch (error) {
-            next(error);
+            return next(error);
         }
     },
 
     async deleteUserEducation(req: any, res: Response, next: NextFunction) {
-        const edId = req.params.id; 
+        const edId = req.params.id;
 
         try {
             const deletedUserEducation = await userEducationDetail.findOneAndDelete({
                 _id: edId,
-                userId: req.user.id, 
+                userId: req.user.id,
             });
 
             if (!deletedUserEducation) {
@@ -116,7 +116,7 @@ const userEducationController = {
 
             return res.status(200).json({ msg: "User Education Deleted Successfully" });
         } catch (error) {
-            next(error);
+            return next(error);
         }
     }
 }
