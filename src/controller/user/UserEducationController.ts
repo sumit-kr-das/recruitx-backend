@@ -7,30 +7,30 @@ const userEducationController = {
         const userEducationSchema = Joi.object({
             degree: Joi.string().required(),
             college: Joi.string().required(),
-            duration: Joi.object({
-                admissionYear: Joi.number().integer().required(),
-                passYear: Joi.number().integer().required(),
-            }).required(),
+            course: Joi.string().required(),
+            admissionYear: Joi.number().integer().required(),
+            passYear: Joi.number().integer().required(),
             marks: Joi.number().required(),
+            courseType: Joi.string().required()
         })
 
         const { error } = userEducationSchema.validate(req.body);
 
         if (error) {
-            next(error);
+           return next(error);
         }
 
-        const { degree, college, duration: { admissionYear, passYear }, marks }: { degree: string, college: string, duration: { admissionYear: string, passYear: number }, marks: number } = req.body;
+        const { degree, college, course, admissionYear, passYear, marks, courseType }: { degree: string, college: string, course:string, admissionYear: string, passYear: number, marks: number, courseType:string } = req.body;
 
         const userEducation = new userEducationDetail({
             userId: req.user.id,
             degree,
             college,
-            duration: {
-                admissionYear,
-                passYear
-            },
-            marks
+            course,
+            admissionYear,
+            passYear,
+            marks,
+            courseType
         });
 
         try {
@@ -39,7 +39,8 @@ const userEducationController = {
                 return res.status(200).json({ msg: "User Education Added Successfully" });
             }
         } catch (error) {
-            next(error);
+            console.log(error);
+          return next(error);
         }
     },
 
@@ -54,14 +55,14 @@ const userEducationController = {
 
     async editUserEducation(req: any, res: Response, next: NextFunction) {
         const userEducationSchema = Joi.object({
-            degree: Joi.string().required(),
-            college: Joi.string().required(),
-            duration: Joi.object({
-                admissionYear: Joi.number().integer().required(),
-                passYear: Joi.number().integer().required(),
-            }).required(),
-            marks: Joi.number().required(),
-        });
+            degree: Joi.string(),
+            college: Joi.string(),
+            course: Joi.string(),
+            admissionYear: Joi.number().integer(),
+            passYear: Joi.number().integer(),
+            marks: Joi.number(),
+            courseType: Joi.string()
+        })
 
         const { error } = userEducationSchema.validate(req.body);
 
@@ -69,7 +70,7 @@ const userEducationController = {
             return res.status(400).json({ error: error.details[0].message });
         }
 
-        const { degree, college, duration: { admissionYear, passYear }, marks } = req.body;
+        const { degree, college, course, admissionYear, passYear, marks, courseType }: { degree: string, college: string, course:string, admissionYear: string, passYear: number, marks: number, courseType:string } = req.body;
         const edId = req.params.id;
 
         try {
@@ -81,11 +82,11 @@ const userEducationController = {
                 {
                     degree,
                     college,
-                    duration: {
-                        admissionYear,
-                        passYear,
-                    },
+                    admissionYear,
+                    passYear,
                     marks,
+                    course,
+                    courseType
                 },
                 { new: true }
             );
