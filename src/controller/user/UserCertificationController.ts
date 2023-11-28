@@ -52,11 +52,11 @@ const userCertificationController = {
 
     async editCertificate(req:any, res:Response, next:NextFunction){
         const certificateSchema = Joi.object({
-            title: Joi.string().required(),
-            source: Joi.string().required(),
-            description: Joi.string().required(),
-            startDate: Joi.date().required(),
-            endDate: Joi.date().required(),
+            title: Joi.string(),
+            source: Joi.string(),
+            description: Joi.string(),
+            startDate: Joi.date(),
+            endDate: Joi.date(),
         });
     
         const { error } = certificateSchema.validate(req.body);
@@ -67,11 +67,11 @@ const userCertificationController = {
         }
     
         const { title, source, description, startDate, endDate }: {
-            title: string,
-            source: string,
-            description: string,
-            startDate: Date,
-            endDate: Date,
+            title?: string,
+            source?: string,
+            description?: string,
+            startDate?: Date,
+            endDate?: Date,
         } = req.body;
     
         try {
