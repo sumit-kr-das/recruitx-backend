@@ -12,7 +12,7 @@ const userCarrerController = {
             jobRole: Joi.string().required(),
             jobType: Joi.string().required(),
             employmentType: Joi.string().required(),
-            location: Joi.array().required(),
+            skills: Joi.array().required(),
             expectedSalary: Joi.number().required()
         });
 
@@ -22,7 +22,7 @@ const userCarrerController = {
             return next(error);
         }
 
-        const { industry, role, jobRole, jobType, employmentType, location, expectedSalary }: { industry: string, role: string, jobRole: string, jobType: string, employmentType: string, location: [string], expectedSalary: number } = req.body;
+        const { industry, role, jobRole, jobType, employmentType, skills, expectedSalary }: { industry: string, role: string, jobRole: string, jobType: string, employmentType: string, skills: [string], expectedSalary: number } = req.body;
 
         const userCarrer = new userCareerProfile({
             userId: req.user.id,
@@ -31,7 +31,7 @@ const userCarrerController = {
             jobRole,
             jobType,
             employmentType,
-            location,
+            skills,
             expectedSalary
         });
 
@@ -62,7 +62,7 @@ const userCarrerController = {
             jobRole: Joi.string().required(),
             jobType: Joi.string().required(),
             employmentType: Joi.string().required(),
-            location: Joi.array().required(),
+            skills: Joi.array().required(),
             expectedSalary: Joi.number().required(),
         });
 
@@ -72,13 +72,13 @@ const userCarrerController = {
             return next(error);
         }
 
-        const { industry, role, jobRole, jobType, employmentType, location, expectedSalary }: {
+        const { industry, role, jobRole, jobType, employmentType, skills, expectedSalary }: {
             industry: string,
             role: string,
             jobRole: string,
             jobType: string,
             employmentType: string,
-            location: string[],
+            skills: string[],
             expectedSalary: number
         } = req.body;
 
@@ -91,7 +91,7 @@ const userCarrerController = {
                     jobRole,
                     jobType,
                     employmentType,
-                    location,
+                    skills,
                     expectedSalary
                 },
                 { new: true }
