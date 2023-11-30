@@ -14,6 +14,8 @@ router
     .delete("/delete/:id", [auth, companyAuth], jobController.deleteJob)
     .post("/apply/:id", [auth, userAuth], jobApplicationController.jobApply)
     .delete("/apply/cancel/:id", [auth, userAuth], jobApplicationController.cancelApply)
+    .put("/apply/approve/:id", [auth, companyAuth], jobApplicationController.shortlistApply)
+    .get("/apply/shortlisted/view/:id", [auth, companyAuth], jobApplicationController.viewShortListedAppliers)
     .get("/application/view/:id", [auth, companyAuth], jobApplicationController.viewAppliers)
     .post("/search", searchJobController.searchJob)
     .get("/search/tag", searchJobController.searchByTags)

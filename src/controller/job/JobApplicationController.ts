@@ -48,21 +48,40 @@ const jobApplicationController = {
     async viewAppliers(req: any, res: Response, next: NextFunction) {
         const jobId = req.params.id;
         try {
-            const appliers = await applier.find({ jobId }).select("-__v -createdAt -updatedAt -_id");
+            const appliers = await applier.find({ jobId, selected: false }).select("-__v -createdAt -updatedAt -_id").populate("userId");
             return res.status(200).json(appliers)
         } catch (error) {
             return next(error)
         }
     },
 
+    async shortlistApply(req: Request, res: Response, next: NextFunction) {
+        const id = req.params.id;
+        try {
+            const updatedApplier = await applier.findByIdAndUpdate(
+                id,
+                { selected: true },
+                { new: true } // Returns the updated document
+            );
+
+            if (!updatedApplier) {
+                return res.status(401).json({ error: 'Applier not found' });
+            }
+
+            return res.json({ message: 'Application Shortlisted successfully', applier: updatedApplier });
+        } catch (error) {
+            return next(error);
+        }
+    },
+
     async allPostApplicants(req: any, res: Response, next: NextFunction) {
         const jobId = req.params.jobId;
         try {
-            const jobs = await job.findById(jobId).select("info.roles");
+            const jobs = await job.find({ jobId }).select("info.roles");
             const totalApplication = await applier.countDocuments({ jobId });
 
             return res.status(200).json({
-                post: jobs?.info.roles,
+                post: jobs,
                 totalApplicants: totalApplication
             })
         } catch (error) {
@@ -83,6 +102,16 @@ const jobApplicationController = {
             })
         } catch (error) {
             return next(error);
+        }
+    },
+
+    async viewShortListedAppliers(req: Request, res: Response, next: NextFunction) {
+        const jobId = req.params.id;
+        try {
+            const appliers = await applier.find({ jobId, selected: true }).select("-__v -createdAt -updatedAt -_id").populate("userId");
+            return res.status(200).json(appliers)
+        } catch (error) {
+            return next(error)
         }
     }
 
