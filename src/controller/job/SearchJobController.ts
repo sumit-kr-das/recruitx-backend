@@ -18,38 +18,41 @@ const searchJobController = {
 
         const { title, location, exprience }: { title: string, location: string, exprience: number } = req.body;
 
-        let query = {};
 
-        if (title && location && exprience) {
-            query = {
-                title: { $regex: title, $options: 'i' },
-                'info.location': { $regex: location, $options: 'i' },
-                'info.minExprience': { $lte: exprience },
+        if (title || location || exprience) {
+            console.log("agree")
+            let query = {};
+            if (title && location && exprience) {
+                query = {
+                    title: { $regex: title, $options: 'i' },
+                    'info.location': { $regex: location, $options: 'i' },
+                    'info.minExprience': { $lte: exprience },
+                }
+            } else if (title && location) {
+                query = {
+                    title: { $regex: title, $options: 'i' },
+                    'info.location': { $regex: location, $options: 'i' },
+                }
+            } else if (title && exprience) {
+                query = {
+                    title: { $regex: title, $options: 'i' },
+                    'info.minExprience': { $lte: exprience },
+                }
+            } else if (title) {
+                query = {
+                    title: { $regex: title, $options: 'i' },
+                }
             }
-        } else if (title && location) {
-            query = {
-                title: { $regex: title, $options: 'i' },
-                'info.location': { $regex: location, $options: 'i' },
+            try {
+                const jobs = await job.find(query);
+                return res.status(200).json(jobs);
+            } catch (error) {
+                return next(error);
             }
-        } else if (title && exprience) {
-            query = {
-                title: { $regex: title, $options: 'i' },
-                'info.minExprience': { $lte: exprience },
-            }
-        } else if (title) {
-            query = {
-                title: { $regex: title, $options: 'i' },
-            }
+
         } else {
             const jobs = await job.find().sort({ createdAt: -1 });
             return res.status(200).json(jobs);
-        }
-
-        try {
-            const jobs = await job.find(query);
-            return res.status(200).json(jobs);
-        } catch (error) {
-            return next(error);
         }
 
     },
