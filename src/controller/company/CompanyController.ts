@@ -183,7 +183,7 @@ const companyController = {
         } catch (error) {
             return next(error);
         }
-    }
+    },
 };
 
 export default companyController;
