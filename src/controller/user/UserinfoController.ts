@@ -111,6 +111,7 @@ const userInfoController = {
 
     async updateUserinfo(req: any, res: Response, next: NextFunction) {
         const userId = req.user.id;
+        console.log("file", req?.file)
 
         const userinfoSchema = Joi.object({
             github: Joi.string(),
@@ -138,7 +139,7 @@ const userInfoController = {
         } else {
             photo = req.file?.path;
         }
-
+        
         const {
             github,
             linkedIn,

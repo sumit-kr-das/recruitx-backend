@@ -1,15 +1,11 @@
-import { Response, Request, NextFunction } from 'express';
-import company from '../../model/company';
-import { MulterService } from '../../services/multerService';
-import Joi, { object, string } from 'joi';
-import CustomErrorHandler from '../../services/customErrorHandeler';
-import path from 'path';
-import fs from 'fs';
 import bcrypt from 'bcrypt';
+import { NextFunction, Request, Response } from 'express';
+import Joi from 'joi';
+import company from '../../model/company';
 
 const companyController = {
     async viewCompanies(req: Request, res: Response, next: NextFunction) {
-        const { limit, ...others }: { limit?: number;[key: string]: any } =
+        const { limit, ...others }: { limit?: number; [key: string]: any } =
             req.query;
 
         try {
@@ -77,12 +73,30 @@ const companyController = {
             return next(error);
         }
 
-        const { name, email, phone, companyName, industry, designation, pin, address }: { name?: string, email?: string, phone?: string, companyName?: string, industry?: string, designation?: string, pin?: string, address?: string } = req.body;
+        const {
+            name,
+            email,
+            phone,
+            companyName,
+            industry,
+            designation,
+            pin,
+            address,
+        }: {
+            name?: string;
+            email?: string;
+            phone?: string;
+            companyName?: string;
+            industry?: string;
+            designation?: string;
+            pin?: string;
+            address?: string;
+        } = req.body;
 
         const oldCompany = await company.findById(companyId);
 
         if (!oldCompany) {
-            return res.status(404).json({ msg: "No company found" });
+            return res.status(404).json({ msg: 'No company found' });
         }
 
         const updateData = {
@@ -92,14 +106,20 @@ const companyController = {
             companyName: companyName || oldCompany.companyName,
             designation: designation || oldCompany.designation,
             pin: pin || oldCompany.pin,
-            address: address || oldCompany.address
+            address: address || oldCompany.address,
         };
 
         try {
-            const updateCompany = await company.findOneAndUpdate({ _id: companyId }, updateData, { returnOriginal: false });
-            return res.status(200).json({ msg: "Company updated successfully" });
+            const updateCompany = await company.findOneAndUpdate(
+                { _id: companyId },
+                updateData,
+                { returnOriginal: false },
+            );
+            return res
+                .status(200)
+                .json({ msg: 'Company updated successfully' });
         } catch (error) {
-            return next(error)
+            return next(error);
         }
     },
 
@@ -107,7 +127,7 @@ const companyController = {
         const companyId = req.user.id;
         const passwordSchema = Joi.object({
             oldPassword: Joi.string().required(),
-            newPassword: Joi.string().required()
+            newPassword: Joi.string().required(),
         });
 
         const { error } = passwordSchema.validate(req.body);
@@ -116,37 +136,51 @@ const companyController = {
             return next(error);
         }
 
-        const { oldPassword, newPassword }: { oldPassword: string, newPassword: string } = req.body;
+        const {
+            oldPassword,
+            newPassword,
+        }: { oldPassword: string; newPassword: string } = req.body;
 
         try {
-            const companyData = await company.findById(companyId).select("password");
+            const companyData = await company
+                .findById(companyId)
+                .select('password');
 
             if (!companyData) {
-                return res.status(404).json({ msg: "company not found" });
+                return res.status(404).json({ msg: 'company not found' });
             }
 
-            const matchPassword = await bcrypt.compare(oldPassword, companyData.password);
+            const matchPassword = await bcrypt.compare(
+                oldPassword,
+                companyData.password,
+            );
             if (!matchPassword) {
-                return res.status(404).json({ msg: "Your credentials are invalid" });
+                return res
+                    .status(404)
+                    .json({ msg: 'Your credentials are invalid' });
             } else {
                 try {
                     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-                    const updateCompany = await company.findOneAndUpdate({ _id: companyId }, { password: hashedPassword }, { returnOriginal: false });
-                    return res.status(200).json({ msg: "Password updated" });
+                    const updateCompany = await company.findOneAndUpdate(
+                        { _id: companyId },
+                        { password: hashedPassword },
+                        { returnOriginal: false },
+                    );
+                    return res.status(200).json({ msg: 'Password updated' });
                 } catch (error) {
-                    next(error)
+                    next(error);
                 }
             }
         } catch (error) {
-            return next(error)
+            return next(error);
         }
     },
 
     async deleteCompany(req: any, res: Response, next: NextFunction) {
         const companyId = req.user.id;
         const deleteSchema = Joi.object({
-            password: Joi.string().required()
+            password: Joi.string().required(),
         });
 
         const { error } = deleteSchema.validate(req.body);
@@ -157,13 +191,18 @@ const companyController = {
         const { password }: { password: string } = req.body;
 
         try {
-            const companyData = await company.findById(companyId).select("password");
+            const companyData = await company
+                .findById(companyId)
+                .select('password');
 
             if (!companyData) {
-                return res.status(404).json({ msg: "company not found" });
+                return res.status(404).json({ msg: 'company not found' });
             }
 
-            const matchPassword = await bcrypt.compare(password, companyData.password);
+            const matchPassword = await bcrypt.compare(
+                password,
+                companyData.password,
+            );
 
             if (matchPassword) {
                 const deleteCompany = await company.findOneAndDelete({
@@ -171,19 +210,19 @@ const companyController = {
                 });
 
                 if (!deleteCompany) {
-                    return res.status(404).json({ msg: "Company not found" })
+                    return res.status(404).json({ msg: 'Company not found' });
                 }
 
-                return res.status(200).json({ msg: "Company Deleted Successfully" });
+                return res
+                    .status(200)
+                    .json({ msg: 'Company Deleted Successfully' });
             } else {
-                return res.status(404).json({ msg: "Invalid credentials" });
-
+                return res.status(404).json({ msg: 'Invalid credentials' });
             }
-
         } catch (error) {
             return next(error);
         }
-    }
+    },
 };
 
 export default companyController;
