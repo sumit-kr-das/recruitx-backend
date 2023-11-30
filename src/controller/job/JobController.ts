@@ -116,12 +116,14 @@ const jobController = {
 
     async viewJobs(req: any, res: Response, next: NextFunction) {
         // const limit = req.query.limit;
-        const { limit, ...others }: { limit?: number;[key: string]: any } = req.query;
+        const { limit, ...others }: { limit?: number; [key: string]: any } =
+            req.query;
 
         try {
             if (limit) {
                 const jobs = await job
                     .find({ companyId: req.user.id, ...others })
+                    .populate('companyId', 'companyName')
                     .limit(limit)
                     .sort({ createdAt: -1 })
                     .select('-__v -createdAt -updatedAt');
@@ -141,10 +143,14 @@ const jobController = {
     async viewJobsFeed(req: Request, res: Response, next: NextFunction) {
         const limit = Number(req.query.limit);
         try {
-            const jobs = await job.find().sort({ createdAt: -1 }).limit(limit).select("-__v -updatedAt");
+            const jobs = await job
+                .find()
+                .sort({ createdAt: -1 })
+                .limit(limit)
+                .select('-__v -updatedAt');
             return res.status(200).json(jobs);
         } catch (error) {
-            next(error)
+            next(error);
         }
     },
 
@@ -310,9 +316,9 @@ const jobController = {
             });
             return res.status(200).json(jobDetails);
         } catch (error) {
-            next(error)
+            next(error);
         }
-    }
+    },
 };
 
 export default jobController;

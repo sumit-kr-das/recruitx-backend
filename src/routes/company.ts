@@ -12,7 +12,7 @@ const router = express.Router();
 router
     .post("/auth/register", registerController.companyRegister)
     .post("/auth/login", loginController.companyLogin)
-    .get("/views", [auth], companyController.viewCompanies)
+    .get("/views", companyController.viewCompanies)
     .put("/edit", [auth, companyAuth], companyController.editCompany)
     .get("/view", [auth, companyAuth], companyController.viewCompany)
     .get("/details", [auth, companyAuth], companyController.viewCompanyDetails)
