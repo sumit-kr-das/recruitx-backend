@@ -10,7 +10,7 @@ const jobApplicationController = {
         try {
             const application = await applier.findOne({ jobId, userId: req.user.id });
             if (application) {
-                return res.status(200).json({ msg: "user already applied" })
+                return res.status(401).json({ msg: "You have already applied in this job" })
             }
         } catch (error) {
             return next(error)

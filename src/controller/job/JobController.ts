@@ -300,6 +300,19 @@ const jobController = {
             return next(error);
         }
     },
+
+    async getJobDetails(req: Request, res: Response, next: NextFunction) {
+        const jobId = req.params.jobId;
+        try {
+            const jobDetails = await job.findById(jobId).populate({
+                path: 'companyId',
+                select: 'companyName pin address',
+            });
+            return res.status(200).json(jobDetails);
+        } catch (error) {
+            next(error)
+        }
+    }
 };
 
 export default jobController;

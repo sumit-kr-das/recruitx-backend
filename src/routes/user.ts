@@ -3,7 +3,7 @@ import UserController from '../controller/user/UserController';
 import auth from '../middleware/auth';
 import userAuth from '../middleware/userAuth';
 import userController from '../controller/user/UserController';
-import { projectController, userCarrerController, userCertificationController, userEducationController, userExprienceController, userInfoController, userAllInfoController } from '../controller';
+import { projectController, userCarrerController, userCertificationController, userEducationController, userExprienceController, userInfoController, userAllInfoController, statsController } from '../controller';
 import { MulterService } from '../services/multerService';
 import companyAuth from '../middleware/companyAuth';
 import userRecomandation from '../controller/user/UserRecomandation';
@@ -12,7 +12,7 @@ import adminAuth from '../middleware/adminAuth';
 const router = express.Router();
 
 router.get('/view', [auth, userAuth], UserController.viewUser)
-      .get("/view/all",[auth, adminAuth],userController.viewAllUser)
+      .get("/view/all", [auth, adminAuth], userController.viewAllUser)
       .put("/edit", [auth, userAuth], userController.editUser)
       .post("/carrer/add", [auth, userAuth], userCarrerController.addUserCarrer)
       .get("/carrer/view", [auth, userAuth], userCarrerController.viewUserCarrer)
@@ -35,12 +35,12 @@ router.get('/view', [auth, userAuth], UserController.viewUser)
       .put("/info/update", MulterService, [auth, userAuth], userInfoController.updateUserinfo)
       .get("/search", [auth, companyAuth], userRecomandation.userRecomand)
 
-      .post("/project/add", [auth, userAuth], projectController.createProject )
+      .post("/project/add", [auth, userAuth], projectController.createProject)
       .get("/project/view", [auth, userAuth], projectController.viewProject)
       .put("/project/update/:id", [auth, userAuth], projectController.updateProject)
       .delete("/project/delete/:id", [auth, userAuth], projectController.deleteProject)
 
-      .get("/all/info/view", [auth, userAuth], userAllInfoController.viewUserAllInfo);
-
+      .get("/all/info/view", [auth, userAuth], userAllInfoController.viewUserAllInfo)
+      .get("/stats", statsController.viewStats);
 
 export default router;
