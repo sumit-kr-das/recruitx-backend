@@ -22,6 +22,7 @@ router
     .get("/recommandtions", [auth, userAuth], jobRecomandationController.recommendJobs)
     .get("/roles/totalapplication/:jobId", [auth, companyAuth], jobApplicationController.allPostApplicants)
     .get("/applications/manage/:jobId", [auth, companyAuth], jobApplicationController.allManageApplicants)
-    .get("/statics", [auth, companyAuth], jobController.getJobStatics);
+    .get("/statics", [auth, companyAuth], jobController.getJobStatics)
+    .get("/details/:jobId", jobController.getJobDetails);
 
 export default router;
