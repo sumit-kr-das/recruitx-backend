@@ -27,7 +27,7 @@ const adminController = {
         const approve = req.query.approve;
         try {
             const companies = await company
-                .find({ approve })
+                .find({ approve: approve })
                 .select('-_v -password');
             return res.status(200).json(companies);
         } catch (error) {
