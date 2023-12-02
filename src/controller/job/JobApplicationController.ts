@@ -48,7 +48,7 @@ const jobApplicationController = {
     async viewAppliers(req: any, res: Response, next: NextFunction) {
         const jobId = req.params.id;
         try {
-            const appliers = await applier.find({ jobId, selected: false }).select("-__v -createdAt -updatedAt -_id").populate("userId");
+            const appliers = await applier.find({ jobId, selected: false }).select("-__v -createdAt -updatedAt").populate("userId");
             return res.status(200).json(appliers)
         } catch (error) {
             return next(error)
@@ -108,7 +108,7 @@ const jobApplicationController = {
     async viewShortListedAppliers(req: Request, res: Response, next: NextFunction) {
         const jobId = req.params.id;
         try {
-            const appliers = await applier.find({ jobId, selected: true }).select("-__v -createdAt -updatedAt -_id").populate("userId");
+            const appliers = await applier.find({ jobId, selected: true }).select("-__v -createdAt -updatedAt").populate("userId");
             return res.status(200).json(appliers)
         } catch (error) {
             return next(error)
