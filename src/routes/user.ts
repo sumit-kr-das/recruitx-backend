@@ -3,7 +3,7 @@ import UserController from '../controller/user/UserController';
 import auth from '../middleware/auth';
 import userAuth from '../middleware/userAuth';
 import userController from '../controller/user/UserController';
-import { projectController, userCarrerController, userCertificationController, userEducationController, userExprienceController, userInfoController, userAllInfoController, statsController } from '../controller';
+import { projectController, userCarrerController, userCertificationController, userEducationController, userExprienceController, userInfoController, userAllInfoController, statsController, jobApplicationController } from '../controller';
 import { MulterService } from '../services/multerService';
 import companyAuth from '../middleware/companyAuth';
 import userRecomandation from '../controller/user/UserRecomandation';
@@ -41,6 +41,7 @@ router.get('/view', [auth, userAuth], UserController.viewUser)
       .delete("/project/delete/:id", [auth, userAuth], projectController.deleteProject)
 
       .get("/all/info/view", [auth, userAuth], userAllInfoController.viewUserAllInfo)
-      .get("/stats", statsController.viewStats);
+      .get("/stats", statsController.viewStats)
+      .get("/applied/jobs/view", [auth, userAuth], jobApplicationController.viewAppliedJobs);
 
 export default router;
