@@ -113,6 +113,16 @@ const jobApplicationController = {
         } catch (error) {
             return next(error)
         }
+    },
+
+    async viewAppliedJobs(req: any, res: Response, next: NextFunction) {
+        const userId = req.user.id;
+        try {
+            const jobs = await applier.find({ userId }).select("-userId").populate("jobId");
+            return res.status(200).json(jobs);
+        } catch (error) {
+            return next(error);
+        }
     }
 
 }

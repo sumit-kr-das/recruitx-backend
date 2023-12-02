@@ -26,5 +26,4 @@ router
     .get("/applications/manage/:jobId", [auth, companyAuth], jobApplicationController.allManageApplicants)
     .get("/statics", [auth, companyAuth], jobController.getJobStatics)
     .get("/details/:jobId", jobController.getJobDetails);
-
 export default router;

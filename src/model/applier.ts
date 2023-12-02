@@ -7,7 +7,10 @@ export interface IApplier extends Document {
 }
 
 const ApplierSchema: Schema = new Schema({
-    jobId: { type: String, required: true },
+    jobId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Job', required: true
+    },
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
