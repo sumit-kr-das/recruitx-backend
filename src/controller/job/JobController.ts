@@ -147,7 +147,7 @@ const jobController = {
                 .find()
                 .sort({ createdAt: -1 })
                 .limit(limit)
-                .select('-__v -updatedAt');
+                .select('-__v -updatedAt').populate("companyId", "companyName");
             return res.status(200).json(jobs);
         } catch (error) {
             next(error);
