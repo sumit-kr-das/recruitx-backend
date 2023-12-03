@@ -34,8 +34,9 @@ const jobApplicationController = {
 
     async cancelApply(req: any, res: Response, next: NextFunction) {
         const jobId = req.params.id;
+        const userId = req.params.userId;
         try {
-            const deleteApply = await applier.findOneAndDelete({ userId: req.user.id, jobId });
+            const deleteApply = await applier.findOneAndDelete({ userId, jobId });
             if (!deleteApply) {
                 return res.status(402).json({ msg: "Application not found" })
             }
