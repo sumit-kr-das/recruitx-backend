@@ -136,12 +136,12 @@ const companyProfileController = {
         try {
             const companyData = await company.findById(companyId).select("-__v -_id -password");
             const profile = await companyProfile.find({ companyId }).select("-__v -_id");
-            console.log(companyData);
+
             const data = {
                 name: companyData?.name,
                 email: companyData?.email,
                 phone: companyData?.phone,
-                companyName: companyData?.name,
+                companyName: companyData?.companyName,
                 designation: companyData?.designation,
                 industry: companyData?.industry,
                 pin: companyData?.pin,
