@@ -40,7 +40,7 @@ router.get('/view', [auth, userAuth], UserController.viewUser)
       .put("/project/update/:id", [auth, userAuth], projectController.updateProject)
       .delete("/project/delete/:id", [auth, userAuth], projectController.deleteProject)
 
-      .get("/all/info/view", [auth, userAuth], userAllInfoController.viewUserAllInfo)
+      .get("/all/info/view", [auth], userAllInfoController.viewUserAllInfo)
       .get("/stats", statsController.viewStats)
       .get("/applied/jobs/view", [auth, userAuth], jobApplicationController.viewAppliedJobs);
 
