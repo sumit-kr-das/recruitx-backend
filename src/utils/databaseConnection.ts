@@ -3,14 +3,14 @@ import { config } from '../config';
 import logger from './logger';
 
 mongoose.connection.on('connected', () => {
-    logger.info(`DB Connected [${config.DB_URL}]`);
+    logger.info(`DATABASE CONNECTED`);
 });
 
 mongoose.connection.on('disconnected', () => {
-    logger.error('DB Disconnected ..x..x..x..');
+    logger.error('DATABASE CONNECTION ERROR ..x..x..x..');
 });
 
-const connect = async () => {
+const databaseConnection = async () => {
     try {
         await mongoose.connect(config.DB_URL);
     } catch (error) {
@@ -18,4 +18,4 @@ const connect = async () => {
     }
 };
 
-export default connect;
+export default databaseConnection;
