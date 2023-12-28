@@ -2,16 +2,16 @@ import { createClient } from 'redis';
 import { config } from '../config';
 import logger from './logger';
 
-const isProduction = Boolean(config.PRODUCTION);
-const redis_base_url = config.REDIS_URL;
+const PORT = Number(config.REDIS_PORT);
+const HOST = config.REDIS_HOST;
 
-const getRedisURL = () => {
-    if (isProduction && redis_base_url) {
-        return redis_base_url;
-    }
-};
-
-const redisClient = createClient({ url: getRedisURL() });
+const redisClient = createClient({
+    legacyMode: true,
+    socket: {
+        host: HOST,
+        port: PORT,
+    },
+});
 
 redisClient.on('connect', () => {
     logger.info('REDIS STORE CONNECTED');
