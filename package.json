@@ -5,10 +5,12 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon start.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "start:docker": "yarn build && yarn dev"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
+    "body-parser": "^1.20.2",
     "config": "^3.3.9",
     "cors": "^2.8.5",
     "dayjs": "^1.11.9",
