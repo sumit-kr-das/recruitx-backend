@@ -4,7 +4,7 @@
   "main": "start.ts",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon ./src/start.ts",
+    "dev": "nodemon -L ./src/start.ts",
     "build": "rimraf dist && swc ./src -d dist",
     "start": "node dist/start.js"
   },
@@ -49,6 +49,7 @@
     "prettier": "3.0.0",
     "rimraf": "^5.0.5",
     "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.1.6"
   }
 }
