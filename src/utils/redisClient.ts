@@ -2,13 +2,13 @@ import { createClient } from 'redis';
 import { config } from '../config';
 import logger from './logger';
 
+const PRODUCTION = config.PRODUCTION;
 const PORT = Number(config.REDIS_PORT);
-const HOST = config.REDIS_HOST;
 
 const redisClient = createClient({
     legacyMode: true,
     socket: {
-        host: HOST,
+        host: PRODUCTION === 'true' ? config.REDIS_HOST : 'localhost',
         port: PORT,
     },
 });
