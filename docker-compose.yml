@@ -1,5 +1,22 @@
 version: "3"
 services:
+  mongo_db:
+    image: mongo
+    container_name: mongo-container
+    networks:
+      - mern-stack-network
+    restart: always
+    volumes:
+      - mongodb:/data/db
+
+  redis_db:
+    image: redis:alpine
+    container_name: redis-container
+    networks:
+      - mern-stack-network
+    ports:
+      - 6379:6379
+      
   recruitx_api:
     build: .
     ports:
@@ -23,17 +40,7 @@ services:
       REDIS_HOST: redis_db
       REDIS_PORT: 6379
 
-  mongo_db:
-    image: mongo
-    container_name: mongo
-    restart: always
-    volumes:
-      - mongodb:/data/db
 
-  redis_db:
-    image: redis:alpine
-    ports:
-      - 6379:6379
 
 networks:
   mern-stack-network:
