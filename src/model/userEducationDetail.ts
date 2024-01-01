@@ -1,15 +1,5 @@
 import { Schema, model, Document } from 'mongoose';
-
-export interface IUserEducationDetail extends Document {
-    userId: string;
-    degree: string;
-    college: string;
-    course: string;
-    courseType: string;
-    admissionYear: number;
-    passYear: number;
-    marks: number;
-}
+import { IUserEducationModel } from '../@types/userEducationTypes';
 
 const UserEducationDetailSchema: Schema = new Schema(
     {
@@ -27,7 +17,7 @@ const UserEducationDetailSchema: Schema = new Schema(
     },
 );
 
-export default model<IUserEducationDetail>(
+export default model<IUserEducationModel>(
     'UserEducationDetail',
     UserEducationDetailSchema,
 );

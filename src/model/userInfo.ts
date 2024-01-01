@@ -1,25 +1,10 @@
 import { Schema, model, Document } from 'mongoose';
+import { IUserinfoModel } from '../@types/userInfoTypes';
 
-export interface IUserinfo extends Document {
-    userId: string;
-    github?: string;
-    linkedIn?: string;
-    dateOfBirth: Date;
-    age: number;
-    address: string;
-    bio: string;
-    objective: string;
-    // status: string;
-    language: [string];
-    gender: string;
-    skills: [string];
-    photo?: string;
-    maxQualification: string;
-}
 
 const UserinfoSchema: Schema = new Schema({
     userId: { type: String, ref: 'user', required: true },
-    github: { type: String},
+    github: { type: String },
     linkedIn: { type: String },
     dateOfBirth: { type: String, required: true },
     age: { type: Number, required: true },
@@ -39,4 +24,4 @@ const UserinfoSchema: Schema = new Schema({
     maxQualification: { type: String, required: true },
 });
 
-export default model<IUserinfo>('Userinfo', UserinfoSchema);
+export default model<IUserinfoModel>('Userinfo', UserinfoSchema);

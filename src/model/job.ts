@@ -1,5 +1,6 @@
 import { Schema, model, Document } from 'mongoose';
 import company from './company';
+import { IJobModel } from '../@types/jobTypes';
 
 export interface IJob extends Document {
     title: string;
@@ -60,4 +61,4 @@ const JobSchema: Schema = new Schema(
     },
 );
 
-export default model<IJob>('Job', JobSchema);
+export default model<IJobModel>('Job', JobSchema);

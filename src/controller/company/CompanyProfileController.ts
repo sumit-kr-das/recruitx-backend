@@ -3,6 +3,7 @@ import Joi from "joi";
 import companyProfile from "../../model/companyProfile";
 import company from "../../model/company";
 import { json } from "body-parser";
+import { ICompanyProfileReqBody, ICompanyProfileUpdate } from "../../@types/companyProfileTypes";
 
 const companyProfileController = {
     async addProfile(req: any, res: Response, next: NextFunction) {
@@ -33,7 +34,7 @@ const companyProfileController = {
         }
 
 
-        const { description, teamSize, type, tags, founded }: { description: string, teamSize: number, type: string, tags: [string], founded: string } = req.body;
+        const { description, teamSize, type, tags, founded }: ICompanyProfileReqBody = req.body;
 
         const profile = new companyProfile({
             companyId,
@@ -72,7 +73,7 @@ const companyProfileController = {
         }
 
 
-        const { description, teamSize, type, tags, founded }: { description?: string; teamSize?: number; type?: string, tags?: [string], founded?: string } = req.body;
+        const { description, teamSize, type, tags, founded }: ICompanyProfileUpdate = req.body;
 
         const oldProfile = await companyProfile.findOne({ companyId });
 

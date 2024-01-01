@@ -2,6 +2,7 @@ import { Response, Request, NextFunction } from 'express';
 import Joi from 'joi';
 import job from '../../model/job';
 import redisClient from '../../utils/redisClient';
+import { IJobReqBody } from '../../@types/jobTypes';
 const jobController = {
     async postJob(req: any, res: Response, next: NextFunction) {
         const jobSchema = Joi.object({
@@ -56,30 +57,7 @@ const jobController = {
                 maxQualification,
                 degree,
             },
-        }: {
-            title: string;
-            category: string;
-            description: string;
-            tags: [string];
-            active?: boolean;
-            info: {
-                vacancies: number;
-                education: string;
-                jobType: string;
-                workplaceType: string;
-                startDate: Date;
-                endDate: Date;
-                roles: string;
-                skills: [string];
-                minExprience: number;
-                maxExprience: number;
-                minSalary: number;
-                maxSalary: number;
-                location: string;
-                maxQualification: string;
-                degree: string;
-            };
-        } = req.body;
+        }: IJobReqBody = req.body;
 
         const jobs = new job({
             title,
@@ -117,7 +95,7 @@ const jobController = {
 
     async viewJobs(req: any, res: Response, next: NextFunction) {
         // const limit = req.query.limit;
-        const { limit, ...others }: { limit?: number; [key: string]: any } =
+        const { limit, ...others }: { limit?: number;[key: string]: any } =
             req.query;
 
         try {

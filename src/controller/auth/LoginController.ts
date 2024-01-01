@@ -7,6 +7,7 @@ import company from '../../model/company';
 import CustomErrorHandler from '../../services/customErrorHandeler';
 import JwtService from '../../services/jwtServices';
 import roles from '../../services/roleService';
+import { ILogin } from '../../@types/loginTypes';
 
 const loginController = {
     async userLogin(req: Request, res: Response, next: NextFunction) {
@@ -25,7 +26,7 @@ const loginController = {
             return next(error);
         }
 
-        const { email, password }: { email: string; password: string } =
+        const { email, password }: ILogin =
             req.body;
 
         try {
@@ -71,7 +72,7 @@ const loginController = {
             return next(error);
         }
 
-        const { email, password }: { email: string; password: string } =
+        const { email, password }: ILogin =
             req.body;
 
         try {
@@ -119,7 +120,7 @@ const loginController = {
             return next(error);
         }
 
-        const { email, password }: { email: string; password: string } =
+        const { email, password }: ILogin =
             req.body;
 
         try {
