@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import rating from "../../model/rating";
 import Joi from "joi";
+import { IRatingReqBody } from "../../@types/ratingTypes";
 
 const ratingController = {
   async addRating(req: any, res: Response, next: NextFunction) {
@@ -17,7 +18,7 @@ const ratingController = {
       return next(error);
     }
 
-    const { companyId, rates }: { companyId: string, rates: string } = req.body;
+    const { companyId, rates }: IRatingReqBody = req.body;
 
     const ratings = new rating({
       companyId,
@@ -48,7 +49,7 @@ const ratingController = {
 
   async editRating(req: any, res: Response, next: NextFunction) {
     const ratingId = req.params.ratingId;
-    const { rates, companyId }: { rates: number, companyId: string } = req.body;
+    const { rates, companyId }: IRatingReqBody = req.body;
 
     const ratings = await rating.findOne({ companyId, _id: ratingId });
 

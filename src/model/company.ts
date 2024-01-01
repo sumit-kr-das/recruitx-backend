@@ -1,18 +1,6 @@
 import { Schema, model, Document } from 'mongoose';
 import roles from '../services/roleService';
-export interface ICompanySchema extends Document {
-    name: string;
-    email: string;
-    phone: string;
-    password: string;
-    companyName: string;
-    industry: string;
-    designation: string;
-    pin: string;
-    address: string;
-    role: string;
-    approve: boolean;
-}
+import { ICompanyModel } from '../@types/companyTypes';
 
 const CompanySchema: Schema = new Schema(
     {
@@ -33,4 +21,4 @@ const CompanySchema: Schema = new Schema(
     },
 );
 
-export default model<ICompanySchema>('Company', CompanySchema);
+export default model<ICompanyModel>('Company', CompanySchema);

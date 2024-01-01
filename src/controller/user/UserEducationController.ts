@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
 import userEducationDetail from '../../model/userEducationDetail';
+import { IUserEducationReqBody } from '../../@types/userEducationTypes';
 
 const userEducationController = {
     async addUserEducation(req: any, res: Response, next: NextFunction) {
@@ -20,7 +21,7 @@ const userEducationController = {
             return next(error);
         }
 
-        const { degree, college, course, admissionYear, passYear, marks, courseType }: { degree: string, college: string, course: string, admissionYear: string, passYear: number, marks: number, courseType: string } = req.body;
+        const { degree, college, course, admissionYear, passYear, marks, courseType }: IUserEducationReqBody = req.body;
 
         const userEducation = new userEducationDetail({
             userId: req.user.id,
@@ -70,7 +71,7 @@ const userEducationController = {
             return res.status(400).json({ error: error.details[0].message });
         }
 
-        const { degree, college, course, admissionYear, passYear, marks, courseType }: { degree: string, college: string, course: string, admissionYear: string, passYear: number, marks: number, courseType: string } = req.body;
+        const { degree, college, course, admissionYear, passYear, marks, courseType }: IUserEducationReqBody = req.body;
         const edId = req.params.id;
 
         try {

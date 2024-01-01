@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
 import userCertification from '../../model/userCertification';
+import { IUserCertificateReqBody } from '../../@types/userCertificateTypes';
 
 const userCertificationController = {
     async addUserCertificate(req: any, res: Response, next: NextFunction) {
@@ -18,7 +19,7 @@ const userCertificationController = {
             return next(error);
         }
 
-        const { title, source, description, startDate, endDate }: { title: string, source: string, description: string, startDate: Date, endDate: Date } = req.body;
+        const { title, source, description, startDate, endDate }: IUserCertificateReqBody = req.body;
 
         const userCertificate = new userCertification({
             userId: req.user.id,

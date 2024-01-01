@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
 import userCareerProfile from '../../model/userCareerProfile';
 import CustomErrorHandler from '../../services/customErrorHandeler';
+import { IUserCareerReqBody } from '../../@types/userCareerTypes';
 
 
 const userCarrerController = {
@@ -22,7 +23,7 @@ const userCarrerController = {
             return next(error);
         }
 
-        const { industry, role, jobRole, jobType, employmentType, skills, expectedSalary }: { industry: string, role: string, jobRole: string, jobType: string, employmentType: string, skills: [string], expectedSalary: number } = req.body;
+        const { industry, role, jobRole, jobType, employmentType, skills, expectedSalary }: IUserCareerReqBody = req.body;
 
         const userCarrer = new userCareerProfile({
             userId: req.user.id,
@@ -72,15 +73,7 @@ const userCarrerController = {
             return next(error);
         }
 
-        const { industry, role, jobRole, jobType, employmentType, skills, expectedSalary }: {
-            industry: string,
-            role: string,
-            jobRole: string,
-            jobType: string,
-            employmentType: string,
-            skills: string[],
-            expectedSalary: number
-        } = req.body;
+        const { industry, role, jobRole, jobType, employmentType, skills, expectedSalary }: IUserCareerReqBody = req.body;
 
         try {
             const userCareer = await userCareerProfile.findOneAndUpdate(

@@ -7,6 +7,10 @@ import Company from '../../model/company';
 import CustomErrorHandler from '../../services/customErrorHandeler';
 import JwtService from '../../services/jwtServices';
 import roles from '../../services/roleService';
+import { IUserRequestBody } from '../../@types/usertypes';
+import { ICompanyRequestBody } from '../../@types/companyTypes';
+import { IAdminRequestBody } from '../../@types/adminTypes';
+
 
 const registerController = {
     //User Register Controller
@@ -27,7 +31,7 @@ const registerController = {
         const { error } = userRegisterSchema.validate(req.body);
 
         if (error) {
-           return next(error);
+            return next(error);
         }
 
         try {
@@ -40,7 +44,7 @@ const registerController = {
                 );
             }
         } catch (err) {
-           return next(err);
+            return next(err);
         }
 
         // user not in database register new
@@ -51,13 +55,7 @@ const registerController = {
             password,
             phoneNo,
             workStatus,
-        }: {
-            name: string;
-            email: string;
-            password: string;
-            phoneNo: string;
-            workStatus: string;
-        } = req.body;
+        }: IUserRequestBody = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = new User({
             name,
@@ -76,7 +74,7 @@ const registerController = {
                 role: roles.USER,
             });
         } catch (error) {
-           return next(error);
+            return next(error);
         }
 
         res.status(200).json({
@@ -123,7 +121,7 @@ const registerController = {
                 );
             }
         } catch (err) {
-           return next(err);
+            return next(err);
         }
 
         //when company name is not present in the database
@@ -135,22 +133,11 @@ const registerController = {
             industry,
             designation,
             pin,
+            repeatPassword,
             address,
             companyName,
             phone,
-        }: {
-            name: string;
-            description: string;
-            email: string;
-            password: string;
-            repeatPassword: string;
-            industry: string;
-            designation: string;
-            pin: string;
-            address: string;
-            companyName: string;
-            phone: string;
-        } = req.body;
+        }: ICompanyRequestBody = req.body;
 
         const hashPassword = await bcrypt.hash(password, 10);
         const company = new Company({
@@ -199,18 +186,14 @@ const registerController = {
         const { error } = adminRegisterSchema.validate(req.body);
 
         if (error) {
-           return next(error);
+            return next(error);
         }
 
         const {
             name,
             email,
             password,
-        }: {
-            name: string;
-            email: string;
-            password: string;
-        } = req.body;
+        }: IAdminRequestBody = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
         const admins = new admin({
             name,
@@ -227,7 +210,7 @@ const registerController = {
                 role: roles.ADMIN,
             });
         } catch (error) {
-           return next(error);
+            return next(error);
         }
 
         res.status(200).json({

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
 import userExprience from '../../model/userExprience';
+import { IUserExprienceReqBody, IUserExprienceUpdate } from '../../@types/userExprienceTypes';
 
 const userExprienceController = {
     async addUserExprience(req: any, res: Response, next: NextFunction) {
@@ -22,7 +23,7 @@ const userExprienceController = {
             return next(error);
         }
 
-        const { skills, companyName, designation, experience, anualSalary, type, startDate, endDate, jobProfile }: { skills: string, companyName: string, designation: string, experience: string, anualSalary?: string, type: string, startDate: Date, endDate?: Date, jobProfile: string } = req.body;
+        const { skills, companyName, designation, experience, anualSalary, type, startDate, endDate, jobProfile }: IUserExprienceReqBody = req.body;
 
 
 
@@ -78,7 +79,7 @@ const userExprienceController = {
             return next(error);
         }
 
-        const { skills, companyName, designation, experience, anualSalary, type, startDate, endDate, jobProfile }: { skills?: string, companyName?: string, designation?: string, experience?: string, anualSalary?: string, type?: string, startDate?: Date, endDate?: Date, jobProfile?: string } = req.body;
+        const { skills, companyName, designation, experience, anualSalary, type, startDate, endDate, jobProfile }: IUserExprienceUpdate = req.body;
 
         const expId = req.params.id;
 
