@@ -1,4 +1,4 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model } from "mongoose";
 import { IRatingModel } from "../@types/ratingTypes";
 
 const ratingSchema: Schema = new Schema({

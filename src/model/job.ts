@@ -1,31 +1,8 @@
-import { Schema, model, Document } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import company from './company';
 import { IJobModel } from '../@types/jobTypes';
 
-export interface IJob extends Document {
-    title: string;
-    category: string;
-    description: string;
-    tags: [string];
-    active?: boolean;
-    companyId: string;
-    info: {
-        vacancies: number;
-        jobType: string;
-        workplaceType: string;
-        startDate: Date;
-        endDate: Date;
-        roles: string;
-        skills: [string];
-        minExprience: number;
-        maxExprience?: number;
-        minSalary?: number;
-        maxSalary?: number;
-        location?: string;
-        maxQualification: string;
-        degree: string;
-    };
-}
+
 
 const JobSchema: Schema = new Schema(
     {
