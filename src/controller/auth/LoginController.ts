@@ -50,29 +50,13 @@ const loginController = {
                 role: roles.USER,
             });
 
-            // res.status(200).json({
-            //     access_token,
-            //     role: user.role,
-            //     approve: user.approve
-            // });
             res.status(200).json({
                 access_token,
                 role: user.role,
-                approve: user.approve,
-                user: {
-                    name: user?.name || null,
-                    email: user?.email || null,
-                    phoneNo: user?.phoneNo || null,
-                    workStatus: user?.workStatus || null,
-                },
-                info: {
-                    photo: info?.photo || null,
-                    objective: info?.objective || null,
-                },
-                education: education,
-            })
+                approve: user.approve
+            });
+
         } catch (error) {
-            console.log(error);
             return next(error);
         }
     },
