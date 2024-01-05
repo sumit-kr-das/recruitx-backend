@@ -3,7 +3,7 @@ import { IUserProjectModel } from "../@types/userProjectTypes";
 
 
 const UserProjectSchema: Schema = new Schema({
-    userId: { type: String, required: true },
+    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     name: { type: String, required: true },
     description: { type: String, required: true },
     skills: { type: Array, required: true },
