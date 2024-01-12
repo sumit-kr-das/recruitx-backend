@@ -1,5 +1,4 @@
 import express from 'express';
-import UserController from '../controller/user/UserController';
 import auth from '../middleware/auth';
 import userAuth from '../middleware/userAuth';
 import userController from '../controller/user/UserController';
@@ -11,7 +10,7 @@ import adminAuth from '../middleware/adminAuth';
 
 const router = express.Router();
 
-router.get('/view', [auth, userAuth], UserController.viewUser)
+router.get('/view', [auth, userAuth], userController.viewUser)
       .get("/view/all", [auth, adminAuth], userController.viewAllUser)
       .put("/edit", [auth, userAuth], userController.editUser)
       .post("/carrer/add", [auth, userAuth], userCarrerController.addUserCarrer)
@@ -42,6 +41,8 @@ router.get('/view', [auth, userAuth], UserController.viewUser)
 
       .get("/all/info/view", [auth], userAllInfoController.viewUserAllInfo)
       .get("/stats", statsController.viewStats)
-      .get("/applied/jobs/view", [auth, userAuth], jobApplicationController.viewAppliedJobs);
+      .get("/applied/jobs/view", [auth, userAuth], jobApplicationController.viewAppliedJobs)
+
+      .get("/view/profile",[auth, userAuth], userController.viewProfile);
 
 export default router;

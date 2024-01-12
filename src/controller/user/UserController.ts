@@ -63,6 +63,9 @@ const userController = {
         }
     },
 
+    async viewProfile(req: any, res: Response, next: NextFunction) {
+
+    }
 };
 
 export default userController;
