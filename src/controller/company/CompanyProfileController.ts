@@ -117,9 +117,7 @@ const companyProfileController = {
         const companyId = req.user.id;
         try {
             const cacheKey = `companyProfile:${companyId}`;
-            console.log(cacheKey)
             const companyProfileCache = await redisClient.get(cacheKey);
-            console.log(typeof cacheKey)
 
             console.log(companyProfileCache)
             if (companyProfileCache) {
