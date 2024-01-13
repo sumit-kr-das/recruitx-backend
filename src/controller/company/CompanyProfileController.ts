@@ -1,10 +1,12 @@
-import { Request, Response, NextFunction } from "express";
-import Joi from "joi";
-import companyProfile from "../../model/companyProfile";
-import company from "../../model/company";
-import { json } from "body-parser";
-import { ICompanyProfileReqBody, ICompanyProfileUpdate } from "../../@types/companyProfileTypes";
-import redisClient from "../../utils/redisClient";
+import { NextFunction, Response } from 'express';
+import Joi from 'joi';
+import {
+    ICompanyProfileReqBody,
+    ICompanyProfileUpdate,
+} from '../../@types/companyProfileTypes';
+import company from '../../model/company';
+import companyProfile from '../../model/companyProfile';
+import redisClient from '../../utils/redisClient';
 
 const companyProfileController = {
     async addProfile(req: any, res: Response, next: NextFunction) {
@@ -14,7 +16,7 @@ const companyProfileController = {
             teamSize: Joi.number().required(),
             type: Joi.string().required(),
             tags: Joi.array().required(),
-            founded: Joi.string().required()
+            founded: Joi.string().required(),
         });
 
         const { error } = verifyProfile.validate(req.body);
@@ -25,15 +27,19 @@ const companyProfileController = {
 
         let logo;
 
-
         if (!req.file) {
-            logo = "";
+            logo = '';
         } else {
             logo = req.file.path;
         }
 
-
-        const { description, teamSize, type, tags, founded }: ICompanyProfileReqBody = req.body;
+        const {
+            description,
+            teamSize,
+            type,
+            tags,
+            founded,
+        }: ICompanyProfileReqBody = req.body;
 
         const profile = new companyProfile({
             companyId,
@@ -42,12 +48,12 @@ const companyProfileController = {
             teamSize,
             type,
             tags,
-            founded
+            founded,
         });
 
         try {
             const saveProfile = await profile.save();
-            return res.status(200).json({ msg: "profile added" });
+            return res.status(200).json({ msg: 'profile added' });
         } catch (error) {
             console.log(error);
             return next(error);
@@ -62,7 +68,7 @@ const companyProfileController = {
             teamSize: Joi.number(),
             type: Joi.string(),
             tags: Joi.array(),
-            founded: Joi.string()
+            founded: Joi.string(),
         });
 
         const { error } = verifyProfile.validate(req.body);
@@ -71,13 +77,18 @@ const companyProfileController = {
             return next(error);
         }
 
-
-        const { description, teamSize, type, tags, founded }: ICompanyProfileUpdate = req.body;
+        const {
+            description,
+            teamSize,
+            type,
+            tags,
+            founded,
+        }: ICompanyProfileUpdate = req.body;
 
         const oldProfile = await companyProfile.findOne({ companyId });
 
         if (!oldProfile) {
-            return res.status(404).json({ message: "Profile not found" });
+            return res.status(404).json({ message: 'Profile not found' });
         }
 
         let logo;
@@ -88,7 +99,6 @@ const companyProfileController = {
             logo = oldProfile?.logo;
         }
 
-
         const profile = {
             companyId,
             description: description || oldProfile.description,
@@ -96,17 +106,25 @@ const companyProfileController = {
             type: type || oldProfile.type,
             tags: tags || oldProfile.tags,
             founded: founded || oldProfile.founded,
-            logo: logo
-        }
+            logo: logo,
+        };
 
         try {
-            const updatedProfile = await companyProfile.findOneAndUpdate({ companyId }, profile, { returnOriginal: false });
-            const companyProfileKey = JSON.stringify({ "companyProfile": companyId });
-            const companyProfileCache = await redisClient.get(companyProfileKey);
+            const updatedProfile = await companyProfile.findOneAndUpdate(
+                { companyId },
+                profile,
+                { returnOriginal: false },
+            );
+            const companyProfileKey = JSON.stringify({
+                companyProfile: companyId,
+            });
+            const companyProfileCache = await redisClient.get(
+                companyProfileKey,
+            );
             if (companyProfileCache) {
                 await redisClient.del(companyProfileKey);
             }
-            return res.status(200).json({ message: "Profile updated" });
+            return res.status(200).json({ message: 'Profile updated' });
         } catch (error) {
             console.log(error);
             return next(error);
@@ -118,17 +136,18 @@ const companyProfileController = {
         try {
             const cacheKey = `companyProfile:${companyId}`;
             const companyProfileCache = await redisClient.get(cacheKey);
-
-            console.log(companyProfileCache)
+            console.log(companyProfileCache);
             if (companyProfileCache) {
                 return res.status(200).json(JSON.parse(companyProfileCache));
             }
-            const profile = await companyProfile.findOne({ companyId }).select("-_id -companyId");
+            const profile = await companyProfile
+                .findOne({ companyId })
+                .select('-_id -companyId');
             if (!profile) {
-                return res.status(404).json({ message: "Profile not found" });
+                return res.status(404).json({ message: 'Profile not found' });
             }
             await redisClient.set(cacheKey, JSON.stringify(profile));
-            await redisClient.expire(cacheKey, 20);
+            // await redisClient.expire(cacheKey, 20);
 
             return res.status(200).json(profile);
         } catch (error) {
@@ -146,8 +165,12 @@ const companyProfileController = {
         }
 
         try {
-            const companyData = await company.findById(companyId).select("-__v -_id -password");
-            const profile = await companyProfile.find({ companyId }).select("-__v -_id");
+            const companyData = await company
+                .findById(companyId)
+                .select('-__v -_id -password');
+            const profile = await companyProfile
+                .find({ companyId })
+                .select('-__v -_id');
 
             const data = {
                 name: companyData?.name,
@@ -158,14 +181,14 @@ const companyProfileController = {
                 industry: companyData?.industry,
                 pin: companyData?.pin,
                 address: companyData?.address,
-                profile
+                profile,
             };
 
             return res.status(200).json(data);
         } catch (error) {
-            return next(error)
+            return next(error);
         }
-    }
-}
+    },
+};
 
 export default companyProfileController;

@@ -1,24 +1,17 @@
-import { createClient } from 'redis';
+import { Redis } from 'ioredis';
 import { config } from '../config';
-import logger from './logger';
 
-const PRODUCTION = config.PRODUCTION;
-const PORT = Number(config.REDIS_PORT);
+const getRedisUrl = () => {
+    if (config.REDIS_URL) {
+        return {
+          port: 6379, // Redis port
+          host: "127.0.0.1", // Redis host
+        }
+    }
 
-const redisClient = createClient({
-    legacyMode: true,
-    socket: {
-        host: PRODUCTION === 'true' ? config.REDIS_HOST : 'localhost',
-        port: PORT,
-    },
-});
+    throw new Error('REDIS_URL not defined');
+};
 
-redisClient.on('connect', () => {
-    logger.info('REDIS STORE CONNECTED');
-});
-
-redisClient.on('error', (err) => {
-    logger.error(`REDIS ERROR: ${err}`);
-});
+export const redisClient = new Redis(getRedisUrl());
 
 export default redisClient;
