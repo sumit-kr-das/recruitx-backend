@@ -15,7 +15,7 @@ import skillRoutes from './routes/skill';
 import userRoutes from './routes/user';
 import userAuthRoutes from './routes/userAuth';
 
-const app: Application = express();
+export const app: Application = express();
 
 app.use(express.json());
 app.use(bodyParser.json());
