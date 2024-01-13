@@ -1,6 +1,7 @@
 import { Response, Request, NextFunction } from "express";
 import job from "../../model/job";
 import Joi from "joi";
+import { ISearchJob } from "../../@types/jobTypes";
 
 const searchJobController = {
     async searchJob(req: Request, res: Response, next: NextFunction) {
@@ -16,7 +17,7 @@ const searchJobController = {
             return next(error);
         }
 
-        const { title, location, exprience }: { title: string, location: string, exprience: number } = req.body;
+        const { title, location, exprience }: ISearchJob = req.body;
 
 
         if (title || location || exprience) {

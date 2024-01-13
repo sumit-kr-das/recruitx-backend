@@ -4,6 +4,7 @@ import User from '../../model/User';
 import job from '../../model/job';
 import applier from '../../model/applier';
 import admin from '../../model/admin';
+import redisClient from '../../utils/redisClient';
 
 const adminController = {
     async viewAdmin(req: any, res: Response, next: NextFunction) {
@@ -38,6 +39,10 @@ const adminController = {
     async approveCompany(req: Request, res: Response, next: NextFunction) {
         const companyId = req.params.companyId;
         try {
+            const checkCacheCompany = await redisClient.get('companies');
+            if (checkCacheCompany) {
+                await redisClient.del('companies');
+            }
             const comp = await company.findById(companyId);
             if (!comp) {
                 return res.status(404).json({ msg: 'company not found' });
@@ -52,17 +57,25 @@ const adminController = {
 
     async viewAdminStatics(req: Request, res: Response, next: NextFunction) {
         try {
+            const adminStatics = await redisClient.get("adminStatics");
+            if (adminStatics) {
+                return res.status(200).json(JSON.stringify(adminStatics));
+            }
             const totalCompany = await company.countDocuments();
             const totalUser = await User.countDocuments();
             const totalJobs = await job.countDocuments();
             const totalApplications = await applier.countDocuments();
 
-            return res.status(200).json({
+            const adminStats = {
                 totalCompany,
                 totalUser,
                 totalJobs,
                 totalApplications,
-            });
+            }
+
+            await redisClient.set('adminStatics', JSON.stringify(adminStats));
+            await redisClient.expire('adminStatics', 15);
+            return res.status(200).json(adminStats);
         } catch (error) {
             next(error);
         }

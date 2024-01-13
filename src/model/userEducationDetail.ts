@@ -1,19 +1,9 @@
-import { Schema, model, Document } from 'mongoose';
-
-export interface IUserEducationDetail extends Document {
-    userId: string;
-    degree: string;
-    college: string;
-    course: string;
-    courseType: string;
-    admissionYear: number;
-    passYear: number;
-    marks: number;
-}
+import { Schema, model } from 'mongoose';
+import { IUserEducationModel } from '../@types/userEducationTypes';
 
 const UserEducationDetailSchema: Schema = new Schema(
     {
-        userId: { type: String, required: true },
+        userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
         degree: { type: String, required: true },
         college: { type: String, required: true },
         course: { type: String, required: true },
@@ -27,7 +17,7 @@ const UserEducationDetailSchema: Schema = new Schema(
     },
 );
 
-export default model<IUserEducationDetail>(
+export default model<IUserEducationModel>(
     'UserEducationDetail',
     UserEducationDetailSchema,
 );

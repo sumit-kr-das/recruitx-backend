@@ -1,21 +1,9 @@
-import { Schema, model, Document } from 'mongoose';
-
-export interface IUserExprience extends Document {
-    userId: string;
-    skills: [string];
-    companyName: string;
-    designation: string,
-    experience: string,
-    annualSalary?: string,
-    type: string,
-    startDate: Date;
-    endDate?: Date;
-    jobProfile: string;
-}
+import { Schema, model } from 'mongoose';
+import { IUserEducationModel } from '../@types/userEducationTypes';
 
 const UserExprienceSchema: Schema = new Schema(
     {
-        userId: { type: String, required: true },
+        userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
         skills: { type: Array, required: true },
         companyName: { type: String, required: true },
         designation: { type: String, required: true },
@@ -31,4 +19,4 @@ const UserExprienceSchema: Schema = new Schema(
     },
 );
 
-export default model<IUserExprience>('UserExprience', UserExprienceSchema);
+export default model<IUserEducationModel>('UserExprience', UserExprienceSchema);

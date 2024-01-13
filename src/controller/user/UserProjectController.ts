@@ -1,6 +1,7 @@
 import { Response, NextFunction } from "express";
 import Joi from "joi";
 import userProjects from "../../model/userProjects";
+import { IUserProjectReqBody } from "../../@types/userProjectTypes";
 
 const userProjectController = {
     async createProject(req: any, res: Response, next: NextFunction) {
@@ -20,7 +21,7 @@ const userProjectController = {
             return next(error);
         }
 
-        const { name, description, skills, startDate, endDate, associate } = req.body;
+        const { name, description, skills, startDate, endDate, associate }: IUserProjectReqBody = req.body;
 
         const projectCreate = new userProjects({
             userId: req.user.id,
@@ -75,7 +76,7 @@ const userProjectController = {
             return next(error)
         }
 
-        const { name, description, skills, startDate, endDate, associate } = req.body;
+        const { name, description, skills, startDate, endDate, associate }: IUserProjectReqBody = req.body;
         const p_id = req.params.id;
 
         try {

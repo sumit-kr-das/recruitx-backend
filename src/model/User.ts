@@ -1,15 +1,6 @@
-import { Schema, model, Document } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import roles from '../services/roleService';
-
-export interface IUser extends Document {
-    name: string;
-    email: string;
-    phoneNo: string;
-    workStatus: string;
-    password: string;
-    role: string;
-    approve:boolean;
-}
+import { IUserModel } from '../@types/usertypes';
 
 const UserSchema: Schema = new Schema(
     {
@@ -19,11 +10,11 @@ const UserSchema: Schema = new Schema(
         workStatus: { type: String, required: true },
         password: { type: String, required: true },
         role: { type: String, default: roles.USER },
-    approve: {type: Boolean, default: false}
+        approve: { type: Boolean, default: false }
     },
     {
         timestamps: true,
     },
 );
 
-export default model<IUser>('User', UserSchema);
+export default model<IUserModel>('User', UserSchema);

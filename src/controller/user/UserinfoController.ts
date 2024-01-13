@@ -1,6 +1,7 @@
 import { Response, NextFunction } from 'express';
 import Joi from 'joi';
 import userInfo from '../../model/userInfo';
+import { IUserinfoReqBody } from '../../@types/userInfoTypes';
 
 const userInfoController = {
     async addUseInfo(req: any, res: Response, next: NextFunction) {
@@ -57,19 +58,7 @@ const userInfoController = {
             gender,
             skills,
             maxQualification,
-        }: {
-            github: string;
-            linkedIn: string;
-            dateOfBirth: Date;
-            age: number;
-            address: string;
-            bio: string;
-            objective: string;
-            language: [string];
-            gender: string;
-            skills: [string];
-            maxQualification: string;
-        } = req.body;
+        }: IUserinfoReqBody = req.body;
 
         const newUserinfo = new userInfo({
             github,
@@ -139,7 +128,7 @@ const userInfoController = {
         } else {
             photo = req.file?.path;
         }
-        
+
         const {
             github,
             linkedIn,
@@ -152,23 +141,11 @@ const userInfoController = {
             gender,
             skills,
             maxQualification,
-        }: {
-            github: string;
-            linkedIn: string;
-            dateOfBirth: Date;
-            age: number;
-            address: string;
-            bio: string;
-            objective: string;
-            language: [string];
-            gender: string;
-            skills: [string];
-            maxQualification: string;
-        } = req.body;
+        }: IUserinfoReqBody = req.body;
 
         const updateFields: {
-            github: string;
-            linkedIn: string;
+            github?: string;
+            linkedIn?: string;
             dateOfBirth: Date;
             age: number;
             address: string;
