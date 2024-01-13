@@ -4,12 +4,11 @@ import companyProfile from "../../model/companyProfile";
 import company from "../../model/company";
 import { json } from "body-parser";
 import { ICompanyProfileReqBody, ICompanyProfileUpdate } from "../../@types/companyProfileTypes";
+import redisClient from "../../utils/redisClient";
 
 const companyProfileController = {
     async addProfile(req: any, res: Response, next: NextFunction) {
         const companyId = req.user.id;
-
-
         const verifyProfile = Joi.object({
             description: Joi.string().min(15).required(),
             teamSize: Joi.number().required(),
@@ -102,6 +101,11 @@ const companyProfileController = {
 
         try {
             const updatedProfile = await companyProfile.findOneAndUpdate({ companyId }, profile, { returnOriginal: false });
+            const companyProfileKey = JSON.stringify({ "companyProfile": companyId });
+            const companyProfileCache = await redisClient.get(companyProfileKey);
+            if (companyProfileCache) {
+                await redisClient.del(companyProfileKey);
+            }
             return res.status(200).json({ message: "Profile updated" });
         } catch (error) {
             console.log(error);
@@ -111,17 +115,26 @@ const companyProfileController = {
 
     async viewProfile(req: any, res: Response, next: NextFunction) {
         const companyId = req.user.id;
-        console.log(companyId);
-        // const profileId = req.params.id;
-
         try {
+            const cacheKey = `companyProfile:${companyId}`;
+            console.log(cacheKey)
+            const companyProfileCache = await redisClient.get(cacheKey);
+            console.log(typeof cacheKey)
+
+            console.log(companyProfileCache)
+            if (companyProfileCache) {
+                return res.status(200).json(JSON.parse(companyProfileCache));
+            }
             const profile = await companyProfile.findOne({ companyId }).select("-_id -companyId");
             if (!profile) {
                 return res.status(404).json({ message: "Profile not found" });
             }
+            await redisClient.set(cacheKey, JSON.stringify(profile));
+            await redisClient.expire(cacheKey, 20);
 
             return res.status(200).json(profile);
         } catch (error) {
+            console.log(error);
             return next(error);
         }
     },
