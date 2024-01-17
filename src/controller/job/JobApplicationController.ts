@@ -7,10 +7,14 @@ import redisClient from "../../utils/redisClient";
 const jobApplicationController = {
     async jobApply(req: any, res: Response, next: NextFunction) {
         const jobId = req.params.id;
-
+        const userId = req.user.id;
         try {
             const cacheKey = `applier:${jobId}`;
+            const appliedJobsCacheKey = `appliedJobs:${userId}`;
             await redisClient.del(cacheKey);
+            await redisClient.del(appliedJobsCacheKey);
+
+
             const application = await applier.findOne({ jobId, userId: req.user.id });
             if (application) {
                 return res.status(401).json({ msg: "You have already applied in this job" })
@@ -71,6 +75,7 @@ const jobApplicationController = {
     async shortlistApply(req: Request, res: Response, next: NextFunction) {
         const id = req.params.id;
         try {
+
             const updatedApplier = await applier.findByIdAndUpdate(
                 id,
                 { selected: true },
@@ -121,7 +126,14 @@ const jobApplicationController = {
     async viewShortListedAppliers(req: Request, res: Response, next: NextFunction) {
         const jobId = req.params.id;
         try {
+            const cacheKey = `shortlistedApplier:${jobId}`;
+            const cacheData = await redisClient.get(cacheKey);
+            if (cacheData) {
+                return res.status(200).json(JSON.parse(cacheData));
+            }
             const appliers = await applier.find({ jobId, selected: true }).select("-__v -createdAt -updatedAt").populate("userId");
+            await redisClient.set(cacheKey, JSON.stringify(appliers));
+            await redisClient.expire(cacheKey, 3600);
             return res.status(200).json(appliers)
         } catch (error) {
             return next(error)
@@ -131,7 +143,14 @@ const jobApplicationController = {
     async viewAppliedJobs(req: any, res: Response, next: NextFunction) {
         const userId = req.user.id;
         try {
+            const cacheKey = `appliedJobs:${userId}`;
+            const appliedJobsCache = await redisClient.get(cacheKey);
+            if (appliedJobsCache) {
+                return res.status(200).json(JSON.parse(appliedJobsCache));
+            }
             const jobs = await applier.find({ userId }).select("-userId").populate("jobId");
+            await redisClient.set(cacheKey, JSON.stringify(jobs));
+            await redisClient.expire(cacheKey, 3600);
             return res.status(200).json(jobs);
         } catch (error) {
             return next(error);
