@@ -1,9 +1,9 @@
-import { Schema, model, Document } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { IUserinfoModel } from '../@types/userInfoTypes';
 
 
 const UserinfoSchema: Schema = new Schema({
-    userId: { type: String, ref: 'user', required: true },
+    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     github: { type: String },
     linkedIn: { type: String },
     dateOfBirth: { type: String, required: true },

@@ -1,9 +1,9 @@
-import { Schema, model, Document } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { IUserEducationModel } from '../@types/userEducationTypes';
 
 const UserExprienceSchema: Schema = new Schema(
     {
-        userId: { type: String, required: true },
+        userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
         skills: { type: Array, required: true },
         companyName: { type: String, required: true },
         designation: { type: String, required: true },

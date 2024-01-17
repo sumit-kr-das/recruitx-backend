@@ -4,7 +4,6 @@ import express, { Application } from 'express';
 import { config } from './config';
 import errorHandler from './middleware/errorHandeler';
 import databaseConnection from './utils/databaseConnection';
-import redisClient from './utils/redisClient';
 import logger from './utils/logger';
 
 import adminRoutes from './routes/admin';
@@ -38,5 +37,4 @@ app.use(express.static(__dirname));
 app.listen(config.PORT, async () => {
     logger.info(`RUNNING ON PORT NO ${config.PORT}`);
     await databaseConnection();
-    redisClient.connect();
 });

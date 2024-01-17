@@ -8,6 +8,8 @@ import CustomErrorHandler from '../../services/customErrorHandeler';
 import JwtService from '../../services/jwtServices';
 import roles from '../../services/roleService';
 import { ILogin } from '../../@types/loginTypes';
+import userInfo from '../../model/userInfo';
+import userEducationDetail from '../../model/userEducationDetail';
 
 const loginController = {
     async userLogin(req: Request, res: Response, next: NextFunction) {
@@ -38,6 +40,9 @@ const loginController = {
             if (!matchPassword) {
                 return next(CustomErrorHandler.wrongCredentials());
             }
+            const info = await userInfo.findOne({ userId: user._id }).select("-_id photo objective");
+            const education = await userEducationDetail.find({ userId: user.id }).select("-_id degree college")
+            console.log(education);
 
             /* compare access token */
             const access_token = JwtService.sign({
@@ -47,10 +52,10 @@ const loginController = {
 
             res.status(200).json({
                 access_token,
-                user: user.name,
                 role: user.role,
                 approve: user.approve
             });
+
         } catch (error) {
             return next(error);
         }
@@ -142,6 +147,8 @@ const loginController = {
                 id: admins._id,
                 role: roles.ADMIN,
             });
+
+
 
             res.status(200).json({
                 access_token,

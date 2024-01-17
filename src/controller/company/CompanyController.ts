@@ -2,19 +2,29 @@ import bcrypt from 'bcrypt';
 import { NextFunction, Request, Response } from 'express';
 import Joi from 'joi';
 import company from '../../model/company';
+import redisClient from '../../utils/redisClient';
 
 const companyController = {
     async viewCompanies(req: Request, res: Response, next: NextFunction) {
-        const { limit, ...others }: { limit?: number; [key: string]: any } =
+        const { limit, ...others }: { limit?: number;[key: string]: any } =
             req.query;
 
         try {
             if (limit) {
+                const cacheKey = JSON.stringify({ ...others, limit });
+                console.log(cacheKey);
+                const hasCompany = await redisClient.get(cacheKey);
+
+                if (hasCompany) {
+                    return res.status(200).json(JSON.parse(hasCompany));
+                }
                 const companies = await company
                     .find({ ...others, approve: true })
                     .limit(limit)
                     .sort({ rating: 1 })
                     .select('-__v -password -createdAt -updatedAt');
+                // await redisClient.set(cacheKey, JSON.stringify(companies));
+                // await redisClient.expire(cacheKey, 3600);
                 return res.status(200).json(companies);
             } else {
                 const companies = await company

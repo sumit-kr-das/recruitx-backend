@@ -2,6 +2,8 @@ import { NextFunction, Response } from 'express';
 import Joi from 'joi';
 import User from '../../model/User';
 import CustomErrorHandler from '../../services/customErrorHandeler';
+import userEducationDetail from '../../model/userEducationDetail';
+import userInfo from '../../model/userInfo';
 
 const userController = {
     async viewAllUser(req: any, res: Response, next: NextFunction) {
@@ -63,9 +65,24 @@ const userController = {
         }
     },
 
-    async viewProfile(req: any, res: Response, next: NextFunction) {
+    async getUserGlobals(req: any, res: Response, next: NextFunction) {
+        const userId = req.user.id;
 
+        try {
+            const user = await User.findById(userId).select("-_id -password -__v -role -approve");
+            const education = await userEducationDetail.find({ userId: userId }).select("degree college -_id");
+            const info = await userInfo.findOne({ userId }).select("photo objective -_id");
+
+            return res.status(200).json({
+                user,
+                info,
+                education
+            });
+        } catch (error) {
+            next(error);
+        }
     }
+
 };
 
 export default userController;

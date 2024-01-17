@@ -13,6 +13,7 @@ const router = express.Router();
 router.get('/view', [auth, userAuth], userController.viewUser)
       .get("/view/all", [auth, adminAuth], userController.viewAllUser)
       .put("/edit", [auth, userAuth], userController.editUser)
+      .get("/globals", [auth, userAuth], userController.getUserGlobals)
       .post("/carrer/add", [auth, userAuth], userCarrerController.addUserCarrer)
       .get("/carrer/view", [auth, userAuth], userCarrerController.viewUserCarrer)
       .put("/carrer/edit/:id", [auth, userAuth], userCarrerController.editUserCarrer)

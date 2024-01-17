@@ -1,4 +1,4 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model } from "mongoose";
 import { IUserCareerModel } from "../@types/userCareerTypes";
 
 const UserCareerProfileSchema: Schema = new Schema({

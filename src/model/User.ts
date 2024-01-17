@@ -1,4 +1,4 @@
-import { Schema, model, Document } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import roles from '../services/roleService';
 import { IUserModel } from '../@types/usertypes';
 

@@ -1,4 +1,4 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model } from "mongoose";
 import { IAdminModel, IAdminRequestBody } from "../@types/adminTypes";
 
 const AdminSchema: Schema = new Schema({
