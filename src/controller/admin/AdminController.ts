@@ -57,10 +57,6 @@ const adminController = {
 
     async viewAdminStatics(req: Request, res: Response, next: NextFunction) {
         try {
-            const adminStatics = await redisClient.get("adminStatics");
-            if (adminStatics) {
-                return res.status(200).json(JSON.stringify(adminStatics));
-            }
             const totalCompany = await company.countDocuments();
             const totalUser = await User.countDocuments();
             const totalJobs = await job.countDocuments();
@@ -72,9 +68,6 @@ const adminController = {
                 totalJobs,
                 totalApplications,
             }
-
-            await redisClient.set('adminStatics', JSON.stringify(adminStats));
-            await redisClient.expire('adminStatics', 15);
             return res.status(200).json(adminStats);
         } catch (error) {
             next(error);

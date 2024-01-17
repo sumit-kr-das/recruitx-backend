@@ -2,11 +2,12 @@ import { Redis } from 'ioredis';
 import { config } from '../config';
 
 const getRedisUrl = () => {
-    if (config.REDIS_URL) {
+    if (config.REDIS_PORT) {
         return {
-          port: 6379, // Redis port
-          host: "127.0.0.1", // Redis host
-        }
+            port: Number(config.REDIS_PORT),
+            host: config.REDIS_HOST,
+            password: config.REDIS_PASSWORD,
+        };
     }
 
     throw new Error('REDIS_URL not defined');
