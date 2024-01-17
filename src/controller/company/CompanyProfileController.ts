@@ -136,7 +136,6 @@ const companyProfileController = {
         try {
             const cacheKey = `companyProfile:${companyId}`;
             const companyProfileCache = await redisClient.get(cacheKey);
-            console.log(companyProfileCache);
             if (companyProfileCache) {
                 return res.status(200).json(JSON.parse(companyProfileCache));
             }
@@ -147,7 +146,7 @@ const companyProfileController = {
                 return res.status(404).json({ message: 'Profile not found' });
             }
             await redisClient.set(cacheKey, JSON.stringify(profile));
-            // await redisClient.expire(cacheKey, 20);
+            await redisClient.expire(cacheKey, 3600);
 
             return res.status(200).json(profile);
         } catch (error) {

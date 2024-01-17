@@ -122,18 +122,18 @@ const jobController = {
     async viewJobsFeed(req: Request, res: Response, next: NextFunction) {
         const limit = Number(req.query.limit);
         try {
-            const checkCacheJobsFeed = await redisClient.get('jobsFeed');
-            if (checkCacheJobsFeed) {
-                return res.status(200).json(JSON.parse(checkCacheJobsFeed));
-            }
+            // const checkCacheJobsFeed = await redisClient.get('jobsFeed');
+            // if (checkCacheJobsFeed) {
+            //     return res.status(200).json(JSON.parse(checkCacheJobsFeed));
+            // }
             const jobs = await job
                 .find()
                 .sort({ createdAt: -1 })
                 .limit(limit)
                 .select('-__v -updatedAt')
                 .populate('companyId', 'companyName');
-            await redisClient.set('jobsFeed', JSON.stringify(jobs));
-            await redisClient.expire('jobsFeed', 30);
+            // await redisClient.set('jobsFeed', JSON.stringify(jobs));
+            // await redisClient.expire('jobsFeed', 3600);
             return res.status(200).json(jobs);
         } catch (error) {
             next(error);
