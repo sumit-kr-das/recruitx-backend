@@ -10,7 +10,7 @@ describe('job', () => {
         // });
         describe('given product does exist', () => {
             it('should return 200 status code and return the products', async () => {
-                const product = await createProduct();
+                // const product = await createProduct();
                 await supertest(app).get('/api/job/view').expect(200);
             });
         });
