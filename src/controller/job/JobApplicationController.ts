@@ -1,13 +1,16 @@
 import { Response, Request, NextFunction } from "express";
-import Joi from "joi";
+import Joi, { cache } from "joi";
 import applier from "../../model/applier";
 import job from "../../model/job";
+import redisClient from "../../utils/redisClient";
 
 const jobApplicationController = {
     async jobApply(req: any, res: Response, next: NextFunction) {
         const jobId = req.params.id;
 
         try {
+            const cacheKey = `applier:${jobId}`;
+            await redisClient.del(cacheKey);
             const application = await applier.findOne({ jobId, userId: req.user.id });
             if (application) {
                 return res.status(401).json({ msg: "You have already applied in this job" })
@@ -36,6 +39,8 @@ const jobApplicationController = {
         const jobId = req.params.id;
         const userId = req.params.userId;
         try {
+            const cacheKey = `applier:${jobId}`;
+            await redisClient.del(cacheKey);
             const deleteApply = await applier.findOneAndDelete({ userId, jobId });
             if (!deleteApply) {
                 return res.status(402).json({ msg: "Application not found" })
@@ -49,7 +54,14 @@ const jobApplicationController = {
     async viewAppliers(req: any, res: Response, next: NextFunction) {
         const jobId = req.params.id;
         try {
+            const cacheKey = `applier:${jobId}`;
+            const appliersCache = await redisClient.get(cacheKey);
+            if (appliersCache) {
+                return res.status(200).json(JSON.parse(appliersCache));
+            }
             const appliers = await applier.find({ jobId, selected: false }).select("-__v -createdAt -updatedAt").populate("userId");
+            await redisClient.set(cacheKey, JSON.stringify(appliers));
+            await redisClient.expire(cacheKey, 3600);
             return res.status(200).json(appliers)
         } catch (error) {
             return next(error)

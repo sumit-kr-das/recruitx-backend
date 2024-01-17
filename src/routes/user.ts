@@ -44,6 +44,6 @@ router.get('/view', [auth, userAuth], userController.viewUser)
       .get("/stats", statsController.viewStats)
       .get("/applied/jobs/view", [auth, userAuth], jobApplicationController.viewAppliedJobs)
 
-      .get("/view/profile",[auth, userAuth], userController.viewProfile);
+// .get("/view/profile",[auth, userAuth], userController.viewProfile);
 
 export default router;
