@@ -10,7 +10,7 @@ import roles from '../../services/roleService';
 import { IUserRequestBody } from '../../@types/usertypes';
 import { ICompanyRequestBody } from '../../@types/companyTypes';
 import { IAdminRequestBody } from '../../@types/adminTypes';
-
+import otpVerification from '../otpVerificationController';
 
 const registerController = {
     //User Register Controller
@@ -49,13 +49,8 @@ const registerController = {
 
         // user not in database register new
 
-        const {
-            name,
-            email,
-            password,
-            phoneNo,
-            workStatus,
-        }: IUserRequestBody = req.body;
+        const { name, email, password, phoneNo, workStatus }: IUserRequestBody =
+            req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = new User({
             name,
@@ -66,9 +61,9 @@ const registerController = {
             role: 'user',
         });
         let acc_token: any;
+        let saveUser;
         try {
-            const saveUser = await user.save();
-            //generate access token
+            saveUser = await user.save();
             acc_token = JwtService.sign({
                 id: saveUser._id,
                 role: roles.USER,
@@ -81,8 +76,15 @@ const registerController = {
             access_token: acc_token,
             user: user.name,
             role: user.role,
-            approve: user.approve
+            status: user.status,
         });
+
+        // set otp to the user
+        otpVerification.verifyEmail(
+            { id: saveUser?._id, email: saveUser?.email },
+            res,
+            next,
+        );
     },
 
     //Company Register Controller
@@ -165,7 +167,7 @@ const registerController = {
                 access_token: acc_token,
                 user: name,
                 role: roles.COMPANY,
-                approve: saveCompany.approve
+                status: saveCompany.status,
             });
         } catch (error) {
             return next(error);
@@ -189,11 +191,7 @@ const registerController = {
             return next(error);
         }
 
-        const {
-            name,
-            email,
-            password,
-        }: IAdminRequestBody = req.body;
+        const { name, email, password }: IAdminRequestBody = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
         const admins = new admin({
             name,

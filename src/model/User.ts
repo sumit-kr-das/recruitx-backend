@@ -1,6 +1,7 @@
 import { Schema, model } from 'mongoose';
 import roles from '../services/roleService';
 import { IUserModel } from '../@types/usertypes';
+import userStatus from '../services/userStatusService';
 
 const UserSchema: Schema = new Schema(
     {
@@ -10,7 +11,7 @@ const UserSchema: Schema = new Schema(
         workStatus: { type: String, required: true },
         password: { type: String, required: true },
         role: { type: String, default: roles.USER },
-        approve: { type: Boolean, default: false }
+        status: { type: String, default: userStatus.UNVERIFIED },
     },
     {
         timestamps: true,

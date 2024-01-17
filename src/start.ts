@@ -13,6 +13,7 @@ import job from './routes/job';
 import skillRoutes from './routes/skill';
 import userRoutes from './routes/user';
 import userAuthRoutes from './routes/userAuth';
+import otpRoutes from './routes/otpVerification';
 
 export const app: Application = express();
 
@@ -29,6 +30,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/job', job);
 app.use('/api/company', companyRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/otp', otpRoutes);
 
 /* ----------------custom error handler---------------- */
 app.use(errorHandler);

@@ -53,7 +53,7 @@ const loginController = {
             res.status(200).json({
                 access_token,
                 role: user.role,
-                approve: user.approve
+                status: user.status
             });
 
         } catch (error) {
@@ -102,7 +102,7 @@ const loginController = {
                 access_token,
                 user: companyInfo.name,
                 role: companyInfo.role,
-                approve: companyInfo.approve
+                status: companyInfo.status
             });
         } catch (error) {
             return next(error);
