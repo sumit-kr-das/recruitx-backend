@@ -11,6 +11,7 @@ import CustomErrorHandler from '../../services/customErrorHandeler';
 import JwtService from '../../services/jwtServices';
 import roles from '../../services/roleService';
 import otpVerification from '../otpVerificationController';
+import otpService from '../../services/otpService';
 
 const registerController = {
     // User Register Controller
@@ -72,12 +73,8 @@ const registerController = {
             return next(error);
         }
 
-        // set otp to the user
-        otpVerification.verifyEmail(
-            { id: saveUser?._id, email: saveUser?.email },
-            res,
-            next,
-        );
+        // sent otp to the user
+        otpService({ id: saveUser?._id, email: saveUser?.email }, res, next);
 
         res.status(200).json({
             status: user.status,
