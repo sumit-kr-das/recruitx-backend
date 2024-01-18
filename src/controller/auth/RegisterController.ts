@@ -1,19 +1,19 @@
 import bcrypt from 'bcrypt';
 import { NextFunction, Request, Response } from 'express';
 import Joi from 'joi';
+import { IAdminRequestBody } from '../../@types/adminTypes';
+import { ICompanyRequestBody } from '../../@types/companyTypes';
+import { IUserRequestBody } from '../../@types/usertypes';
 import User from '../../model/User';
 import admin from '../../model/admin';
 import Company from '../../model/company';
 import CustomErrorHandler from '../../services/customErrorHandeler';
 import JwtService from '../../services/jwtServices';
 import roles from '../../services/roleService';
-import { IUserRequestBody } from '../../@types/usertypes';
-import { ICompanyRequestBody } from '../../@types/companyTypes';
-import { IAdminRequestBody } from '../../@types/adminTypes';
 import otpVerification from '../otpVerificationController';
 
 const registerController = {
-    //User Register Controller
+    // User Register Controller
     async userRegister(req: Request, res: Response, next: NextFunction) {
         const userRegisterSchema = Joi.object({
             name: Joi.string().min(5).max(30).required(),
@@ -72,19 +72,22 @@ const registerController = {
             return next(error);
         }
 
-        res.status(200).json({
-            access_token: acc_token,
-            user: user.name,
-            role: user.role,
-            status: user.status,
-        });
-
         // set otp to the user
         otpVerification.verifyEmail(
             { id: saveUser?._id, email: saveUser?.email },
             res,
             next,
         );
+
+        res.status(200).json({
+            status: user.status,
+            msg: 'Verification OTP sent on your email',
+            data: {
+                user: user.name,
+                role: user.role,
+                access_token: acc_token,
+            },
+        });
     },
 
     //Company Register Controller

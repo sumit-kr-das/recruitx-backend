@@ -1,8 +1,7 @@
-import { Response, NextFunction } from 'express';
+import { NextFunction, Response } from 'express';
 import nodemailer from 'nodemailer';
-import logger from '../utils/logger';
-import User from '../model/User';
 import OtpVerification from '../model/otpVerification';
+import logger from '../utils/logger';
 
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
@@ -15,16 +14,9 @@ const transporter = nodemailer.createTransport({
 });
 
 const otpVerification = {
-    /* GET http://localhost:8000/api/otp/verifyEmail */
+
     async verifyEmail({id, email}:{id: any, email: string}, res: Response, next: NextFunction) {
         try {
-            // get users email
-            // const userId = req?.user?.id;
-            // const user = await User.findById(userId);
-            // if (!user) {
-            //     return res.status(401).json({ msg: 'user is not exist' });
-            // }
-
             // generate otp
             const OTP = Math.floor(100000 + Math.random() * 900000);
 
@@ -35,6 +27,7 @@ const otpVerification = {
                 subject: 'Verify OTP - RecruitX',
                 html: `<p>Enter <b>${OTP}</b> in the app to verify your email address. <br/><b>NOTE:</b> This code is expires in 1 hour.</p>`,
             };
+
             await transporter.sendMail(sentEmail, (err, info) => {
                 if (err) {
                     return res.status(404).json({
@@ -52,10 +45,6 @@ const otpVerification = {
             });
 
             await newOTP.save();
-
-            res.status(200).json({
-                msg: `Verification otp sent on your email ${email}.`
-            });
         } catch (err) {
             return logger.error(err);
         }
