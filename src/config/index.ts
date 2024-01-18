@@ -12,6 +12,7 @@ const radis_host = process.env.REDIS_HOST || '';
 const radis_password = process.env.REDIS_PASSWORD || '';
 const smtp_host = process.env.SMTP_HOST || '';
 const smtp_port = process.env.SMTP_PORT || '';
+const smtp_src = process.env.SMTP_SRC || '';
 const smtp_mail = process.env.SMTP_MAIL || '';
 const smtp_password = process.env.SMTP_PASSWORD || '';
 
@@ -25,6 +26,7 @@ export const config = {
     REDIS_HOST: radis_host,
     REDIS_PASSWORD: radis_password,
     SMTP_HOST: smtp_host,
+    SMTP_SRC: smtp_src,
     SMTP_PORT: smtp_port,
     SMTP_MAIL: smtp_mail,
     SMTP_PASSWORD: smtp_password,
