@@ -1,16 +1,12 @@
-import { createLogger, transports, format } from 'winston';
+import pino from 'pino';
 
-const logger = createLogger({
-    transports: [
-        new transports.Console({
-            level: 'info',
-            format: format.combine(format.timestamp(), format.json()),
-        }),
-        new transports.Console({
-            level: 'error',
-            format: format.combine(format.timestamp(), format.json()),
-        }),
-    ],
+const logger = pino({
+    transport: {
+        target: 'pino-pretty',
+        options: {
+            colorize: true,
+        },
+    },
 });
 
 export default logger;
