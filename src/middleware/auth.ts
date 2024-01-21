@@ -8,7 +8,6 @@ const auth = async (req:any, res:Response, next:NextFunction) => {
 	const authHeader = req.headers.authorization;
 	if (!authHeader) {
 		return next(CustomErrorHandler.unAuthorized());
-
 	}
 
 	const token = authHeader.split(" ")[1];

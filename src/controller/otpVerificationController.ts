@@ -4,12 +4,14 @@ import OtpVerification from '../model/otpVerification';
 import userStatus from '../services/userStatusService';
 import logger from '../utils/logger';
 import otpService from '../services/otpService';
+import forgetPassword from '../services/forgetPasswordService';
 
 const otpVerification = {
     /* POST http://localhost:8000/api/otp/verifyOtp */
     async verifyOtp(req: any, res: Response, next: NextFunction) {
-        const { id, otp } = req.body;
-
+        const { otp } = req.body;
+        const id = req.otpUserId;
+        console.log(id);
         try {
             const isExist = await OtpVerification.find({ userId: id });
 
@@ -47,7 +49,11 @@ const otpVerification = {
 
     /* POST http://localhost:8000/api/otp/resendOtp */
     async resendOtp(req: any, res: Response, next: NextFunction) {
-        const { id, email } = req.body;
+        const { email } = req.body;
+        console.log(email);
+        const id = req.otpUserId;
+        console.log(id);
+
         try {
             if (!id || !email) {
                 return res

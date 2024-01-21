@@ -5,30 +5,30 @@ import logger from '../utils/logger';
 import { config } from '../config';
 
 const transporter = nodemailer.createTransport({
-    host: config.SMTP_HOST,
-    port: Number(config.SMTP_PORT),
-    secure: config.SMTP_SRC === 'flase',
-    auth: {
-        user: config.SMTP_MAIL,
-        pass: config.SMTP_PASSWORD,
-    },
+  host: config.SMTP_HOST,
+  port: Number(config.SMTP_PORT),
+  secure: config.SMTP_SRC === 'flase',
+  auth: {
+    user: config.SMTP_MAIL,
+    pass: config.SMTP_PASSWORD,
+  },
 });
 
 const otpService = async (
-    { id, email }: { id: any; email: string },
-    res: Response,
-    next: NextFunction,
+  { id, email }: { id: any; email: string },
+  res: Response,
+  next: NextFunction,
 ) => {
-    try {
-        // generate otp
-        const OTP = Math.floor(100000 + Math.random() * 900000);
+  try {
+    // generate otp
+    const OTP = Math.floor(100000 + Math.random() * 900000);
 
-        // sent mail
-        let sentEmail = {
-            from: '"RecriitX" info.sumit2001@gmail.com',
-            to: email,
-            subject: 'Verify OTP - RecruitX',
-            html: `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    // sent mail
+    let sentEmail = {
+      from: '"RecruitX" info.sumit2001@gmail.com',
+      to: email,
+      subject: 'Verify OTP - RecruitX',
+      html: `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
             <html xmlns="http://www.w3.org/1999/xhtml">
               <head>
                 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -128,28 +128,28 @@ const otpService = async (
               </body>
             </html>
             `,
-        };
+    };
 
-        await transporter.sendMail(sentEmail, (err, info) => {
-            if (err) {
-                return res.status(404).json({
-                    msg: 'Server is busy right now please try after some time.',
-                });
-            }
+    await transporter.sendMail(sentEmail, (err, info) => {
+      if (err) {
+        return res.status(404).json({
+          msg: 'Server is busy right now please try after some time.',
         });
+      }
+    });
 
-        // save to the database
-        const newOTP = await new otpVerification({
-            userId: id,
-            otp: OTP,
-            createdAt: Date.now(),
-            expiresAt: Date.now() + 3600000,
-        });
+    // save to the database
+    const newOTP = await new otpVerification({
+      userId: id,
+      otp: OTP,
+      createdAt: Date.now(),
+      expiresAt: Date.now() + 3600000,
+    });
 
-        await newOTP.save();
-    } catch (err) {
-        return logger.error(err);
-    }
+    await newOTP.save();
+  } catch (err) {
+    return logger.error(err);
+  }
 };
 
 export default otpService;
