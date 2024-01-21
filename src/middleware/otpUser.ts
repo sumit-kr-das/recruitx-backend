@@ -14,7 +14,6 @@ const otpUser = async (req: any, res: Response, next: NextFunction) => {
 
     if (!authHeader) {
         const id = await forgetPassword({ email, userType }, res, next);
-        console.log(id?._id, "user id");
         req.otpUserId = id?._id;
         return next();
     }
@@ -26,7 +25,7 @@ const otpUser = async (req: any, res: Response, next: NextFunction) => {
             if (err) {
                 return next(CustomErrorHandler.unAuthorized());
             }
-            req.otpUserId = user._id;
+            req.otpUserId = user.id;
             next();
         });
     } catch (err: any) {

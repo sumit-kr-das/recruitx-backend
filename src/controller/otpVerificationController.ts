@@ -11,7 +11,6 @@ const otpVerification = {
     async verifyOtp(req: any, res: Response, next: NextFunction) {
         const { otp } = req.body;
         const id = req.otpUserId;
-        console.log(id);
         try {
             const isExist = await OtpVerification.find({ userId: id });
 
@@ -50,9 +49,7 @@ const otpVerification = {
     /* POST http://localhost:8000/api/otp/resendOtp */
     async resendOtp(req: any, res: Response, next: NextFunction) {
         const { email } = req.body;
-        console.log(email);
         const id = req.otpUserId;
-        console.log(id);
 
         try {
             if (!id || !email) {
