@@ -51,9 +51,12 @@ const loginController = {
             });
 
             res.status(200).json({
-                access_token,
-                role: user.role,
-                status: user.status
+                status: user.status,
+                data: {
+                    user: user.name,
+                    role: user.role,
+                    access_token: access_token,
+                },
             });
 
         } catch (error) {
