@@ -48,14 +48,17 @@ const otpVerification = {
 
     /* POST http://localhost:8000/api/otp/resendOtp */
     async resendOtp(req: any, res: Response, next: NextFunction) {
-        const { email } = req.body;
+        const { email: userMail } = req.body;
         const id = req.otpUserId;
+        console.log(id);
 
         try {
-            if (!id || !email) {
-                return res
-                    .status(401)
-                    .json({ msg: 'Enter valid user details' });
+            let email;
+            if (!userMail) {
+                const userEmail = await User.findById(id);
+                email = userEmail?.email;
+            } else {
+                email = userMail;
             }
 
             await OtpVerification.deleteMany({ userId: id });
