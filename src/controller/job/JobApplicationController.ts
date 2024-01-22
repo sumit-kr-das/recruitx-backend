@@ -75,7 +75,6 @@ const jobApplicationController = {
     async shortlistApply(req: Request, res: Response, next: NextFunction) {
         const id = req.params.id;
         try {
-
             const updatedApplier = await applier.findByIdAndUpdate(
                 id,
                 { selected: true },
@@ -126,14 +125,14 @@ const jobApplicationController = {
     async viewShortListedAppliers(req: Request, res: Response, next: NextFunction) {
         const jobId = req.params.id;
         try {
-            const cacheKey = `shortlistedApplier:${jobId}`;
-            const cacheData = await redisClient.get(cacheKey);
-            if (cacheData) {
-                return res.status(200).json(JSON.parse(cacheData));
-            }
+            // const cacheKey = `shortlistedApplier:${jobId}`;
+            // const cacheData = await redisClient.get(cacheKey);
+            // if (cacheData) {
+            //     return res.status(200).json(JSON.parse(cacheData));
+            // }
             const appliers = await applier.find({ jobId, selected: true }).select("-__v -createdAt -updatedAt").populate("userId");
-            await redisClient.set(cacheKey, JSON.stringify(appliers));
-            await redisClient.expire(cacheKey, 3600);
+            // await redisClient.set(cacheKey, JSON.stringify(appliers));
+            // await redisClient.expire(cacheKey, 3600);
             return res.status(200).json(appliers)
         } catch (error) {
             return next(error)

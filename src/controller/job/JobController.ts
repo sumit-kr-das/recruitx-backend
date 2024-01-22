@@ -3,6 +3,7 @@ import Joi from 'joi';
 import job from '../../model/job';
 import redisClient from '../../utils/redisClient';
 import { IJobReqBody } from '../../@types/jobTypes';
+import recomandedJobCacheService from '../../services/recomendedJobsCacheService';
 const jobController = {
     async postJob(req: any, res: Response, next: NextFunction) {
         const jobSchema = Joi.object({
@@ -85,6 +86,7 @@ const jobController = {
         });
 
         try {
+            await recomandedJobCacheService();
             const addJobs = await jobs.save();
             return res.status(200).json({ msg: 'Jobs Posted Successfullly' });
         } catch (error) {
@@ -142,6 +144,7 @@ const jobController = {
 
     async editJob(req: any, res: Response, next: NextFunction) {
         const jobId = req.params.id;
+        const cacheKey = `jobDetails:${jobId}`;
 
         const jobSchema = Joi.object({
             title: Joi.string().min(10).max(100).required(),
@@ -225,7 +228,8 @@ const jobController = {
             if (!updatedJob) {
                 return res.status(404).json({ error: 'Job not found' });
             }
-
+            await redisClient.del(cacheKey);
+            await recomandedJobCacheService();
             return res.status(200).json({ msg: 'Job updated successfully' });
         } catch (error) {
             return next(error);
@@ -241,7 +245,7 @@ const jobController = {
             if (!deletedJob) {
                 return res.status(404).json({ error: 'Job not found' });
             }
-
+            await recomandedJobCacheService();
             return res.status(200).json({ msg: 'Job deleted successfully' });
         } catch (error) {
             return next(error);
@@ -295,11 +299,19 @@ const jobController = {
 
     async getJobDetails(req: Request, res: Response, next: NextFunction) {
         const jobId = req.params.jobId;
+        const cacheKey = `jobDetails:${jobId}`;
+
         try {
+            const jobDetailsCache = await redisClient.get(cacheKey);
+            if (jobDetailsCache) {
+                return res.status(200).json(JSON.parse(jobDetailsCache));
+            }
             const jobDetails = await job.findById(jobId).populate({
                 path: 'companyId',
                 select: 'companyName pin address',
             });
+            await redisClient.set(cacheKey, JSON.stringify(jobDetails));
+            await redisClient.expire(cacheKey, 3600);
             return res.status(200).json(jobDetails);
         } catch (error) {
             next(error);

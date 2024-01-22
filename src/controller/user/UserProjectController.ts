@@ -2,6 +2,7 @@ import { Response, NextFunction } from "express";
 import Joi from "joi";
 import userProjects from "../../model/userProjects";
 import { IUserProjectReqBody } from "../../@types/userProjectTypes";
+import redisClient from "../../utils/redisClient";
 
 const userProjectController = {
     async createProject(req: any, res: Response, next: NextFunction) {
@@ -34,6 +35,8 @@ const userProjectController = {
         });
 
         try {
+            const allUserInfoCacheKey = `allUserInfo:${req.user.id}`;
+            await redisClient.del(allUserInfoCacheKey);
             const saveProjectDeatils = await projectCreate.save();
             if (saveProjectDeatils) {
                 return res.status(200).json({ msg: "New Project has been added successfully" });
@@ -96,9 +99,11 @@ const userProjectController = {
             );
 
             if (!updateUserProject) {
+
                 return res.status(404).json({ msg: "Project datails not updated" })
             }
-
+            const allUserInfoCacheKey = `allUserInfo:${req.user.id}`;
+            await redisClient.del(allUserInfoCacheKey);
             return res.status(200).json({ msg: "User project datails updated successfully" })
         } catch (error) {
             return next(error);
@@ -116,7 +121,8 @@ const userProjectController = {
             if (!deleteProject) {
                 return res.status(404).json({ msg: "Project deletion not completed" })
             }
-
+            const allUserInfoCacheKey = `allUserInfo:${req.user.id}`;
+            await redisClient.del(allUserInfoCacheKey);
             return res.status(200).json({ msg: "Project Deleted Successfully" })
 
         } catch (error) {

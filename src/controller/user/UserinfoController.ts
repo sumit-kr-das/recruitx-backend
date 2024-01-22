@@ -2,6 +2,7 @@ import { Response, NextFunction } from 'express';
 import Joi from 'joi';
 import userInfo from '../../model/userInfo';
 import { IUserinfoReqBody } from '../../@types/userInfoTypes';
+import redisClient from '../../utils/redisClient';
 
 const userInfoController = {
     async addUseInfo(req: any, res: Response, next: NextFunction) {
@@ -77,6 +78,8 @@ const userInfoController = {
         });
 
         try {
+            const allUserInfoCacheKey = `allUserInfo:${req.user.id}`;
+            await redisClient.del(allUserInfoCacheKey);
             await newUserinfo.save();
             return res
                 .status(200)
@@ -174,6 +177,7 @@ const userInfoController = {
         updateFields.photo = photo;
 
         try {
+
             const updatedInfo = await userInfo.findOneAndUpdate(
                 { userId },
                 updateFields,
@@ -185,7 +189,8 @@ const userInfoController = {
                     .status(404)
                     .json({ msg: 'User information not found' });
             }
-
+            const allUserInfoCacheKey = `allUserInfo:${req.user.id}`;
+            await redisClient.del(allUserInfoCacheKey);
             return res.status(200).json({
                 msg: 'Your information updated successfully',
                 data: updatedInfo,

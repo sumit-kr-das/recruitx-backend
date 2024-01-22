@@ -4,6 +4,7 @@ import User from '../../model/User';
 import CustomErrorHandler from '../../services/customErrorHandeler';
 import userEducationDetail from '../../model/userEducationDetail';
 import userInfo from '../../model/userInfo';
+import redisClient from '../../utils/redisClient';
 
 const userController = {
     async viewAllUser(req: any, res: Response, next: NextFunction) {
@@ -58,7 +59,8 @@ const userController = {
             if (!updatedUser) {
                 return res.status(404).json({ error: 'User not found' });
             }
-
+            const allUserInfoCacheKey = `allUserInfo:${req.user.id}`;
+            await redisClient.del(allUserInfoCacheKey);
             res.status(200).json({ msg: 'User updated successfully' });
         } catch (err) {
             return next(err);

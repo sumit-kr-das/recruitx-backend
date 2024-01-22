@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
 import userEducationDetail from '../../model/userEducationDetail';
 import { IUserEducationReqBody } from '../../@types/userEducationTypes';
+import redisClient from '../../utils/redisClient';
 
 const userEducationController = {
     async addUserEducation(req: any, res: Response, next: NextFunction) {
@@ -37,6 +38,8 @@ const userEducationController = {
         try {
             const saveUserEducation = await userEducation.save();
             if (saveUserEducation) {
+                const allUserInfoCacheKey = `allUserInfo:${req.user.id}`;
+                await redisClient.del(allUserInfoCacheKey);
                 return res.status(200).json({ msg: "User Education Added Successfully" });
             }
         } catch (error) {
@@ -95,7 +98,8 @@ const userEducationController = {
             if (!updatedUserEducation) {
                 return res.status(404).json({ msg: "Education record not found" });
             }
-
+            const allUserInfoCacheKey = `allUserInfo:${req.user.id}`;
+            await redisClient.del(allUserInfoCacheKey);
             return res.status(200).json({ msg: "User Education Updated Successfully" });
         } catch (error) {
             return next(error);
@@ -114,7 +118,8 @@ const userEducationController = {
             if (!deletedUserEducation) {
                 return res.status(404).json({ msg: "Education record not found or unauthorized" });
             }
-
+            const allUserInfoCacheKey = `allUserInfo:${req.user.id}`;
+            await redisClient.del(allUserInfoCacheKey);
             return res.status(200).json({ msg: "User Education Deleted Successfully" });
         } catch (error) {
             return next(error);

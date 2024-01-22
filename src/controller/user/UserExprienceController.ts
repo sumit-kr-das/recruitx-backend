@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
 import userExprience from '../../model/userExprience';
 import { IUserExprienceReqBody, IUserExprienceUpdate } from '../../@types/userExprienceTypes';
+import redisClient from '../../utils/redisClient';
 
 const userExprienceController = {
     async addUserExprience(req: any, res: Response, next: NextFunction) {
@@ -41,6 +42,8 @@ const userExprienceController = {
         });
 
         try {
+            const allUserInfoCacheKey = `allUserInfo:${req.user.id}`;
+            await redisClient.del(allUserInfoCacheKey);
             const addUserExp = await userExpriences.save();
             if (addUserExp) {
                 return res.status(200).json({ msg: "User Exprience Added Successfully" })
@@ -102,6 +105,8 @@ const userExprienceController = {
             });
 
             if (editUserExp) {
+                const allUserInfoCacheKey = `allUserInfo:${req.user.id}`;
+                await redisClient.del(allUserInfoCacheKey);
                 return res.status(200).json({ msg: "user updated Successfully" })
             } else {
                 return res.status(500).json({ msg: "Something went wrong" })
@@ -123,7 +128,8 @@ const userExprienceController = {
             if (!deleteUserExp) {
                 return res.status(404).json({ msg: "Exprience not found" })
             }
-
+            const allUserInfoCacheKey = `allUserInfo:${req.user.id}`;
+            await redisClient.del(allUserInfoCacheKey);
             return res.status(200).json({ msg: "User Exprience Deleted Successfully" });
         } catch (error) {
             return next(error);

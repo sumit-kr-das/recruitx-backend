@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import rating from "../../model/rating";
 import Joi from "joi";
 import { IRatingReqBody } from "../../@types/ratingTypes";
+import redisClient from "../../utils/redisClient";
 
 const ratingController = {
   async addRating(req: any, res: Response, next: NextFunction) {
@@ -19,7 +20,7 @@ const ratingController = {
     }
 
     const { companyId, rates }: IRatingReqBody = req.body;
-
+    const cacheKey = `companyReview:${companyId}`;
     const ratings = new rating({
       companyId,
       rating: rates,
@@ -27,20 +28,25 @@ const ratingController = {
     });
 
     try {
+      await redisClient.del(cacheKey);
       const saveRating = await ratings.save();
       return res.status(200).json({ msg: "Rating sent Successfullly" });
     } catch (error) {
       return next(error);
     }
-
-
   },
 
   async viewRatings(req: any, res: Response, next: NextFunction) {
     const companyId = req.params.companyId;
-
+    const cacheKey = `companyReview:${companyId}`;
     try {
+      const reviewCache = await redisClient.get(cacheKey);
+      if (reviewCache) {
+        return res.status(200).json(JSON.parse(reviewCache));
+      }
       const ratings = await rating.find({ companyId });
+      await redisClient.set(cacheKey, JSON.stringify(ratings));
+      await redisClient.expire(cacheKey, 3600);
       return res.status(200).json(ratings);
     } catch (error) {
       return next(error);
@@ -50,6 +56,7 @@ const ratingController = {
   async editRating(req: any, res: Response, next: NextFunction) {
     const ratingId = req.params.ratingId;
     const { rates, companyId }: IRatingReqBody = req.body;
+    const cacheKey = `companyReview:${companyId}`;
 
     const ratings = await rating.findOne({ companyId, _id: ratingId });
 
@@ -58,6 +65,8 @@ const ratingController = {
     }
 
     try {
+      await redisClient.del(cacheKey);
+
       const updatedRating = await rating.findByIdAndUpdate(
         { _id: ratingId },
         { rating: rates, companyId },

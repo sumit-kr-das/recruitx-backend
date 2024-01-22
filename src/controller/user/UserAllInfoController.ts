@@ -6,6 +6,7 @@ import userEducationDetail from "../../model/userEducationDetail";
 import userExprience from "../../model/userExprience";
 import userInfo from "../../model/userInfo";
 import userProjects from "../../model/userProjects";
+import redisClient from "../../utils/redisClient";
 
 const userAllInfoController = {
     async viewUserAllInfo(req: any, res: Response, next: NextFunction) {
@@ -15,8 +16,13 @@ const userAllInfoController = {
         } else {
             userId = req.user.id;
         }
+        const cachekey = `allUserInfo:${userId}`;
 
         try {
+            const allUserInfoCache = await redisClient.get(cachekey);
+            if (allUserInfoCache) {
+                return res.status(200).json(JSON.parse(allUserInfoCache));
+            }
             const user = await User.findById(userId).select("-__v -password -role -approve");
             const carrer = await userCareerProfile.find({ userId }).select("-__v, -_id");
             const certificate = await userCertification.find({ userId }).select("-__v -_id");
@@ -38,7 +44,8 @@ const userAllInfoController = {
                 exprience,
                 project
             }
-
+            await redisClient.set(cachekey, JSON.stringify(userData));
+            await redisClient.expire(cachekey, 3600);
             return res.status(200).json(userData);
         } catch (error) {
             return next(error);

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
 import userCertification from '../../model/userCertification';
 import { IUserCertificateReqBody } from '../../@types/userCertificateTypes';
+import redisClient from '../../utils/redisClient';
 
 const userCertificationController = {
     async addUserCertificate(req: any, res: Response, next: NextFunction) {
@@ -31,6 +32,10 @@ const userCertificationController = {
         });
 
         try {
+            const allUserInfoCacheKey = `allUserInfo:${req.user.id}`;
+            const certificateCacheKey = `userCertificate:${req.user.id}`;
+            await redisClient.del(allUserInfoCacheKey);
+            await redisClient.del(certificateCacheKey);
             const addCertificate = await userCertificate.save();
             if (addCertificate) {
                 return res.status(200).json({ msg: "Certificate Added Successfully" });
@@ -41,9 +46,14 @@ const userCertificationController = {
     },
 
     async viewCerficates(req: any, res: Response, next: NextFunction) {
-
+        const cacheKey = `userCertificate:${req.user.id}`;
+        const certificateCache = await redisClient.get(cacheKey);
+        if (certificateCache) {
+            return res.status(200).json(JSON.parse(certificateCache));
+        }
         try {
             const certificates = await userCertification.find({ userId: req.user.id }).select('-__v -userId');
+            await redisClient.set(cacheKey, JSON.stringify(certificateCache));
             return res.status(200).json(certificates);
         } catch (error) {
             next(error);
@@ -90,6 +100,10 @@ const userCertificationController = {
             );
 
             if (updatedCertificate) {
+                const allUserInfoCacheKey = `allUserInfo:${req.user.id}`;
+                const certificateCacheKey = `userCertificate:${req.user.id}`;
+                await redisClient.del(allUserInfoCacheKey);
+                await redisClient.del(certificateCacheKey);
                 res.status(200).json({ msg: "Certificate updated successfully" });
             } else {
                 res.status(404).json({ msg: "Certificate not found" });
@@ -108,6 +122,10 @@ const userCertificationController = {
             });
 
             if (deletedCertificate) {
+                const allUserInfoCacheKey = `allUserInfo:${req.user.id}`;
+                const certificateCacheKey = `userCertificate:${req.user.id}`;
+                await redisClient.del(allUserInfoCacheKey);
+                await redisClient.del(certificateCacheKey);
                 res.status(200).json({ msg: "Certificate deleted successfully" });
             } else {
                 res.status(404).json({ msg: "Certificate not found" });
