@@ -20,7 +20,6 @@ const otpUser = async (req: any, res: Response, next: NextFunction) => {
 
     const token = authHeader.split(" ")[1];
     try {
-        console.log("hi");
         jwt.verify(token, config.JWT_SECRET, async (err: any, user: any) => {
             if (err) {
                 return next(CustomErrorHandler.unAuthorized());

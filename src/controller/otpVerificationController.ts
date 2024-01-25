@@ -60,7 +60,7 @@ const otpVerification = {
 
         try {
             await OtpVerification.deleteMany({ userId: id });
-            // await otpService({ id, email }, res, next);
+            await otpService({ id, email }, res, next);
             res.status(200).json({
                 msg: 'Verification OTP sent on your email',
             });
