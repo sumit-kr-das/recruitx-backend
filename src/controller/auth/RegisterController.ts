@@ -26,7 +26,7 @@ const registerController = {
                 .required(),
             phoneNo: Joi.string().min(10).required(),
             workStatus: Joi.string().required(),
-            repeat_password: Joi.ref('password'),
+            confirmPassword: Joi.ref('password'),
         });
 
         const { error } = userRegisterSchema.validate(req.body);
@@ -164,10 +164,12 @@ const registerController = {
             });
 
             res.status(200).json({
-                access_token: acc_token,
-                user: name,
-                role: roles.COMPANY,
                 status: saveCompany.status,
+                data: {
+                    access_token: acc_token,
+                    user: name,
+                    role: roles.COMPANY,
+                }
             });
         } catch (error) {
             return next(error);
