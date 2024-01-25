@@ -5,11 +5,13 @@ import userStatus from '../services/userStatusService';
 import logger from '../utils/logger';
 import otpService from '../services/otpService';
 import forgetPassword from '../services/forgetPasswordService';
+import company from '../model/company';
+import admin from '../model/admin';
 
 const otpVerification = {
     /* POST http://localhost:8000/api/otp/verifyOtp */
     async verifyOtp(req: any, res: Response, next: NextFunction) {
-        const { otp } = req.body;
+        const { otp, userType } = req.body;
         const id = req.otpUserId;
         try {
             const isExist = await OtpVerification.find({ userId: id });
@@ -34,8 +36,13 @@ const otpVerification = {
                     .status(401)
                     .json({ msg: 'Invalid OTP check your inbox' });
             }
-
-            await User.updateOne({ _id: id }, { status: userStatus.VERIFIED });
+            if (userType === "user") {
+                await User.updateOne({ _id: id }, { status: userStatus.VERIFIED });
+            } else if (userType === "company") {
+                await company.updateOne({ _id: id }, { status: userStatus.VERIFIED });
+            } else if (userType === "admin") {
+                await admin.updateOne({ _id: id }, { status: userStatus.VERIFIED });
+            }
             await OtpVerification.deleteMany({ userId: id });
 
             res.status(200).json({
@@ -48,21 +55,12 @@ const otpVerification = {
 
     /* POST http://localhost:8000/api/otp/resendOtp */
     async resendOtp(req: any, res: Response, next: NextFunction) {
-        const { email: userMail } = req.body;
         const id = req.otpUserId;
-        console.log(id);
+        const email = req.otpUserEmail;
 
         try {
-            let email;
-            if (!userMail) {
-                const userEmail = await User.findById(id);
-                email = userEmail?.email;
-            } else {
-                email = userMail;
-            }
-
             await OtpVerification.deleteMany({ userId: id });
-            otpService({ id, email }, res, next);
+            // await otpService({ id, email }, res, next);
             res.status(200).json({
                 msg: 'Verification OTP sent on your email',
             });

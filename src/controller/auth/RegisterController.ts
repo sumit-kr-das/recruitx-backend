@@ -162,9 +162,11 @@ const registerController = {
                 id: saveCompany._id,
                 role: roles.COMPANY,
             });
+            otpService({ id: saveCompany?._id, email: saveCompany?.email }, res, next);
 
             res.status(200).json({
                 status: saveCompany.status,
+                msg: 'Verification OTP sent on your email',
                 data: {
                     access_token: acc_token,
                     user: name,
