@@ -70,13 +70,13 @@ const userController = {
 
         try {
             const user = await User.findById(userId).select("-_id -password -__v -role -approve");
-            const education = await userEducationDetail.find({ userId: userId }).select("degree college -_id");
+            const education = await userEducationDetail.find({ userId: userId }).select("degree college -_id").sort({ admissionYear: -1 });
             const info = await userInfo.findOne({ userId }).select("photo objective -_id");
 
             return res.status(200).json({
                 user,
                 info,
-                education
+                education: education.length > 0 ? education[0] : null,
             });
         } catch (error) {
             next(error);
