@@ -16,6 +16,6 @@ export interface ICompanyRequestBody extends ICompany {
 }
 
 export interface ICompanyModel extends ICompany {
-    role: string,
-    approve: boolean
+    role: string;
+    status: string;
 }

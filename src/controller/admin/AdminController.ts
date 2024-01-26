@@ -5,6 +5,7 @@ import job from '../../model/job';
 import applier from '../../model/applier';
 import admin from '../../model/admin';
 import redisClient from '../../utils/redisClient';
+import companyStatus from '../../services/conpanyStatusService';
 
 const adminController = {
     async viewAdmin(req: any, res: Response, next: NextFunction) {
@@ -47,7 +48,7 @@ const adminController = {
             if (!comp) {
                 return res.status(404).json({ msg: 'company not found' });
             }
-            comp.approve = true;
+            comp.status = companyStatus.APPROVED;
             await comp.save();
             return res.status(200).json({ msg: 'Company approved' });
         } catch (error) {

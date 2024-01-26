@@ -51,9 +51,12 @@ const loginController = {
             });
 
             res.status(200).json({
-                access_token,
-                role: user.role,
-                approve: user.approve
+                status: user.status,
+                data: {
+                    user: user.name,
+                    role: user.role,
+                    access_token: access_token,
+                },
             });
 
         } catch (error) {
@@ -99,10 +102,12 @@ const loginController = {
             });
 
             return res.status(200).json({
-                access_token,
-                user: companyInfo.name,
-                role: companyInfo.role,
-                approve: companyInfo.approve
+                status: companyInfo.status,
+                data: {
+                    user: companyInfo.name,
+                    role: companyInfo.role,
+                    access_token: access_token,
+                },
             });
         } catch (error) {
             return next(error);
@@ -147,13 +152,13 @@ const loginController = {
                 id: admins._id,
                 role: roles.ADMIN,
             });
-
-
-
             res.status(200).json({
-                access_token,
-                user: admins.name,
-                role: admins.role,
+                status: admins.status,
+                data: {
+                    user: admins.name,
+                    role: admins.role,
+                    access_token: access_token,
+                },
             });
         } catch (error) {
             next(error);

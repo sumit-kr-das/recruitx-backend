@@ -30,7 +30,7 @@ const userAllInfoController = {
                 email: user?.email,
                 phoneNo: user?.phoneNo,
                 workStatus: user?.workStatus,
-                role: user?.approve,
+                status: user?.status,
                 info,
                 carrer,
                 certificate,

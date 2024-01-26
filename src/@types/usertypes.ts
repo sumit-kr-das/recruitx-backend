@@ -9,5 +9,5 @@ export interface IUserRequestBody {
 export interface IUserModel extends IUserRequestBody {
     password: string;
     role: string;
-    approve: boolean;
+    status: string;
 }

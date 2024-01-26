@@ -1,6 +1,7 @@
 import { Schema, model } from 'mongoose';
 import roles from '../services/roleService';
 import { ICompanyModel } from '../@types/companyTypes';
+import companyStatus from '../services/conpanyStatusService';
 
 const CompanySchema: Schema = new Schema(
     {
@@ -14,7 +15,7 @@ const CompanySchema: Schema = new Schema(
         pin: { type: String, required: true },
         address: { type: String, required: true },
         role: { type: String, default: roles.COMPANY },
-        approve: { type: Boolean, default: false },
+        status: { type: String, default: companyStatus.UNVERIFIED },
     },
     {
         timestamps: true,
