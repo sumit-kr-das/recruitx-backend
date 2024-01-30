@@ -78,8 +78,8 @@ const userController = {
                     objective: info?.objective,
                 },
                 education: {
-                    degree: education[0]?.degree,
-                    college: education[0]?.college,
+                    degree: education.length > 0 ? education[0]?.degree : null,
+                    college: education.length > 0 ? education[0]?.college : null,
                 }
             });
         } catch (error) {
