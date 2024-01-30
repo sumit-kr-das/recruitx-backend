@@ -67,16 +67,20 @@ const userController = {
 
     async getUserGlobals(req: any, res: Response, next: NextFunction) {
         const userId = req.user.id;
-
         try {
             const user = await User.findById(userId).select("-_id -password -__v -role -approve");
             const education = await userEducationDetail.find({ userId: userId }).select("degree college -_id").sort({ admissionYear: -1 });
             const info = await userInfo.findOne({ userId }).select("photo objective -_id");
-
             return res.status(200).json({
                 user,
-                info,
-                education: education.length > 0 ? education[0] : null,
+                info: {
+                    photo: info?.photo,
+                    objective: info?.objective,
+                },
+                education: {
+                    degree: education[0]?.degree,
+                    college: education[0]?.college,
+                }
             });
         } catch (error) {
             next(error);
