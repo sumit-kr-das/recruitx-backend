@@ -25,5 +25,6 @@ router
     .get("/roles/totalapplication/:jobId", [auth, companyAuth], jobApplicationController.allPostApplicants)
     .get("/applications/manage/:jobId", [auth, companyAuth], jobApplicationController.allManageApplicants)
     .get("/statics", [auth, companyAuth], jobController.getJobStatics)
-    .get("/details/:jobId", jobController.getJobDetails);
+    .get("/details/:jobId", jobController.getJobDetails)
+    .get("/search/company/:companyId", jobController.viewJobByCompany);
 export default router;

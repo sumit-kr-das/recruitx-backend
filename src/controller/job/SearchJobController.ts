@@ -78,7 +78,6 @@ const searchJobController = {
         } catch (error) {
             return next(error);
         }
-
     }
 
 }

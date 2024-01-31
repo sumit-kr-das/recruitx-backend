@@ -127,8 +127,8 @@ const jobController = {
             //     return res.status(200).json(JSON.parse(checkCacheJobsFeed));
             // }
             const jobs = await job
-                .find()
-                .sort({ createdAt: -1 })
+                .find().
+                select('-degree -endDate -maxQualification -roles -tags').sort({ createdAt: -1 })
                 .limit(limit)
                 .select('-__v -updatedAt')
                 .populate('companyId', 'companyName');
@@ -305,6 +305,18 @@ const jobController = {
             next(error);
         }
     },
+
+    async viewJobByCompany(req: Request, res: Response, next: NextFunction) {
+        const companyId = req.params.companyId;
+        try {
+            const jobs = await job.find({ companyId }).select('-degree -endDate -maxQualification -roles -tags').sort({ createdAt: -1 })
+                .select('-__v -updatedAt')
+                .populate('companyId', 'companyName');
+            return res.status(200).json(jobs);
+        } catch (error) {
+            next(error);
+        }
+    }
 };
 
 export default jobController;

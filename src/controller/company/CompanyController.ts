@@ -22,7 +22,7 @@ const companyController = {
                     .find({ ...others, approve: true })
                     .limit(limit)
                     .sort({ rating: 1 })
-                    .select('-__v -password -createdAt -updatedAt');
+                    .select('-__v -password -createdAt -updatedAt -status -role -approve');
                 // await redisClient.set(cacheKey, JSON.stringify(companies));
                 // await redisClient.expire(cacheKey, 3600);
                 return res.status(200).json(companies);
@@ -30,7 +30,7 @@ const companyController = {
                 const companies = await company
                     .find({ ...others })
                     .sort({ rating: 1 })
-                    .select('-__v -password -createdAt -updatedAt');
+                    .select('-__v -password -createdAt -updatedAt -status -role -approve');
                 return res.status(200).json(companies);
             }
         } catch (error) {
