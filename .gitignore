@@ -1,5 +1,5 @@
 node_modules
 .env
-upload
 dist
 yarn.lock
+public

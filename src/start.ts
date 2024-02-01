@@ -17,9 +17,10 @@ import otpRoutes from './routes/otpVerification';
 import path from 'path';
 export const app: Application = express();
 
-// app.use('/upload', express.static(path.join(__dirname, 'src', 'upload')));
-// app.use('../public/upload', express.static(path.join(__dirname, 'public', 'upload')));
-app.use('/public/upload', express.static(path.join(__dirname, '..', 'public', 'upload')));
+app.use(
+    '/public/upload',
+    express.static(path.join(__dirname, '..', 'public', 'upload')),
+);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({ origin: `${config.ORIGIN}`, credentials: true }));
