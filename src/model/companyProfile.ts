@@ -1,11 +1,19 @@
 import { Schema, model } from 'mongoose';
 import { ICompanyProfileModel } from '../@types/companyProfileTypes';
+import { config } from '../config';
 
 
 
 const CompanyProfileSchema: Schema = new Schema({
     companyId: { type: Schema.Types.ObjectId, ref: "Company", required: true },
-    logo: { type: String },
+    logo: {
+        type: String, get: (logo: any) => {
+            if (config.PRODUCTION == "true") {
+                return `${logo}`
+            }
+            return `${config.APP_URL}/${logo}`;
+        }
+    },
     description: { type: String, required: true },
     teamSize: { type: Number, required: true },
     type: { type: String, required: true },

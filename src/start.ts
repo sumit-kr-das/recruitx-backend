@@ -14,10 +14,12 @@ import skillRoutes from './routes/skill';
 import userRoutes from './routes/user';
 import userAuthRoutes from './routes/userAuth';
 import otpRoutes from './routes/otpVerification';
-
+import path from 'path';
 export const app: Application = express();
 
-app.use(express.json());
+// app.use('/upload', express.static(path.join(__dirname, 'src', 'upload')));
+// app.use('../public/upload', express.static(path.join(__dirname, 'public', 'upload')));
+app.use('/public/upload', express.static(path.join(__dirname, '..', 'public', 'upload')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({ origin: `${config.ORIGIN}`, credentials: true }));
@@ -34,7 +36,7 @@ app.use('/api/otp', otpRoutes);
 
 /* ----------------custom error handler---------------- */
 app.use(errorHandler);
-app.use(express.static(__dirname));
+// app.use(express.static(__dirname));
 
 app.listen(config.PORT, async () => {
     logger.info(`RUNNING ON PORT NO ${config.PORT}`);

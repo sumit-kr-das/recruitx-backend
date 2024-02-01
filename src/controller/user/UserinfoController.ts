@@ -88,10 +88,9 @@ const userInfoController = {
 
     async viewUserinfo(req: any, res: Response, next: NextFunction) {
         const userId = req.user.id;
-        console.log(userId);
         try {
             const info = await userInfo.find({ userId: userId });
-            console.log(info);
+            // console.log(info);
             return res.status(200).json(info);
         } catch (error) {
             return next(error);
@@ -99,6 +98,7 @@ const userInfoController = {
     },
 
     async updateUserinfo(req: any, res: Response, next: NextFunction) {
+        console.log("hello");
         const userId = req.user.id;
         console.log("file", req?.file)
 
@@ -119,6 +119,7 @@ const userInfoController = {
         const { error } = userinfoSchema.validate(req.body);
 
         if (error) {
+            console.log(error);
             return next(error);
         }
         let photo: string;
@@ -191,6 +192,7 @@ const userInfoController = {
                 data: updatedInfo,
             });
         } catch (error) {
+            console.log(error);
             return next(error);
         }
     },

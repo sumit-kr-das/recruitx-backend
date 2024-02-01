@@ -67,7 +67,7 @@ const companyProfileController = {
 
     async editProfile(req: any, res: Response, next: NextFunction) {
         const companyId = req.user.id;
-
+        console.log("Working")
         const verifyProfile = Joi.object({
             description: Joi.string().min(15),
             teamSize: Joi.number(),
@@ -114,15 +114,15 @@ const companyProfileController = {
             logo: logo,
         };
 
+        console.log(profile, "profile");
+
         try {
             const updatedProfile = await companyProfile.findOneAndUpdate(
                 { companyId },
                 profile,
                 { returnOriginal: false },
             );
-            const companyProfileKey = JSON.stringify({
-                companyProfile: companyId,
-            });
+            const companyProfileKey = `companyProfile:${companyId}`
             const companyProfileCache = await redisClient.get(
                 companyProfileKey,
             );
@@ -139,19 +139,19 @@ const companyProfileController = {
     async viewProfile(req: any, res: Response, next: NextFunction) {
         const companyId = req.user.id;
         try {
-            const cacheKey = `companyProfile:${companyId}`;
-            const companyProfileCache = await redisClient.get(cacheKey);
-            if (companyProfileCache) {
-                return res.status(200).json(JSON.parse(companyProfileCache));
-            }
+            // const cacheKey = `companyProfile:${companyId}`;
+            // const companyProfileCache = await redisClient.get(cacheKey);
+            // if (companyProfileCache) {
+            //     return res.status(200).json(JSON.parse(companyProfileCache));
+            // }
             const profile = await companyProfile
                 .findOne({ companyId })
                 .select('-_id -companyId');
             if (!profile) {
                 return res.status(404).json({ message: 'Profile not found' });
             }
-            await redisClient.set(cacheKey, JSON.stringify(profile));
-            await redisClient.expire(cacheKey, 3600);
+            // await redisClient.set(cacheKey, JSON.stringify(profile));
+            // await redisClient.expire(cacheKey, 3600);
 
             return res.status(200).json(profile);
         } catch (error) {
