@@ -53,6 +53,11 @@ const companyProfileController = {
 
         try {
             const saveProfile = await profile.save();
+            const companyData = await company.findById(companyId);
+            if (companyData) {
+                companyData.companyProfileId = saveProfile._id;
+                await companyData?.save();
+            }
             return res.status(200).json({ msg: 'profile added' });
         } catch (error) {
             console.log(error);

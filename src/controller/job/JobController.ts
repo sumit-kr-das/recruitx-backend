@@ -102,14 +102,28 @@ const jobController = {
             if (limit) {
                 const jobs = await job
                     .find({ companyId: req.user.id, ...others })
-                    .populate('companyId', 'companyName')
+                    .populate({
+                        path: 'companyId',
+                        select: 'companyName companyProfileId',
+                        populate: {
+                            path: 'companyProfileId',
+                            select: 'logo',
+                        },
+                    })
                     .limit(limit)
                     .sort({ createdAt: -1 })
                     .select('-__v -createdAt -updatedAt');
                 return res.status(200).json(jobs);
             } else {
                 const jobs = await job
-                    .find({ companyId: req.user.id, ...others })
+                    .find({ companyId: req.user.id, ...others }).populate({
+                        path: 'companyId',
+                        select: 'companyName companyProfileId',
+                        populate: {
+                            path: 'companyProfileId',
+                            select: 'logo',
+                        },
+                    })
                     .sort({ createdAt: -1 })
                     .select('-__v -createdAt -updatedAt');
                 return res.status(200).json(jobs);
@@ -131,11 +145,19 @@ const jobController = {
                 select('-degree -endDate -maxQualification -roles -tags').sort({ createdAt: -1 })
                 .limit(limit)
                 .select('-__v -updatedAt')
-                .populate('companyId', 'companyName');
+                .populate({
+                    path: 'companyId',
+                    select: 'companyName companyProfileId',
+                    populate: {
+                        path: 'companyProfileId',
+                        select: 'logo',
+                    },
+                });
             // await redisClient.set('jobsFeed', JSON.stringify(jobs));
             // await redisClient.expire('jobsFeed', 3600);
             return res.status(200).json(jobs);
         } catch (error) {
+            console.log(error);
             next(error);
         }
     },
@@ -298,7 +320,11 @@ const jobController = {
         try {
             const jobDetails = await job.findById(jobId).populate({
                 path: 'companyId',
-                select: 'companyName pin address',
+                select: 'companyName pin address companyProfileId',
+                populate: {
+                    path: 'companyProfileId',
+                    select: 'logo',
+                },
             });
             return res.status(200).json(jobDetails);
         } catch (error) {
@@ -311,7 +337,14 @@ const jobController = {
         try {
             const jobs = await job.find({ companyId }).select('-degree -endDate -maxQualification -roles -tags').sort({ createdAt: -1 })
                 .select('-__v -updatedAt')
-                .populate('companyId', 'companyName');
+                .populate({
+                    path: 'companyId',
+                    select: 'companyName companyProfileId',
+                    populate: {
+                        path: 'companyProfileId',
+                        select: 'logo',
+                    },
+                });
             return res.status(200).json(jobs);
         } catch (error) {
             next(error);

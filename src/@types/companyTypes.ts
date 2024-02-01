@@ -18,4 +18,5 @@ export interface ICompanyRequestBody extends ICompany {
 export interface ICompanyModel extends ICompany {
     role: string;
     status: string;
+    companyProfileId: object
 }

@@ -19,7 +19,7 @@ const companyController = {
                     return res.status(200).json(JSON.parse(hasCompany));
                 }
                 const companies = await company
-                    .find({ ...others, approve: true })
+                    .find({ ...others, approve: true }).populate("companyProfileId", "logo")
                     .limit(limit)
                     .sort({ rating: 1 })
                     .select('-__v -password -createdAt -updatedAt -status -role -approve');
@@ -28,7 +28,7 @@ const companyController = {
                 return res.status(200).json(companies);
             } else {
                 const companies = await company
-                    .find({ ...others })
+                    .find({ ...others }).populate("companyProfileId", "logo")
                     .sort({ rating: 1 })
                     .select('-__v -password -createdAt -updatedAt -status -role -approve');
                 return res.status(200).json(companies);
@@ -43,7 +43,7 @@ const companyController = {
 
         try {
             const companyDetail = await company
-                .findOne({ _id: companyId })
+                .findOne({ _id: companyId }).populate("companyProfileId", "logo")
                 .select('-__v');
             return res.status(200).json(companyDetail);
         } catch (error) {
@@ -55,7 +55,7 @@ const companyController = {
         const companyId = req.user.id;
         try {
             const companyDetail = await company
-                .findOne({ _id: companyId })
+                .findOne({ _id: companyId }).populate("companyProfileId")
                 .select('-__v -updatedAt');
             return res.status(200).json(companyDetail);
         } catch (error) {

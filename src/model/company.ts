@@ -16,6 +16,7 @@ const CompanySchema: Schema = new Schema(
         address: { type: String, required: true },
         role: { type: String, default: roles.COMPANY },
         status: { type: String, default: companyStatus.UNVERIFIED },
+        companyProfileId: { type: Schema.Types.ObjectId, ref: "CompanyProfile" }
     },
     {
         timestamps: true,
