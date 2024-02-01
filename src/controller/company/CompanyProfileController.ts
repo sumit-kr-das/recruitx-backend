@@ -7,30 +7,34 @@ import {
 import company from '../../model/company';
 import companyProfile from '../../model/companyProfile';
 import redisClient from '../../utils/redisClient';
+import uploadOnCloudnary from '../../utils/cloudnary';
+import fs from 'fs'
 
 const companyProfileController = {
     async addProfile(req: any, res: Response, next: NextFunction) {
         const companyId = req.user.id;
+
         const verifyProfile = Joi.object({
             description: Joi.string().min(15).required(),
             teamSize: Joi.number().required(),
             type: Joi.string().required(),
-            tags: Joi.array().required(),
+            tags: Joi.string(),
             founded: Joi.string().required(),
         });
-
         const { error } = verifyProfile.validate(req.body);
-
         if (error) {
+            fs.unlinkSync(req?.file?.path);
             return next(error);
         }
 
-        let logo;
-
-        if (!req.file) {
-            logo = '';
-        } else {
-            logo = req.file.path;
+        let cloudnaryResponse;
+        if (req?.file?.path) {
+            cloudnaryResponse = await uploadOnCloudnary(req?.file?.path);
+            if (!cloudnaryResponse) {
+                return res
+                    .status(404)
+                    .json({ message: 'Company logo is required' });
+            }
         }
 
         const {
@@ -44,7 +48,7 @@ const companyProfileController = {
         const profile = new companyProfile({
             companyId,
             description,
-            logo,
+            logo: cloudnaryResponse?.url || '',
             teamSize,
             type,
             tags,
@@ -67,7 +71,7 @@ const companyProfileController = {
 
     async editProfile(req: any, res: Response, next: NextFunction) {
         const companyId = req.user.id;
-        console.log("Working")
+        console.log('Working');
         const verifyProfile = Joi.object({
             description: Joi.string().min(15),
             teamSize: Joi.number(),
@@ -114,7 +118,7 @@ const companyProfileController = {
             logo: logo,
         };
 
-        console.log(profile, "profile");
+        console.log(profile, 'profile');
 
         try {
             const updatedProfile = await companyProfile.findOneAndUpdate(
@@ -122,7 +126,7 @@ const companyProfileController = {
                 profile,
                 { returnOriginal: false },
             );
-            const companyProfileKey = `companyProfile:${companyId}`
+            const companyProfileKey = `companyProfile:${companyId}`;
             const companyProfileCache = await redisClient.get(
                 companyProfileKey,
             );

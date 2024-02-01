@@ -2,4 +2,3 @@ node_modules
 .env
 dist
 yarn.lock
-public
