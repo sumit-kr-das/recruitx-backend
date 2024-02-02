@@ -6,20 +6,21 @@ import redisClient from '../../utils/redisClient';
 
 const companyController = {
     async viewCompanies(req: Request, res: Response, next: NextFunction) {
+        // console.log("hello")
         const { limit, ...others }: { limit?: number;[key: string]: any } =
             req.query;
 
         try {
             if (limit) {
-                const cacheKey = JSON.stringify({ ...others, limit });
-                console.log(cacheKey);
-                const hasCompany = await redisClient.get(cacheKey);
+                // const cacheKey = JSON.stringify({ ...others, limit });
+                // console.log(cacheKey);
+                // const hasCompany = await redisClient.get(cacheKey);
 
-                if (hasCompany) {
-                    return res.status(200).json(JSON.parse(hasCompany));
-                }
+                // if (hasCompany) {
+                //     return res.status(200).json(JSON.parse(hasCompany));
+                // }
                 const companies = await company
-                    .find({ ...others, approve: true }).populate("companyProfileId", "logo")
+                    .find({ ...others, status: "verified" }).populate("companyProfileId", "logo")
                     .limit(limit)
                     .sort({ rating: 1 })
                     .select('-__v -password -createdAt -updatedAt -status -role -approve');
@@ -28,7 +29,7 @@ const companyController = {
                 return res.status(200).json(companies);
             } else {
                 const companies = await company
-                    .find({ ...others }).populate("companyProfileId", "logo")
+                    .find({ ...others, status: "verified" }).populate("companyProfileId", "logo")
                     .sort({ rating: 1 })
                     .select('-__v -password -createdAt -updatedAt -status -role -approve');
                 return res.status(200).json(companies);
