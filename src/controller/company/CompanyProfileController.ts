@@ -115,8 +115,10 @@ const companyProfileController = {
                 if (!cloudinaryDestroyResponse) {
                     return res
                         .status(404)
-                        .json({ message: 'Company logo is not found' });
+                        .json({ message: 'Company logo is not found in cloudnary' });
                 }
+                console.log("Image id deleted from cloudnary");
+                
             }
             cloudnaryResponse = await uploadOnCloudnary(req?.file?.path);
             if (!cloudnaryResponse) {
