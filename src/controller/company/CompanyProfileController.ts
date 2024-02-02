@@ -30,6 +30,7 @@ const companyProfileController = {
         let cloudnaryResponse;
         if (req?.file?.path) {
             cloudnaryResponse = await uploadOnCloudnary(req?.file?.path);
+            fs.unlinkSync(req?.file?.path);
             if (!cloudnaryResponse) {
                 return res
                     .status(404)
@@ -121,6 +122,7 @@ const companyProfileController = {
                 
             }
             cloudnaryResponse = await uploadOnCloudnary(req?.file?.path);
+            fs.unlinkSync(req?.file?.path);
             if (!cloudnaryResponse) {
                 return res
                     .status(404)
