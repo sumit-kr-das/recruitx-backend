@@ -74,8 +74,8 @@ const userController = {
             return res.status(200).json({
                 user,
                 info: {
-                    photo: info?.photo,
-                    objective: info?.objective,
+                    photo: info?.photo || null,
+                    objective: info?.objective || null,
                 },
                 education: {
                     degree: education.length > 0 ? education[0]?.degree : null,
