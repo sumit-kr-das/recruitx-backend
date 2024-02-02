@@ -7,8 +7,8 @@ import {
 import company from '../../model/company';
 import companyProfile from '../../model/companyProfile';
 import redisClient from '../../utils/redisClient';
-import uploadOnCloudnary from '../../utils/cloudnary';
-import fs from 'fs'
+import { destroyOnCloudnary, uploadOnCloudnary } from '../../utils/cloudnary';
+import fs from 'fs';
 
 const companyProfileController = {
     async addProfile(req: any, res: Response, next: NextFunction) {
@@ -18,7 +18,7 @@ const companyProfileController = {
             description: Joi.string().min(15).required(),
             teamSize: Joi.number().required(),
             type: Joi.string().required(),
-            tags: Joi.string(),
+            tags: Joi.array().required(),
             founded: Joi.string().required(),
         });
         const { error } = verifyProfile.validate(req.body);
@@ -71,7 +71,7 @@ const companyProfileController = {
 
     async editProfile(req: any, res: Response, next: NextFunction) {
         const companyId = req.user.id;
-        console.log('Working');
+
         const verifyProfile = Joi.object({
             description: Joi.string().min(15),
             teamSize: Joi.number(),
@@ -79,10 +79,11 @@ const companyProfileController = {
             tags: Joi.array(),
             founded: Joi.string(),
         });
-
         const { error } = verifyProfile.validate(req.body);
-
         if (error) {
+            if (req?.file?.path) {
+                fs.unlinkSync(req?.file?.path);
+            }
             return next(error);
         }
 
@@ -100,32 +101,45 @@ const companyProfileController = {
             return res.status(404).json({ message: 'Profile not found' });
         }
 
-        let logo;
+        let cloudnaryResponse;
 
-        if (req.file) {
-            logo = req.file.path;
-        } else {
-            logo = oldProfile?.logo;
+        if (req?.file?.path) {
+            if (oldProfile?.logo) {
+                const cloudnaryImageUrl = oldProfile?.logo;
+                const urlArray = cloudnaryImageUrl.split('/');
+                const url = urlArray[urlArray.length - 1];
+                const imgName = url.split('.')[0];
+                const cloudinaryDestroyResponse = await destroyOnCloudnary(
+                    imgName,
+                );
+                if (!cloudinaryDestroyResponse) {
+                    return res
+                        .status(404)
+                        .json({ message: 'Company logo is not found' });
+                }
+            }
+            cloudnaryResponse = await uploadOnCloudnary(req?.file?.path);
+            if (!cloudnaryResponse) {
+                return res
+                    .status(404)
+                    .json({ message: 'Company logo is required' });
+            }
         }
 
         const profile = {
             companyId,
-            description: description || oldProfile.description,
-            teamSize: teamSize || oldProfile.teamSize,
-            type: type || oldProfile.type,
-            tags: tags || oldProfile.tags,
-            founded: founded || oldProfile.founded,
-            logo: logo,
+            description: description || oldProfile?.description,
+            teamSize: teamSize || oldProfile?.teamSize,
+            type: type || oldProfile?.type,
+            tags: tags || oldProfile?.tags,
+            founded: founded || oldProfile?.founded,
+            logo: cloudnaryResponse?.url || oldProfile?.logo,
         };
 
-        console.log(profile, 'profile');
-
         try {
-            const updatedProfile = await companyProfile.findOneAndUpdate(
-                { companyId },
-                profile,
-                { returnOriginal: false },
-            );
+            await companyProfile.findOneAndUpdate({ companyId }, profile, {
+                returnOriginal: false,
+            });
             const companyProfileKey = `companyProfile:${companyId}`;
             const companyProfileCache = await redisClient.get(
                 companyProfileKey,
@@ -135,7 +149,7 @@ const companyProfileController = {
             }
             return res.status(200).json({ message: 'Profile updated' });
         } catch (error) {
-            console.log(error);
+            fs.unlinkSync(req?.file?.path);
             return next(error);
         }
     },

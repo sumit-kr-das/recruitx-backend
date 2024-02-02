@@ -8,7 +8,7 @@ cloudinary.config({
     api_secret: config.CLOUDNARY_API_SECRET,
 });
 
-const uploadOnCloudnary = async (localFilePath: string) => {
+export const uploadOnCloudnary = async (localFilePath: string) => {
     try {
         if (!localFilePath) {
             return null;
@@ -23,4 +23,14 @@ const uploadOnCloudnary = async (localFilePath: string) => {
     }
 };
 
-export default uploadOnCloudnary;
+export const destroyOnCloudnary = async (cloudinaryFilePath:string) => {
+    try {
+        if (!cloudinaryFilePath) {
+            return null;
+        }
+        const res = await cloudinary.uploader.destroy(cloudinaryFilePath);
+        return res;
+    } catch (err) {
+        return null;
+    }
+};

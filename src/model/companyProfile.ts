@@ -12,7 +12,7 @@ const CompanyProfileSchema: Schema = new Schema({
     description: { type: String, required: true },
     teamSize: { type: Number, required: true },
     type: { type: String, required: true },
-    tags: { type: Array },
+    tags: { type: Array, required: true },
     founded: { type: String, required: true },
 });
 
