@@ -119,7 +119,7 @@ const companyProfileController = {
                         .json({ message: 'Company logo is not found in cloudnary' });
                 }
                 console.log("Image id deleted from cloudnary");
-                
+
             }
             cloudnaryResponse = await uploadOnCloudnary(req?.file?.path);
             fs.unlinkSync(req?.file?.path);
@@ -168,7 +168,7 @@ const companyProfileController = {
             // }
             const profile = await companyProfile
                 .findOne({ companyId })
-                .select('-_id -companyId');
+                .select('-_id -companyId -__v');
             if (!profile) {
                 return res.status(404).json({ message: 'Profile not found' });
             }
