@@ -9,6 +9,7 @@ import companyProfile from '../../model/companyProfile';
 import redisClient from '../../utils/redisClient';
 import { destroyOnCloudnary, uploadOnCloudnary } from '../../utils/cloudnary';
 import fs from 'fs';
+import logger from '../../utils/logger';
 
 const companyProfileController = {
     async addProfile(req: any, res: Response, next: NextFunction) {
@@ -21,9 +22,13 @@ const companyProfileController = {
             tags: Joi.array().required(),
             founded: Joi.string().required(),
         });
+
         const { error } = verifyProfile.validate(req.body);
+
         if (error) {
-            fs.unlinkSync(req?.file?.path);
+            if (req?.file?.path) {
+                fs.unlinkSync(req.file.path);
+            }
             return next(error);
         }
 
@@ -63,9 +68,8 @@ const companyProfileController = {
                 companyData.companyProfileId = saveProfile._id;
                 await companyData?.save();
             }
-            return res.status(200).json({ msg: 'profile added' });
+            return res.status(200).json({ msg: 'Profile added' });
         } catch (error) {
-            console.log(error);
             return next(error);
         }
     },
@@ -80,7 +84,9 @@ const companyProfileController = {
             tags: Joi.array(),
             founded: Joi.string(),
         });
+
         const { error } = verifyProfile.validate(req.body);
+
         if (error) {
             if (req?.file?.path) {
                 fs.unlinkSync(req?.file?.path);
@@ -103,7 +109,6 @@ const companyProfileController = {
         }
 
         let cloudnaryResponse;
-
         if (req?.file?.path) {
             if (oldProfile?.logo) {
                 const cloudnaryImageUrl = oldProfile?.logo;
@@ -114,12 +119,11 @@ const companyProfileController = {
                     imgName,
                 );
                 if (!cloudinaryDestroyResponse) {
-                    return res
-                        .status(404)
-                        .json({ message: 'Company logo is not found in cloudnary' });
+                    return res.status(404).json({
+                        message: 'Company logo is not found in cloudnary',
+                    });
                 }
-                console.log("Image id deleted from cloudnary");
-
+                logger.info('Image is deleted from cloudnary');
             }
             cloudnaryResponse = await uploadOnCloudnary(req?.file?.path);
             fs.unlinkSync(req?.file?.path);
@@ -177,7 +181,6 @@ const companyProfileController = {
 
             return res.status(200).json(profile);
         } catch (error) {
-            console.log(error);
             return next(error);
         }
     },

@@ -2,10 +2,14 @@ import { Response, NextFunction } from 'express';
 import Joi from 'joi';
 import userInfo from '../../model/userInfo';
 import { IUserinfoReqBody } from '../../@types/userInfoTypes';
+import fs from 'fs';
+import { destroyOnCloudnary, uploadOnCloudnary } from '../../utils/cloudnary';
+import logger from '../../utils/logger';
 
 const userInfoController = {
     async addUseInfo(req: any, res: Response, next: NextFunction) {
         const userId = req.user.id;
+
         try {
             const data = await userInfo.find({ userId });
             if (data.length > 0) {
@@ -16,7 +20,6 @@ const userInfoController = {
         } catch (error) {
             return next(error);
         }
-
 
         const userinfoSchema = Joi.object({
             github: Joi.string(),
@@ -35,15 +38,20 @@ const userInfoController = {
         const { error } = userinfoSchema.validate(req.body);
 
         if (error) {
+            if (req?.file?.path) {
+                fs.unlinkSync(req.file.path);
+            }
             return next(error);
         }
 
-        let photo: string;
-
-        if (!req.file) {
-            photo = "";
-        } else {
-            photo = req.file?.path;
+        let cloudnaryResponse;
+        if (req?.file?.path) {
+            cloudnaryResponse = await uploadOnCloudnary(req?.file?.path);
+            if (!cloudnaryResponse) {
+                return res
+                    .status(404)
+                    .json({ message: 'User image is required' });
+            }
         }
 
         const {
@@ -71,17 +79,19 @@ const userInfoController = {
             language,
             gender,
             skills,
-            photo: photo,
+            photo: cloudnaryResponse?.url || '',
             userId,
             maxQualification,
         });
 
         try {
             await newUserinfo.save();
-            return res
-                .status(200)
-                .json({ msg: 'Your informations saved successfully' });
+            res.status(200).json({
+                msg: 'Your informations saved successfully',
+            });
+            fs.unlinkSync(req?.file?.path);
         } catch (error) {
+            fs.unlinkSync(req?.file?.path);
             return next(error);
         }
     },
@@ -90,7 +100,6 @@ const userInfoController = {
         const userId = req.user.id;
         try {
             const info = await userInfo.find({ userId: userId });
-            // console.log(info);
             return res.status(200).json(info);
         } catch (error) {
             return next(error);
@@ -98,9 +107,7 @@ const userInfoController = {
     },
 
     async updateUserinfo(req: any, res: Response, next: NextFunction) {
-        console.log("hello");
         const userId = req.user.id;
-        console.log("file", req?.file)
 
         const userinfoSchema = Joi.object({
             github: Joi.string(),
@@ -119,15 +126,42 @@ const userInfoController = {
         const { error } = userinfoSchema.validate(req.body);
 
         if (error) {
-            console.log(error);
+            if (req?.file?.path) {
+                fs.unlinkSync(req.file.path);
+            }
             return next(error);
         }
-        let photo: string;
 
-        if (!req.file) {
-            photo = "";
-        } else {
-            photo = req.file?.path;
+        const oldProfile = await userInfo.findOne({ userId });
+
+        if (!oldProfile) {
+            return res.status(404).json({ message: 'Profile not found' });
+        }
+        
+        let cloudnaryResponse;
+        if (req?.file?.path) {
+            if (oldProfile?.photo) {
+                const cloudnaryImageUrl = oldProfile?.photo;
+                const urlArray = cloudnaryImageUrl.split('/');
+                const url = urlArray[urlArray.length - 1];
+                const imgName = url.split('.')[0];
+                const cloudinaryDestroyResponse = await destroyOnCloudnary(
+                    imgName,
+                );
+                if (!cloudinaryDestroyResponse) {
+                    return res.status(404).json({
+                        message: 'User image is not found in cloudnary',
+                    });
+                }
+                logger.info('Image is deleted from cloudnary');
+            }
+            cloudnaryResponse = await uploadOnCloudnary(req?.file?.path);
+            fs.unlinkSync(req?.file?.path);
+            if (!cloudnaryResponse) {
+                return res
+                    .status(404)
+                    .json({ message: 'Company logo is required' });
+            }
         }
 
         const {
@@ -171,8 +205,7 @@ const userInfoController = {
             maxQualification,
         };
 
-
-        updateFields.photo = photo;
+        updateFields.photo = cloudnaryResponse?.url || "";
 
         try {
             const updatedInfo = await userInfo.findOneAndUpdate(
@@ -192,7 +225,7 @@ const userInfoController = {
                 data: updatedInfo,
             });
         } catch (error) {
-            console.log(error);
+            fs.unlinkSync(req?.file?.path);
             return next(error);
         }
     },
