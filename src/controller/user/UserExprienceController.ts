@@ -46,7 +46,6 @@ const userExprienceController = {
                 return res.status(200).json({ msg: "User Exprience Added Successfully" })
             }
         } catch (error) {
-            console.log(error);
             return next(error);
         }
     },

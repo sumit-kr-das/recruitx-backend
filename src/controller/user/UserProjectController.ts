@@ -17,7 +17,6 @@ const userProjectController = {
         const { error } = addProjectSchema.validate(req.body);
 
         if (error) {
-            console.log(error)
             return next(error);
         }
 

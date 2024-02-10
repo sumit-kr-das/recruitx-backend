@@ -40,7 +40,6 @@ const userEducationController = {
                 return res.status(200).json({ msg: "User Education Added Successfully" });
             }
         } catch (error) {
-            console.log(error);
             return next(error);
         }
     },

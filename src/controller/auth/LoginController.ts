@@ -42,7 +42,6 @@ const loginController = {
             }
             const info = await userInfo.findOne({ userId: user._id }).select("-_id photo objective");
             const education = await userEducationDetail.find({ userId: user.id }).select("-_id degree college")
-            console.log(education);
 
             /* compare access token */
             const access_token = JwtService.sign({
@@ -85,7 +84,6 @@ const loginController = {
 
         try {
             const companyInfo = await company.findOne({ email });
-            console.log(companyInfo);
             if (!companyInfo) {
                 return next(CustomErrorHandler.wrongCredentials());
             }
