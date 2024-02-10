@@ -6,32 +6,36 @@ import redisClient from '../../utils/redisClient';
 
 const companyController = {
     async viewCompanies(req: Request, res: Response, next: NextFunction) {
-        // console.log("hello")
-        const { limit, ...others }: { limit?: number;[key: string]: any } =
+        const { limit, ...others }: { limit?: number; [key: string]: any } =
             req.query;
 
         try {
             if (limit) {
                 // const cacheKey = JSON.stringify({ ...others, limit });
-                // console.log(cacheKey);
                 // const hasCompany = await redisClient.get(cacheKey);
 
                 // if (hasCompany) {
                 //     return res.status(200).json(JSON.parse(hasCompany));
                 // }
                 const companies = await company
-                    .find({ ...others, status: "verified" }).populate("companyProfileId", "logo")
+                    .find({ ...others, status: 'verified' })
+                    .populate({ path: 'companyProfileId', select: 'logo type' })
                     .limit(limit)
                     .sort({ rating: 1 })
-                    .select('-__v -password -createdAt -updatedAt -status -role -approve');
+                    .select(
+                        '-__v -password -createdAt -updatedAt -status -role -approve -designation',
+                    );
                 // await redisClient.set(cacheKey, JSON.stringify(companies));
                 // await redisClient.expire(cacheKey, 3600);
                 return res.status(200).json(companies);
             } else {
                 const companies = await company
-                    .find({ ...others, status: "verified" }).populate("companyProfileId", "logo")
+                    .find({ ...others, status: 'verified' })
+                    .populate('companyProfileId', 'logo')
                     .sort({ rating: 1 })
-                    .select('-__v -password -createdAt -updatedAt -status -role -approve');
+                    .select(
+                        '-__v -password -createdAt -updatedAt -status -role -approve',
+                    );
                 return res.status(200).json(companies);
             }
         } catch (error) {
@@ -44,7 +48,8 @@ const companyController = {
 
         try {
             const companyDetail = await company
-                .findOne({ _id: companyId }).populate("companyProfileId", "logo")
+                .findOne({ _id: companyId })
+                .populate('companyProfileId', 'logo')
                 .select('-__v');
             return res.status(200).json(companyDetail);
         } catch (error) {
@@ -56,7 +61,8 @@ const companyController = {
         const companyId = req.user.id;
         try {
             const companyDetail = await company
-                .findOne({ _id: companyId }).populate("companyProfileId")
+                .findOne({ _id: companyId })
+                .populate('companyProfileId')
                 .select('-__v -updatedAt');
             return res.status(200).json(companyDetail);
         } catch (error) {
