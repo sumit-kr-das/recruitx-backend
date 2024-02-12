@@ -3,10 +3,11 @@ import { NextFunction, Request, Response } from 'express';
 import Joi from 'joi';
 import company from '../../model/company';
 import redisClient from '../../utils/redisClient';
+import companyProfile from '../../model/companyProfile';
 
 const companyController = {
     async viewCompanies(req: Request, res: Response, next: NextFunction) {
-        const { limit, ...others }: { limit?: number; [key: string]: any } =
+        const { limit, ...others }: { limit?: number;[key: string]: any } =
             req.query;
 
         try {
@@ -240,6 +241,22 @@ const companyController = {
             return next(error);
         }
     },
+
+    async getCompanyGlobals(req: any, res: Response, next: NextFunction) {
+        const companyId = req.user.id;
+        try {
+            const companyData = await company.findById(companyId).select('-_id -phone -password -pin -address -role -status -createdAt -updatedAt -__v -companyProfileId');
+            const profile = await companyProfile.findOne({ companyId }).select("-_id -companyId -description -teamSize -type -tags -founded -__v");
+            return res.status(200).json({
+                company: companyData,
+                info: {
+                    logo: profile?.logo
+                }
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
 };
 
 export default companyController;

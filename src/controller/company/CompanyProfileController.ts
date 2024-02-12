@@ -145,7 +145,7 @@ const companyProfileController = {
         };
 
         try {
-            await companyProfile.findOneAndUpdate({ companyId }, profile, {
+            const updatedData = await companyProfile.findOneAndUpdate({ companyId }, profile, {
                 returnOriginal: false,
             });
             const companyProfileKey = `companyProfile:${companyId}`;
@@ -155,7 +155,7 @@ const companyProfileController = {
             if (companyProfileCache) {
                 await redisClient.del(companyProfileKey);
             }
-            return res.status(200).json({ message: 'Profile updated' });
+            return res.status(200).json({ message: 'Profile updated', data: updatedData });
         } catch (error) {
             fs.unlinkSync(req?.file?.path);
             return next(error);

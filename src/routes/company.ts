@@ -26,6 +26,7 @@ router
     // .put("/edit", [auth, companyAuth], companyController.editCompany)
     .put("/password/change", [auth, companyAuth], companyController.changePassword)
     .delete("/delete", [auth, companyAuth], companyController.deleteCompany)
-    .get("/stats", [auth, companyAuth], statsController.companyStats);
+    .get("/stats", [auth, companyAuth], statsController.companyStats)
+    .get("/globals", [auth, companyAuth], companyController.getCompanyGlobals);
 
 export default router;
