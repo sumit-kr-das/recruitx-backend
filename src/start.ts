@@ -15,6 +15,7 @@ import userRoutes from './routes/user';
 import userAuthRoutes from './routes/userAuth';
 import otpRoutes from './routes/otpVerification';
 import chatRoutes from './routes/chart';
+import forgetRoutes from "./routes/forget";
 import path from 'path';
 export const app: Application = express();
 
@@ -36,6 +37,7 @@ app.use('/api/company', companyRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/otp', otpRoutes);
 app.use('/api/chart', chatRoutes);
+app.use("/api/forget", forgetRoutes);
 
 /* ----------------custom error handler---------------- */
 app.use(errorHandler);

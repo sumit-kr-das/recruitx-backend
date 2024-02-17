@@ -6,11 +6,11 @@ import admin from "../model/admin";
 const forgetPassword = async ({ email, userType }: { email: string, userType: string }, res: Response, next: NextFunction) => {
     try {
         let id;
-        if (userType === "user") {
+        if (userType === "1") {
             id = await User.findOne({ email: email }).select("_id");
-        } else if (userType === "company") {
+        } else if (userType === "2") {
             id = await company.findOne({ email: email }).select("_id");
-        } else if (userType === "admin") {
+        } else if (userType === "3") {
             id = await admin.findOne({ email: email }).select("_id");
         }
         return id;
