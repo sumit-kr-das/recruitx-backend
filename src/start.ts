@@ -15,7 +15,7 @@ import userRoutes from './routes/user';
 import userAuthRoutes from './routes/userAuth';
 import otpRoutes from './routes/otpVerification';
 import chatRoutes from './routes/chart';
-import forgetRoutes from "./routes/forget";
+import forgetRoutes from './routes/forget';
 import path from 'path';
 export const app: Application = express();
 
@@ -25,7 +25,16 @@ app.use(
 );
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors({ origin: `${config.ORIGIN}`, credentials: true }));
+app.use(
+    cors({
+        origin: [
+            `${config.ORIGIN}`,
+            'http://localhost:5173',
+            'http://localhost:4173',
+        ],
+        credentials: true,
+    }),
+);
 
 /* ----------------all routes---------------- */
 app.use('/', testRoutes);
@@ -37,11 +46,10 @@ app.use('/api/company', companyRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/otp', otpRoutes);
 app.use('/api/chart', chatRoutes);
-app.use("/api/forget", forgetRoutes);
+app.use('/api/forget', forgetRoutes);
 
 /* ----------------custom error handler---------------- */
 app.use(errorHandler);
-// app.use(express.static(__dirname));
 
 app.listen(config.PORT, async () => {
     logger.info(`RUNNING ON PORT NO ${config.PORT}`);
