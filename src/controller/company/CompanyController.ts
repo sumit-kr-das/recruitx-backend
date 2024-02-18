@@ -19,7 +19,7 @@ const companyController = {
                 //     return res.status(200).json(JSON.parse(hasCompany));
                 // }
                 const companies = await company
-                    .find({ ...others, status: 'verified' })
+                    .find({ ...others, status: 'approved' })
                     .populate({ path: 'companyProfileId', select: 'logo type' })
                     .limit(limit)
                     .sort({ rating: 1 })

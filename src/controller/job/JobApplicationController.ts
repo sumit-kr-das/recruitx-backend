@@ -148,7 +148,17 @@ const jobApplicationController = {
             if (appliedJobsCache) {
                 return res.status(200).json(JSON.parse(appliedJobsCache));
             }
-            const jobs = await applier.find({ userId }).select("-userId").populate("jobId");
+            const jobs = await applier.find({ userId }).select("-userId").populate({
+                path: "jobId",
+                populate: {
+                    path: 'companyId',
+                    select: 'companyName companyProfileId',
+                    populate: {
+                        path: 'companyProfileId',
+                        select: 'logo'
+                    }
+                }
+            });
             await redisClient.set(cacheKey, JSON.stringify(jobs));
             await redisClient.expire(cacheKey, 3600);
             return res.status(200).json(jobs);
