@@ -5,6 +5,8 @@ import { ISearchJob } from "../../@types/jobTypes";
 
 const searchJobController = {
     async searchJob(req: Request, res: Response, next: NextFunction) {
+        const { limit, ...others }: { limit?: number;[key: string]: any } =
+            req.query;
         const searchSchema = Joi.object({
             title: Joi.string().allow(null, ""),
             location: Joi.string().allow(null, ""),
@@ -21,7 +23,6 @@ const searchJobController = {
 
 
         if (title || location || exprience) {
-            console.log("agree")
             let query = {};
             if (title && location && exprience) {
                 query = {
@@ -45,14 +46,14 @@ const searchJobController = {
                 }
             }
             try {
-                const jobs = await job.find(query);
+                const jobs = await job.find({ ...query, ...others });
                 return res.status(200).json(jobs);
             } catch (error) {
                 return next(error);
             }
 
         } else {
-            const jobs = await job.find().sort({ createdAt: -1 });
+            const jobs = await job.find({ ...others }).sort({ createdAt: -1 });
             return res.status(200).json(jobs);
         }
 
