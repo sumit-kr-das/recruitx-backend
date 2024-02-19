@@ -27,5 +27,6 @@ router
     .get("/statics", [auth, companyAuth], jobController.getJobStatics)
     .get("/details/:jobId", jobController.getJobDetails)
     .get("/search/company/:companyId", jobController.viewJobByCompany)
-    .get("/search", searchJobController.jobSearch);
+    .get("/search", searchJobController.jobSearch)
+    .get("/search/title", searchJobController.searchJobTitles);
 export default router;

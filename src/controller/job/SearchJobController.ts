@@ -195,20 +195,6 @@ const searchJobController = {
                 ? (skill = [...skills])
                 : (skill = req.query.skill.split(','));
 
-            // const jobs = await job
-            //     .find({
-            //         title: { $regex: search, $options: 'i' },
-            //         'info.minExprience': { $gte: minExprience },
-            //         'info.location': location,
-            //         'info.minSalary': { $gte: minSalary },
-            //         'info.jobType': jobTypes,
-            //         'info.workplaceType': workplaceType,
-            //     })
-            //     .where('info.skills')
-            //     .in([...skill])
-            //     .skip(page * limit)
-            //     .limit(limit);
-
             const query: any = {
                 title: { $regex: search, $options: 'i' },
                 'info.minExprience': { $gte: minExprience },
@@ -226,7 +212,6 @@ const searchJobController = {
 
 
             if (workplaceType && workplaceType.length !== "") {
-                console.log(typeof (workplaceType), workplaceType);
                 query['info.workplaceType'] = workplaceType;
 
             }
@@ -241,10 +226,21 @@ const searchJobController = {
 
             return res.status(200).json(response);
         } catch (error) {
-            console.log(error);
             next(error);
         }
     },
+
+    async searchJobTitles(req: any, res: Response, next: NextFunction) {
+        const search = req.query.search || '';
+
+        try {
+            const jobTitles = await job.find({ title: { $regex: search, $options: 'i' } }).select("title -_id")
+            return res.status(200).json(jobTitles);
+        } catch (error) {
+            console.log(error)
+            next(error);
+        }
+    }
 };
 
 export default searchJobController;
