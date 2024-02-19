@@ -17,7 +17,7 @@ router
     .put("/apply/approve/:id", [auth, companyAuth], jobApplicationController.shortlistApply)
     .get("/apply/shortlisted/view/:id", [auth, companyAuth], jobApplicationController.viewShortListedAppliers)
     .get("/application/view/:id", [auth, companyAuth], jobApplicationController.viewAppliers)
-    .post("/search", searchJobController.searchJob)
+    // .post("/search", searchJobController.searchJob)
     .get("/search/tag", searchJobController.searchByTags)
     .get("/search/skill", searchJobController.searchBySkill)
     .put("/deactive/:jobId", [auth, companyAuth], jobController.deactivateJob)
@@ -26,5 +26,6 @@ router
     .get("/applications/manage/:jobId", [auth, companyAuth], jobApplicationController.allManageApplicants)
     .get("/statics", [auth, companyAuth], jobController.getJobStatics)
     .get("/details/:jobId", jobController.getJobDetails)
-    .get("/search/company/:companyId", jobController.viewJobByCompany);
+    .get("/search/company/:companyId", jobController.viewJobByCompany)
+    .get("/search", searchJobController.jobSearch);
 export default router;
