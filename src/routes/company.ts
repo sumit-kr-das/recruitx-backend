@@ -15,7 +15,7 @@ router
     .get("/views", companyController.viewCompanies)
     .put("/edit", [auth, companyAuth], companyController.editCompany)
     .get("/view", [auth, companyAuth], companyController.viewCompany)
-    .get("/details", [auth, companyAuth], companyController.viewCompanyDetails)
+    .get("/details/:id", companyController.viewCompanyDetails)
     .post("/rating/add", [auth, userAuth], ratingController.addRating)
     .get("/rating/view/:companyId", [auth], ratingController.viewRatings)
     .put("/rating/edit/:id", [auth, userAuth], ratingController.editRating)

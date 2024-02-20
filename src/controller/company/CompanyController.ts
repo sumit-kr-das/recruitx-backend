@@ -4,6 +4,7 @@ import Joi from 'joi';
 import company from '../../model/company';
 import redisClient from '../../utils/redisClient';
 import companyProfile from '../../model/companyProfile';
+import job from '../../model/job';
 
 const companyController = {
     async viewCompanies(req: Request, res: Response, next: NextFunction) {
@@ -59,14 +60,16 @@ const companyController = {
     },
 
     async viewCompanyDetails(req: any, res: Response, next: NextFunction) {
-        const companyId = req.user.id;
+        const companyId = req.params.id;
         try {
             const companyDetail = await company
                 .findOne({ _id: companyId })
                 .populate('companyProfileId')
                 .select('-__v -updatedAt');
-            return res.status(200).json(companyDetail);
+            const jobs = await job.find({ companyId }).select("-__v, -createdAt, -updatedAt");
+            return res.status(200).json({ companyDetail, jobs });
         } catch (error) {
+            console.log(error);
             return next(error);
         }
     },
