@@ -215,7 +215,14 @@ const searchJobController = {
                 query['info.workplaceType'] = workplaceType;
 
             }
-            const jobs = await job.find(query).skip(page * limit).limit(limit);
+            const jobs = await job.find(query).skip(page * limit).limit(limit).populate({
+                path: 'companyId',
+                select: 'companyName pin address companyProfileId',
+                populate: {
+                    path: 'companyProfileId',
+                    select: 'logo',
+                },
+            });
 
 
             const response = {
