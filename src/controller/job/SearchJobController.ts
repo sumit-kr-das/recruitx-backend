@@ -223,9 +223,11 @@ const searchJobController = {
                     select: 'logo',
                 },
             });
+            const total = await job.countDocuments(query);
 
 
             const response = {
+                total,
                 page: page + 1,
                 limit,
                 jobs,
