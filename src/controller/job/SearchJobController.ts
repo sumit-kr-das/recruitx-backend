@@ -5,7 +5,7 @@ import { ISearchJob } from '../../@types/jobTypes';
 
 const searchJobController = {
     async searchJob(req: Request, res: Response, next: NextFunction) {
-        const { limit, ...others }: { limit?: number;[key: string]: any } =
+        const { limit, ...others }: { limit?: number; [key: string]: any } =
             req.query;
         const searchSchema = Joi.object({
             title: Joi.string().allow(null, ''),
@@ -79,7 +79,7 @@ const searchJobController = {
 
     async jobSearch(req: any, res: Response, next: NextFunction) {
         try {
-            const limit = parseInt(req.query.limit) || 10;
+            const limit = parseInt(req.query.limit) || 6;
             const search = req.query.search || '';
             const location = req.query.location;
             const minSalary = parseInt(req.query.minSalary) || 0;
@@ -199,7 +199,7 @@ const searchJobController = {
                 title: { $regex: search, $options: 'i' },
                 'info.minExprience': { $gte: minExprience },
                 'info.minSalary': { $gte: minSalary },
-                'info.skills': { $in: skill }
+                'info.skills': { $in: skill },
             };
 
             if (location) {
@@ -210,21 +210,22 @@ const searchJobController = {
                 query['info.jobType'] = jobTypes;
             }
 
-
-            if (workplaceType && workplaceType.length !== "") {
+            if (workplaceType && workplaceType.length !== '') {
                 query['info.workplaceType'] = workplaceType;
-
             }
-            const jobs = await job.find(query).skip(page * limit).limit(limit).populate({
-                path: 'companyId',
-                select: 'companyName pin address companyProfileId',
-                populate: {
-                    path: 'companyProfileId',
-                    select: 'logo',
-                },
-            });
+            const jobs = await job
+                .find(query)
+                .skip(page * limit)
+                .limit(limit)
+                .populate({
+                    path: 'companyId',
+                    select: 'companyName pin address companyProfileId',
+                    populate: {
+                        path: 'companyProfileId',
+                        select: 'logo',
+                    },
+                });
             const total = await job.countDocuments(query);
-
 
             const response = {
                 total,
@@ -243,13 +244,15 @@ const searchJobController = {
         const search = req.query.search || '';
 
         try {
-            const jobTitles = await job.find({ title: { $regex: search, $options: 'i' } }).select("title -_id")
+            const jobTitles = await job
+                .find({ title: { $regex: search, $options: 'i' } })
+                .select('title -_id');
             return res.status(200).json(jobTitles);
         } catch (error) {
-            console.log(error)
+            console.log(error);
             next(error);
         }
-    }
+    },
 };
 
 export default searchJobController;
