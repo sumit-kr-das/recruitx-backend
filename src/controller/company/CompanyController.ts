@@ -25,7 +25,7 @@ const companyController = {
                     .limit(limit)
                     .sort({ rating: 1 })
                     .select(
-                        '-__v -password -createdAt -updatedAt -status -role -approve -designation',
+                        '-__v -password -createdAt -updatedAt -role -approve -designation',
                     );
                 // await redisClient.set(cacheKey, JSON.stringify(companies));
                 // await redisClient.expire(cacheKey, 3600);

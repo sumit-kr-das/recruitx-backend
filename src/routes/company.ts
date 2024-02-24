@@ -6,6 +6,7 @@ import auth from '../middleware/auth';
 import { MulterService } from '../services/multerService';
 import { loginController, registerController, companyProfileController, statsController } from '../controller';
 import ratingController from '../controller/review/RatingController';
+import companySearchController from '../controller/company/CompanySearchController';
 
 const router = express.Router();
 
@@ -27,6 +28,7 @@ router
     .put("/password/change", [auth, companyAuth], companyController.changePassword)
     .delete("/delete", [auth, companyAuth], companyController.deleteCompany)
     .get("/stats/:role", [auth, companyAuth], statsController.companyStats)
-    .get("/globals", [auth, companyAuth], companyController.getCompanyGlobals);
+    .get("/globals", [auth, companyAuth], companyController.getCompanyGlobals)
+    .get("/search", companySearchController.searchCompany);
 
 export default router;
