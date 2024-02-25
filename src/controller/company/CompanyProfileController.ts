@@ -104,10 +104,6 @@ const companyProfileController = {
 
         const oldProfile = await companyProfile.findOne({ companyId });
 
-        if (!oldProfile) {
-            return res.status(404).json({ message: 'Profile not found' });
-        }
-
         let cloudnaryResponse;
         if (req?.file?.path) {
             if (oldProfile?.logo) {
