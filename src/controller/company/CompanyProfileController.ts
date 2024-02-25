@@ -173,9 +173,7 @@ const companyProfileController = {
             const profile = await companyProfile
                 .findOne({ companyId })
                 .select('-_id -companyId -__v');
-            if (!profile) {
-                return res.status(404).json({ message: 'Profile not found' });
-            }
+
             // await redisClient.set(cacheKey, JSON.stringify(profile));
             // await redisClient.expire(cacheKey, 3600);
 
