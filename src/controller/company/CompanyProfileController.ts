@@ -104,6 +104,10 @@ const companyProfileController = {
 
         const oldProfile = await companyProfile.findOne({ companyId });
 
+        // if (!oldProfile) {
+        //     return res.status(404).json({ message: 'Profile not found' });
+        // }
+
         let cloudnaryResponse;
         if (req?.file?.path) {
             if (oldProfile?.logo) {
@@ -141,16 +145,19 @@ const companyProfileController = {
         };
 
         try {
+            console.log(profile, "profile")
             const updatedData = await companyProfile.findOneAndUpdate({ companyId }, profile, {
                 returnOriginal: false,
+                upsert: true
             });
+            console.log(updatedData, "updated data");
             const companyProfileKey = `companyProfile:${companyId}`;
-            const companyProfileCache = await redisClient.get(
-                companyProfileKey,
-            );
-            if (companyProfileCache) {
-                await redisClient.del(companyProfileKey);
-            }
+            // const companyProfileCache = await redisClient.get(
+            //     companyProfileKey,
+            // );
+            // if (companyProfileCache) {
+            //     await redisClient.del(companyProfileKey);
+            // }
             return res.status(200).json({ message: 'Profile updated', data: updatedData });
         } catch (error) {
             fs.unlinkSync(req?.file?.path);
