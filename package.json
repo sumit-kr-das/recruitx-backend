@@ -28,8 +28,7 @@
         "pino": "^8.14.1",
         "pino-pretty": "^10.0.1",
         "redis": "^4.6.12",
-        "winston": "^3.10.0",
-        "yup": "^1.2.0"
+        "winston": "^3.10.0"
     },
     "devDependencies": {
         "@tsconfig/node18": "^18.2.2",
@@ -46,7 +45,6 @@
         "@types/node": "^20.10.5",
         "@types/nodemailer": "^6.4.14",
         "@types/pino": "^7.0.5",
-        "@types/yup": "^0.32.0",
         "nodemon": "^3.0.1",
         "prettier": "3.0.0",
         "rimraf": "^5.0.5",
