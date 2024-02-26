@@ -1,48 +1,46 @@
-version: "3"
+version: '3'
 services:
-  mongo_db:
-    image: mongo
-    container_name: mongo-container
-    networks:
-      - mern-stack-network
-    restart: always
-    volumes:
-      - mongodb:/data/db
+    mongo_db:
+        image: mongo
+        container_name: mongo-container
+        networks:
+            - mern-stack-network
+        restart: always
+        volumes:
+            - mongodb:/data/db
 
-  redis_db:
-    image: redis:alpine
-    container_name: redis-container
-    networks:
-      - mern-stack-network
-    ports:
-      - 6379:6379
-      
-  recruitx_api:
-    build: .
-    ports:
-      - 8000:8000
-    container_name: express-container
-    networks:
-      - mern-stack-network
-    volumes:
-      - .:/app
-      - /app/node_modules
-    depends_on:
-      - mongo_db
-      - redis_db
-    environment:
-      PORT_NO: 8000
-      DB_URL: mongodb://mongo_db:27017/recruitx
-      JWT_SECRET: 5a8014dfbde596c82161c654ad2947d89e5088fa002093801c5b34d2c2e5e4ff
-      ORIGIN: http://localhost:5173
-      PRODUCTION: flase
-      REDIS_URL: 6379
-      REDIS_HOST: redis_db
-      REDIS_PORT: 6379
+    redis_db:
+        image: redis:alpine
+        container_name: redis-container
+        networks:
+            - mern-stack-network
+        ports:
+            - 6379:6379
 
-
+    recruitx_api:
+        build: .
+        ports:
+            - 8000:8000
+        container_name: express-container
+        networks:
+            - mern-stack-network
+        volumes:
+            - .:/app
+            - /app/node_modules
+        depends_on:
+            - mongo_db
+            - redis_db
+        environment:
+            PORT_NO: 8000
+            DB_URL: mongodb://mongo_db:27017/recruitx
+            JWT_SECRET: 5a8014dfbde596c82161c654ad2947d89e5088fa002093801c5b34d2c2e5e4ff
+            ORIGIN: http://localhost:5173
+            PRODUCTION: flase
+            REDIS_URL: 6379
+            REDIS_HOST: redis_db
+            REDIS_PORT: 6379
 
 networks:
-  mern-stack-network:
+    mern-stack-network:
 volumes:
-  mongodb: {}
+    mongodb: {}
