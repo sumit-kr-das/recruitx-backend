@@ -24,14 +24,28 @@ const jobRecomandationController = {
                     active: true,
                     'info.startDate': { $lte: currentDate },
                     'info.endDate': { $gte: currentDate },
-                }).limit(limit).populate("companyId", "companyName");
+                }).limit(limit).populate({
+                    path: 'companyId',
+                    select: 'companyName companyProfileId',
+                    populate: {
+                        path: 'companyProfileId',
+                        select: 'logo',
+                    },
+                });
                 return res.status(200).json(jobs);
             } else {
                 const jobs = await job.find({
                     active: true,
                     'info.startDate': { $lte: currentDate },
                     'info.endDate': { $gte: currentDate },
-                }).limit(limit).populate("companyId", "companyName");
+                }).limit(limit).populate({
+                    path: 'companyId',
+                    select: 'companyName companyProfileId',
+                    populate: {
+                        path: 'companyProfileId',
+                        select: 'logo',
+                    },
+                });
                 return res.status(200).json(jobs);
             }
 

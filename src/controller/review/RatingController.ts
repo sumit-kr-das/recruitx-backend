@@ -10,6 +10,7 @@ const ratingController = {
     const ratingSchema = Joi.object({
       companyId: Joi.string().required(),
       rates: Joi.number().min(1).max(5).required(),
+      description: Joi.string().required()
     });
 
     const { error } = ratingSchema.validate(req.body);
@@ -18,15 +19,21 @@ const ratingController = {
       return next(error);
     }
 
-    const { companyId, rates }: IRatingReqBody = req.body;
+    const { companyId, rates, description }: IRatingReqBody = req.body;
 
-    const ratings = new rating({
-      companyId,
-      rating: rates,
-      userId: user
-    });
+
 
     try {
+      const oldReview = await rating.findOne({ userId: user, companyId });
+      if (oldReview) {
+        return res.status(503).json({ message: "You have already reviewd for this company" })
+      }
+      const ratings = new rating({
+        companyId,
+        rating: rates,
+        userId: user,
+        description
+      });
       const saveRating = await ratings.save();
       return res.status(200).json({ msg: "Rating sent Successfullly" });
     } catch (error) {
@@ -40,7 +47,10 @@ const ratingController = {
     const companyId = req.params.companyId;
 
     try {
-      const ratings = await rating.find({ companyId });
+      const ratings = await rating.find({ companyId }).select("-_id -__v").populate({
+        path: "userId",
+        select: "name"
+      });
       return res.status(200).json(ratings);
     } catch (error) {
       return next(error);
