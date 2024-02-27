@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const port_no = process.env.PORT_NO || '';
+const port_no = process.env.PORT || '';
 const app_url = process.env.APP_URL || '';
 const db_url = process.env.DB_URL || '';
 const jwt_secret = process.env.JWT_SECRET || '';
