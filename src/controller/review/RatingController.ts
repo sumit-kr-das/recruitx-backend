@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import rating from "../../model/rating";
 import Joi from "joi";
 import { IRatingReqBody } from "../../@types/ratingTypes";
+import mongoose from "mongoose";
 
 const ratingController = {
   async addRating(req: any, res: Response, next: NextFunction) {
@@ -39,7 +40,6 @@ const ratingController = {
     } catch (error) {
       return next(error);
     }
-
 
   },
 
@@ -82,6 +82,31 @@ const ratingController = {
     } catch (error) {
       return next(error);
     }
+  },
+
+  async viewAvgRating(req: any, res: Response, next: NextFunction) {
+    const companyId = req.params.companyId;
+    try {
+      const pipeline = [
+        {
+          $match: { companyId: new mongoose.Types.ObjectId(companyId) },
+        },
+        {
+          $group: {
+            _id: null,
+            averageRating: { $avg: '$rating' },
+            totalRatings: { $sum: 1 },
+          },
+        },
+      ];
+
+      const result = await rating.aggregate(pipeline);
+      return res.status(200).json({ rating: result[0]?.averageRating || null, total: result[0]?.totalRatings || null });
+    } catch (error) {
+      next(error);
+    }
+
+
   }
 }
 
