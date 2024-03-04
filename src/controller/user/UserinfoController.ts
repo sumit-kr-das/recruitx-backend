@@ -137,7 +137,7 @@ const userInfoController = {
         if (!oldProfile) {
             return res.status(404).json({ message: 'Profile not found' });
         }
-        
+
         let cloudnaryResponse;
         if (req?.file?.path) {
             if (oldProfile?.photo) {
@@ -205,7 +205,7 @@ const userInfoController = {
             maxQualification,
         };
 
-        updateFields.photo = cloudnaryResponse?.url || "";
+        updateFields.photo = cloudnaryResponse?.url || oldProfile?.photo || "";
 
         try {
             const updatedInfo = await userInfo.findOneAndUpdate(
