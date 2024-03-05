@@ -69,7 +69,6 @@ const companyController = {
             const jobs = await job.find({ companyId }).select("-__v, -createdAt, -updatedAt");
             return res.status(200).json({ companyDetail, jobs });
         } catch (error) {
-            console.log(error);
             return next(error);
         }
     },

@@ -5,7 +5,7 @@ import { ISearchJob } from '../../@types/jobTypes';
 
 const searchJobController = {
     async searchJob(req: Request, res: Response, next: NextFunction) {
-        const { limit, ...others }: { limit?: number; [key: string]: any } =
+        const { limit, ...others }: { limit?: number;[key: string]: any } =
             req.query;
         const searchSchema = Joi.object({
             title: Joi.string().allow(null, ''),
@@ -249,7 +249,6 @@ const searchJobController = {
                 .select('title -_id');
             return res.status(200).json(jobTitles);
         } catch (error) {
-            console.log(error);
             next(error);
         }
     },

@@ -8,6 +8,7 @@ const JobSchema: Schema = new Schema(
     {
         title: { type: String, required: true },
         category: { type: String, required: true },
+        shortDescription: { type: String, required: true },
         description: { type: String, required: true },
         tags: { type: Array, required: true },
         active: { type: Boolean, default: true },

@@ -2,6 +2,7 @@ export interface IJobReqBody {
     title: string;
     category: string;
     description: string;
+    shortDescription: String,
     tags: [string];
     active?: boolean;
     info: {
