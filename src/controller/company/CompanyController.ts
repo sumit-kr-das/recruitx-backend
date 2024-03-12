@@ -32,7 +32,7 @@ const companyController = {
                 return res.status(200).json(companies);
             } else {
                 const companies = await company
-                    .find({ ...others, status: 'verified' })
+                    .find({ ...others, status: 'approved' })
                     .populate('companyProfileId', 'logo')
                     .sort({ rating: 1 })
                     .select(
