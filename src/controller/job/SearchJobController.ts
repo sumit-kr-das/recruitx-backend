@@ -244,6 +244,9 @@ const searchJobController = {
         const search = req.query.search || '';
 
         try {
+            if (search===""){
+                return res.status(200).json([]);
+            }
             const jobTitles = await job
                 .find({ title: { $regex: search, $options: 'i' } })
                 .select('title -_id');
