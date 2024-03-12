@@ -145,12 +145,10 @@ const companyProfileController = {
         };
 
         try {
-            console.log(profile, "profile")
             const updatedData = await companyProfile.findOneAndUpdate({ companyId }, profile, {
                 returnOriginal: false,
                 upsert: true
             });
-            console.log(updatedData, "updated data");
             const companyProfileKey = `companyProfile:${companyId}`;
             // const companyProfileCache = await redisClient.get(
             //     companyProfileKey,

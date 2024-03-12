@@ -20,6 +20,7 @@ router
     .post("/rating/add", [auth, userAuth], ratingController.addRating)
     .get("/rating/view/:companyId", ratingController.viewRatings)
     .put("/rating/edit/:id", [auth, userAuth], ratingController.editRating)
+    .get("/rating/total/:companyId", ratingController.viewAvgRating)
     .get("/profile/view", [auth, companyAuth], companyProfileController.viewProfile)
     .post("/profile/add", MulterService, [auth, companyAuth], companyProfileController.addProfile)
     .put("/profile/edit", MulterService, [auth, companyAuth], companyProfileController.editProfile)

@@ -23,7 +23,10 @@ const registerController = {
                 .pattern(
                     new RegExp('^[a-zA-Z0-9!@#$%^&*()_+{}|:"<>?~-]{3,30}$'),
                 )
-                .required(),
+                .required().messages({
+                    'string.pattern.base': 'Try again the password',
+                    'any.required': 'Password is required.'
+                }),
             phoneNo: Joi.string().min(10).required(),
             workStatus: Joi.string().required(),
             confirmPassword: Joi.ref('password'),

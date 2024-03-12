@@ -8,6 +8,7 @@ const jobController = {
         const jobSchema = Joi.object({
             title: Joi.string().min(10).max(100).required(),
             category: Joi.string().required(),
+            shortDescription: Joi.string().min(30).required(),
             description: Joi.string().min(100).required(),
             tags: Joi.array().required(),
             active: Joi.boolean(),
@@ -38,6 +39,7 @@ const jobController = {
         const {
             title,
             category,
+            shortDescription,
             description,
             tags,
             active,
@@ -62,6 +64,7 @@ const jobController = {
         const jobs = new job({
             title,
             category,
+            shortDescription,
             description,
             tags,
             active,
@@ -88,7 +91,6 @@ const jobController = {
             const addJobs = await jobs.save();
             return res.status(200).json({ msg: 'Jobs Posted Successfullly' });
         } catch (error) {
-            // console.log(error);
             return next(error);
         }
     },
@@ -157,7 +159,6 @@ const jobController = {
             // await redisClient.expire('jobsFeed', 3600);
             return res.status(200).json(jobs);
         } catch (error) {
-            console.log(error);
             next(error);
         }
     },
@@ -168,6 +169,7 @@ const jobController = {
         const jobSchema = Joi.object({
             title: Joi.string().min(10).max(100).required(),
             category: Joi.string().required(),
+            shortDescription: Joi.string().min(30).required(),
             description: Joi.string().min(100).required(),
             tags: Joi.array().required(),
             active: Joi.boolean(),
@@ -198,6 +200,7 @@ const jobController = {
         const {
             title,
             category,
+            shortDescription,
             description,
             tags,
             active,
@@ -225,6 +228,7 @@ const jobController = {
                 {
                     title,
                     category,
+                    shortDescription,
                     description,
                     tags,
                     active,

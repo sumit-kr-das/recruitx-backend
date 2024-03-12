@@ -3,15 +3,15 @@ import CustomErrorHandler from "../../services/customErrorHandeler";
 import Skill from "../../model/skill";
 
 const skillController = {
-    async addSkill(req:Request, res:Response, next:NextFunction){
-        const {name}:{name:string} = req.body;
+    async addSkill(req: Request, res: Response, next: NextFunction) {
+        const { name }: { name: string } = req.body;
         try {
-            const hasSkill = await Skill.exists({name});
-            if(hasSkill){
+            const hasSkill = await Skill.exists({ name });
+            if (hasSkill) {
                 return next(CustomErrorHandler.alreadyExist("Skill is already added"));
             }
         } catch (error) {
-            console.log(error);
+            return next(error);
         }
 
         const newSkill = new Skill({
@@ -20,21 +20,21 @@ const skillController = {
 
         try {
             const submit = await newSkill.save();
-            if(submit){
-                return res.status(200).json({msg:"Skills added successfully"});
+            if (submit) {
+                return res.status(200).json({ msg: "Skills added successfully" });
             }
         } catch (error) {
-            console.log(error);
+            return next(error);
         }
 
     },
 
-    async viewSkill(req:Request, res:Response, next:NextFunction){
+    async viewSkill(req: Request, res: Response, next: NextFunction) {
         try {
-            const skills = (await Skill.find().select("-updatedAt -__v").sort({"createdAt":-1}));
+            const skills = (await Skill.find().select("-updatedAt -__v").sort({ "createdAt": -1 }));
             return res.status(200).json(skills);
         } catch (error) {
-            console.log(error);
+            return next(error);
         }
     }
 }

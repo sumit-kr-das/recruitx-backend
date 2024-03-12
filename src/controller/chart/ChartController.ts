@@ -8,7 +8,6 @@ const chartController = {
     async getJobChart(req: any, res: Response, next: NextFunction) {
         const role = req.params.role;
         const userId = req.user.id;
-        console.log(userId);
 
         try {
             let jobData;
