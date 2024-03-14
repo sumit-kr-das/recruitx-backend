@@ -19,6 +19,8 @@ router
     .get('/view', [auth, adminAuth], adminController.viewAdmin)
     .get('/statics/view', [auth, adminAuth], adminController.viewAdminStatics)
     .post('/login', loginController.adminLogin)
-    .post('/register', registerController.adminRegister);
+    .post('/register', registerController.adminRegister)
+    .put("/restrict/company/:companyId", adminController.restrictCompany)
+    .put("/restrict/user/:userId", adminController.restrictUser);
 
 export default router;
