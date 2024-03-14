@@ -17,7 +17,7 @@ const chartController = {
                 jobData = await job.find().sort({ createdAt: 1 });
             }
 
-            const dates = jobData.map(job => converDate(job.info.startDate));
+            const dates = jobData.map(job => converDate(job?.createdAt));
             const jobCountByDate: JobCount = dates.reduce((count: JobCount, date: string) => {
                 count[date] = (count[date] || 0) + 1;
                 return count;

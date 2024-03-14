@@ -28,7 +28,7 @@ router
     // .put("/edit", [auth, companyAuth], companyController.editCompany)
     .put("/password/change", [auth, companyAuth], companyController.changePassword)
     .delete("/delete", [auth, companyAuth], companyController.deleteCompany)
-    .get("/stats/:role", [auth, companyAuth], statsController.companyStats)
+    .get("/stats/:role", [auth], statsController.companyStats)
     .get("/globals", [auth, companyAuth], companyController.getCompanyGlobals)
     .get("/search", companySearchController.searchCompany);
 
