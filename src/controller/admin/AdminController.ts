@@ -88,6 +88,34 @@ const adminController = {
             );
             return res.status(200).json({ message: "User has been restricted" });
         } catch (error) {
+            console.log(error);
+            next(error);
+        }
+    },
+
+    async viewRestrictUsers(req: Request, res: Response, next: NextFunction) {
+        try {
+            const users = await User.find({ status: userStatus.BLOCK }).select('-password -updatedAt -__v');
+            return res.status(200).json(users);
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    async unRestrictUser(req: Request, res: Response, next: NextFunction) {
+        const userId = req.params.userId;
+        try {
+            const userData = await User.findById(userId);
+            if (!userData) {
+                return res.status(404).json({ message: "User not found" });
+            }
+            await User.findOneAndUpdate(
+                { _id: userId },
+                { status: userStatus.UNVERIFIED },
+                { returnOriginal: false }
+            );
+            return res.status(200).json({ message: "User has been restricted" });
+        } catch (error) {
             next(error);
         }
     },

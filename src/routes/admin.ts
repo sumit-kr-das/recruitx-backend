@@ -20,7 +20,9 @@ router
     .get('/statics/view', [auth, adminAuth], adminController.viewAdminStatics)
     .post('/login', loginController.adminLogin)
     .post('/register', registerController.adminRegister)
-    .put("/restrict/company/:companyId", adminController.restrictCompany)
-    .put("/restrict/user/:userId", adminController.restrictUser);
+    .put("/restrict/company/:companyId", [auth, adminAuth], adminController.restrictCompany)
+    .put("/restrict/user/:userId", [auth, adminAuth], adminController.restrictUser)
+    .get("/user/restrict/view", [auth, adminAuth], adminController.viewRestrictUsers)
+    .put("/user/unrestrict/:userId", [auth, adminAuth], adminController.unRestrictUser);
 
 export default router;
