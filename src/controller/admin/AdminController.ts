@@ -7,6 +7,9 @@ import admin from '../../model/admin';
 import redisClient from '../../utils/redisClient';
 import companyStatus from '../../services/conpanyStatusService';
 import userStatus from '../../services/userStatusService';
+import Joi from 'joi';
+import bcrypt from 'bcrypt';
+
 
 const adminController = {
     async viewAdmin(req: any, res: Response, next: NextFunction) {
@@ -138,6 +141,60 @@ const adminController = {
             next(error);
         }
     },
+
+    async changePassword(req: any, res: Response, next: NextFunction) {
+        const adminId = req.user.id;
+        const passwordSchema = Joi.object({
+            oldPassword: Joi.string().required(),
+            newPassword: Joi.string().required(),
+        });
+
+        const { error } = passwordSchema.validate(req.body);
+
+        if (error) {
+            return next(error);
+        }
+
+        const {
+            oldPassword,
+            newPassword,
+        }: { oldPassword: string; newPassword: string } = req.body;
+
+        try {
+            const adminData = await admin
+                .findById(adminId)
+                .select('password');
+
+            if (!adminData) {
+                return res.status(404).json({ msg: 'admin not found' });
+            }
+
+            const matchPassword = await bcrypt.compare(
+                oldPassword,
+                adminData.password,
+            );
+            if (!matchPassword) {
+                return res
+                    .status(404)
+                    .json({ msg: 'Your credentials are invalid' });
+            } else {
+                try {
+                    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+                    const updateCompany = await admin.findOneAndUpdate(
+                        { _id: adminId },
+                        { password: hashedPassword },
+                        { returnOriginal: false },
+                    );
+                    return res.status(200).json({ msg: 'Password updated' });
+                } catch (error) {
+                    next(error);
+                }
+            }
+        } catch (error) {
+            return next(error);
+        }
+    }
 };
 
 export default adminController;
