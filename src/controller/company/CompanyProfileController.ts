@@ -149,6 +149,11 @@ const companyProfileController = {
                 returnOriginal: false,
                 upsert: true
             });
+            const companyData = await company.findById(companyId);
+            if (companyData) {
+                companyData.companyProfileId = updatedData._id;
+                await companyData.save();
+            }
             const companyProfileKey = `companyProfile:${companyId}`;
             // const companyProfileCache = await redisClient.get(
             //     companyProfileKey,
