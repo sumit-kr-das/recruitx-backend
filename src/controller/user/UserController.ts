@@ -4,11 +4,12 @@ import User from '../../model/User';
 import CustomErrorHandler from '../../services/customErrorHandeler';
 import userEducationDetail from '../../model/userEducationDetail';
 import userInfo from '../../model/userInfo';
+import userStatus from '../../services/userStatusService';
 
 const userController = {
     async viewAllUser(req: any, res: Response, next: NextFunction) {
         try {
-            const users = await User.find().select('-password -updatedAt -__v');
+            const users = await User.find({ status: { $ne: userStatus.BLOCK } }).select('-password -updatedAt -__v');
             res.status(200).json(users);
         } catch (error) {
             return next(error);

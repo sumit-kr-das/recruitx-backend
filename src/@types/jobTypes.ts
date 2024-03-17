@@ -24,7 +24,9 @@ export interface IJobReqBody {
 }
 
 export interface IJobModel extends IJobReqBody {
-    companyId: string
+    companyId: string,
+    createdAt: Date,
+    updatedAt: Date
 }
 
 export interface ISearchJob {
