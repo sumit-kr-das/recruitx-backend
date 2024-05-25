@@ -28,8 +28,7 @@ const loginController = {
             return next(error);
         }
 
-        const { email, password }: ILogin =
-            req.body;
+        const { email, password }: ILogin = req.body;
 
         try {
             const user = await User.findOne({ email });
@@ -40,8 +39,12 @@ const loginController = {
             if (!matchPassword) {
                 return next(CustomErrorHandler.wrongCredentials());
             }
-            const info = await userInfo.findOne({ userId: user._id }).select("-_id photo objective");
-            const education = await userEducationDetail.find({ userId: user.id }).select("-_id degree college")
+            const info = await userInfo
+                .findOne({ userId: user._id })
+                .select('-_id photo objective');
+            const education = await userEducationDetail
+                .find({ userId: user.id })
+                .select('-_id degree college');
 
             /* compare access token */
             const access_token = JwtService.sign({
@@ -57,7 +60,6 @@ const loginController = {
                     access_token: access_token,
                 },
             });
-
         } catch (error) {
             return next(error);
         }
@@ -79,8 +81,7 @@ const loginController = {
             return next(error);
         }
 
-        const { email, password }: ILogin =
-            req.body;
+        const { email, password }: ILogin = req.body;
 
         try {
             const companyInfo = await company.findOne({ email });
@@ -128,8 +129,7 @@ const loginController = {
             return next(error);
         }
 
-        const { email, password }: ILogin =
-            req.body;
+        const { email, password }: ILogin = req.body;
 
         try {
             const admins = await admin.findOne({ email });
