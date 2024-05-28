@@ -17,7 +17,7 @@ const registerController = {
     // User Register Controller
     async userRegister(req: Request, res: Response, next: NextFunction) {
         const userRegisterSchema = Joi.object({
-            name: Joi.string().min(5).max(30).required(),
+            name: Joi.string().min(4).max(30).required(),
             email: Joi.string().email().required(),
             password: Joi.string()
                 .pattern(
@@ -93,7 +93,7 @@ const registerController = {
     //Company Register Controller
     async companyRegister(req: Request, res: Response, next: NextFunction) {
         const comapanyRegisterSchema = Joi.object({
-            name: Joi.string().min(5).max(40).required(),
+            name: Joi.string().min(4).max(40).required(),
             designation: Joi.string().min(3).required(),
             email: Joi.string().email().required(),
             password: Joi.string()
