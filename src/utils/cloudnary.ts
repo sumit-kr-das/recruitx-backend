@@ -23,7 +23,7 @@ export const uploadOnCloudnary = async (localFilePath: string) => {
     }
 };
 
-export const destroyOnCloudnary = async (cloudinaryFilePath:string) => {
+export const destroyOnCloudnary = async (cloudinaryFilePath: string) => {
     try {
         if (!cloudinaryFilePath) {
             return null;

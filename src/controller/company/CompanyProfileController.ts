@@ -145,10 +145,14 @@ const companyProfileController = {
         };
 
         try {
-            const updatedData = await companyProfile.findOneAndUpdate({ companyId }, profile, {
-                returnOriginal: false,
-                upsert: true
-            });
+            const updatedData = await companyProfile.findOneAndUpdate(
+                { companyId },
+                profile,
+                {
+                    returnOriginal: false,
+                    upsert: true,
+                },
+            );
             const companyData = await company.findById(companyId);
             if (companyData) {
                 companyData.companyProfileId = updatedData._id;
@@ -161,9 +165,13 @@ const companyProfileController = {
             // if (companyProfileCache) {
             //     await redisClient.del(companyProfileKey);
             // }
-            return res.status(200).json({ message: 'Profile updated', data: updatedData });
+            return res
+                .status(200)
+                .json({ message: 'Profile updated', data: updatedData });
         } catch (error) {
-            fs.unlinkSync(req?.file?.path);
+            if (req?.file?.path) {
+                fs.unlinkSync(req?.file?.path);
+            }
             return next(error);
         }
     },

@@ -89,9 +89,13 @@ const userInfoController = {
             res.status(200).json({
                 msg: 'Your informations saved successfully',
             });
-            fs.unlinkSync(req?.file?.path);
+            if (req?.file?.path) {
+                fs.unlinkSync(req?.file?.path);
+            }
         } catch (error) {
-            fs.unlinkSync(req?.file?.path);
+            if (req?.file?.path) {
+                fs.unlinkSync(req?.file?.path);
+            }
             return next(error);
         }
     },
