@@ -222,7 +222,9 @@ const userInfoController = {
                 data: updatedInfo,
             });
         } catch (error) {
-            fs.unlinkSync(req?.file?.path);
+            if (req?.file?.path) {
+                fs.unlinkSync(req?.file?.path);
+            }
             return next(error);
         }
     },
