@@ -108,7 +108,7 @@ const userInfoController = {
 
     async updateUserinfo(req: any, res: Response, next: NextFunction) {
         const userId = req.user.id;
-
+        console.log(userId, "user id")
         const userinfoSchema = Joi.object({
             github: Joi.string(),
             linkedIn: Joi.string(),
@@ -133,11 +133,7 @@ const userInfoController = {
         }
 
         const oldProfile = await userInfo.findOne({ userId });
-
-        if (!oldProfile) {
-            return res.status(404).json({ message: 'Profile not found' });
-        }
-
+        console.log(oldProfile);
         let cloudnaryResponse;
         if (req?.file?.path) {
             if (oldProfile?.photo) {
@@ -211,7 +207,10 @@ const userInfoController = {
             const updatedInfo = await userInfo.findOneAndUpdate(
                 { userId },
                 updateFields,
-                { new: true },
+                {
+                    returnOriginal: false,
+                    upsert: true
+                },
             );
 
             if (!updatedInfo) {
