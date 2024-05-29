@@ -108,7 +108,6 @@ const userInfoController = {
 
     async updateUserinfo(req: any, res: Response, next: NextFunction) {
         const userId = req.user.id;
-        console.log(userId, "user id")
         const userinfoSchema = Joi.object({
             github: Joi.string(),
             linkedIn: Joi.string(),
@@ -133,7 +132,6 @@ const userInfoController = {
         }
 
         const oldProfile = await userInfo.findOne({ userId });
-        console.log(oldProfile);
         let cloudnaryResponse;
         if (req?.file?.path) {
             if (oldProfile?.photo) {
@@ -201,7 +199,7 @@ const userInfoController = {
             maxQualification,
         };
 
-        updateFields.photo = cloudnaryResponse?.url || oldProfile?.photo || "";
+        updateFields.photo = cloudnaryResponse?.url || oldProfile?.photo || '';
 
         try {
             const updatedInfo = await userInfo.findOneAndUpdate(
@@ -209,7 +207,7 @@ const userInfoController = {
                 updateFields,
                 {
                     returnOriginal: false,
-                    upsert: true
+                    upsert: true,
                 },
             );
 

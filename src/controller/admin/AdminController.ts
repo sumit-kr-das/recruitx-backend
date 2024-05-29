@@ -10,7 +10,6 @@ import userStatus from '../../services/userStatusService';
 import Joi from 'joi';
 import bcrypt from 'bcrypt';
 
-
 const adminController = {
     async viewAdmin(req: any, res: Response, next: NextFunction) {
         const id = req.user.id;
@@ -32,7 +31,8 @@ const adminController = {
         const approve = req.query.approve;
         try {
             const companies = await company
-                .find({ status: approve }).populate("companyProfileId", "logo")
+                .find({ status: approve })
+                .populate('companyProfileId', 'logo')
                 .select('-_v -password');
             return res.status(200).json(companies);
         } catch (error) {
@@ -64,14 +64,16 @@ const adminController = {
         try {
             const companyData = await company.findById(companyId);
             if (!companyData) {
-                return res.status(404).json({ message: "Company not found" });
+                return res.status(404).json({ message: 'Company not found' });
             }
             await company.findOneAndUpdate(
                 { _id: companyId },
                 { status: companyStatus.BLOCK },
                 { returnOriginal: false },
             );
-            return res.status(200).json({ message: "Company has been blocked successfully" })
+            return res
+                .status(200)
+                .json({ message: 'Company has been blocked successfully' });
         } catch (error) {
             next(error);
         }
@@ -82,23 +84,26 @@ const adminController = {
         try {
             const userData = await User.findById(userId);
             if (!userData) {
-                return res.status(404).json({ message: "User not found" });
+                return res.status(404).json({ message: 'User not found' });
             }
             await User.findOneAndUpdate(
                 { _id: userId },
                 { status: userStatus.BLOCK },
-                { returnOriginal: false }
+                { returnOriginal: false },
             );
-            return res.status(200).json({ message: "User has been restricted" });
+            return res
+                .status(200)
+                .json({ message: 'User has been restricted' });
         } catch (error) {
-            console.log(error);
             next(error);
         }
     },
 
     async viewRestrictUsers(req: Request, res: Response, next: NextFunction) {
         try {
-            const users = await User.find({ status: userStatus.BLOCK }).select('-password -updatedAt -__v');
+            const users = await User.find({ status: userStatus.BLOCK }).select(
+                '-password -updatedAt -__v',
+            );
             return res.status(200).json(users);
         } catch (error) {
             next(error);
@@ -110,14 +115,16 @@ const adminController = {
         try {
             const userData = await User.findById(userId);
             if (!userData) {
-                return res.status(404).json({ message: "User not found" });
+                return res.status(404).json({ message: 'User not found' });
             }
             await User.findOneAndUpdate(
                 { _id: userId },
                 { status: userStatus.UNVERIFIED },
-                { returnOriginal: false }
+                { returnOriginal: false },
             );
-            return res.status(200).json({ message: "User has been restricted" });
+            return res
+                .status(200)
+                .json({ message: 'User has been restricted' });
         } catch (error) {
             next(error);
         }
@@ -135,7 +142,7 @@ const adminController = {
                 totalUser,
                 totalJobs,
                 totalApplications,
-            }
+            };
             return res.status(200).json(adminStats);
         } catch (error) {
             next(error);
@@ -161,9 +168,7 @@ const adminController = {
         }: { oldPassword: string; newPassword: string } = req.body;
 
         try {
-            const adminData = await admin
-                .findById(adminId)
-                .select('password');
+            const adminData = await admin.findById(adminId).select('password');
 
             if (!adminData) {
                 return res.status(404).json({ msg: 'admin not found' });
@@ -194,7 +199,7 @@ const adminController = {
         } catch (error) {
             return next(error);
         }
-    }
+    },
 };
 
 export default adminController;
