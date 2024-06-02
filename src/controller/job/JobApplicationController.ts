@@ -58,14 +58,14 @@ const jobApplicationController = {
     async viewAppliers(req: any, res: Response, next: NextFunction) {
         const jobId = req.params.id;
         try {
-            const cacheKey = `applier:${jobId}`;
-            const appliersCache = await redisClient.get(cacheKey);
-            if (appliersCache) {
-                return res.status(200).json(JSON.parse(appliersCache));
-            }
+            // const cacheKey = `applier:${jobId}`;
+            // const appliersCache = await redisClient.get(cacheKey);
+            // if (appliersCache) {
+            //     return res.status(200).json(JSON.parse(appliersCache));
+            // }
             const appliers = await applier.find({ jobId, selected: false }).select("-__v -createdAt -updatedAt").populate("userId", "-workStatus -password -role -status -createdAt -updatedAt -__v");
-            await redisClient.set(cacheKey, JSON.stringify(appliers));
-            await redisClient.expire(cacheKey, 3600);
+            // await redisClient.set(cacheKey, JSON.stringify(appliers));
+            // await redisClient.expire(cacheKey, 3600);
             return res.status(200).json(appliers)
         } catch (error) {
             return next(error)
@@ -126,14 +126,14 @@ const jobApplicationController = {
     async viewShortListedAppliers(req: Request, res: Response, next: NextFunction) {
         const jobId = req.params.id;
         try {
-            const cacheKey = `shortlistedApplier:${jobId}`;
-            const cacheData = await redisClient.get(cacheKey);
-            if (cacheData) {
-                return res.status(200).json(JSON.parse(cacheData));
-            }
+            // const cacheKey = `shortlistedApplier:${jobId}`;
+            // const cacheData = await redisClient.get(cacheKey);
+            // if (cacheData) {
+            //     return res.status(200).json(JSON.parse(cacheData));
+            // }
             const appliers = await applier.find({ jobId, selected: true }).select("-__v -createdAt -updatedAt").populate("userId");
-            await redisClient.set(cacheKey, JSON.stringify(appliers));
-            await redisClient.expire(cacheKey, 3600);
+            // await redisClient.set(cacheKey, JSON.stringify(appliers));
+            // await redisClient.expire(cacheKey, 3600);
             return res.status(200).json(appliers)
         } catch (error) {
             return next(error)
